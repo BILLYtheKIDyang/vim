@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+use 5.18.0;
+
+main(@ARGV);
+
+sub main {
+   use 5.18.0;
+   shift;
+   my $filename = shift || "../REPL.vim";
+   my $count    = countlines($filename);
+   say $count;
+}
+
+sub countlines {
+   my $filename = shift;
+   error("countlines: missing filename") unless $filename;
+
+   my $fh = IO::File->new( $filename, 'r' )
+      or error("cannot open $filename ($!)\n");
+
+   my $count = 0;
+   $count++ while ( $fh->getline );
+
+   $fh->close;
+   return $count;
+
+}
+
+sub error {
+   use 5.18.0;
+   my $e = shift || "unknown error";
+   say "$0: $e";
+}

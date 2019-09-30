@@ -1,0 +1,17 @@
+; vim:ft=clojure
+(use '[clojure.java.shell :only [sh]])
+(clojure.java.shell/sh "mkdir" "doc")
+(defn tags []
+  (with-open [f (java.io.BufferedWriter.  (java.io.FileWriter.  "tags.txt"))]
+    (.write f
+      (apply str
+        (interpose \newline
+          (map 
+            #(let [[var val] %] (str "(def " var "  *" var "*" "\n" (:arglists (meta val)) "\n\"" (:doc (meta val)) "\")\n"))
+            (mapcat  ns-publics (all-ns))))))
+    (.write f "vim:noet:ft=help:norl:"))
+  (clojure.java.shell/sh "ctags" "--fields=+l" "--language-force=clojure" "tags.txt")
+
+  )
+
+(meta #'clojure.core/lazy-cat)
