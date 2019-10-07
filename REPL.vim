@@ -233,9 +233,14 @@ function! REPL_get_print(filetype, before) abort
 endfunction
 function! REPL_popup(str)
    let list = split(a:str, '\n\+')
-   call popup_atcursor(list, {})
+   call popup_create(list, 
+            \#{ 
+            \pos: 'topleft',
+            \col: 'cursor',
+            \line: 'cursor-1', 
+            \moved: 'any',
+            \} )
 endfunction
-
 function! REPL_load(cmd)
    call REPL_send_text(&filetype, a:cmd)
    let g:seen = REPL_get_buttom(&filetype) + 1

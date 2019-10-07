@@ -1,3 +1,5 @@
+use feature qw/say/;
+say foreach @INC;
 use Tk;
 $mw = MainWindow->new;
 $mw->Label( -text => "Hello World!" )->pack();
