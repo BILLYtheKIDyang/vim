@@ -1,15 +1,17 @@
-def fib(n)
-  return 0 if n == 1
-  return 1 if n == 2
-  return fib(n-1) + fib(n-2)
-end
+def fact(n):
+    if n < 2:
+        return 1
+    else:
+        return n * fact(n - 1)
 
-fib(10)
-fib(20)
-fib(30)
-fib(33)
-fib(34)
-fib(35)
-fib(36)
-fib(37)
-fib(38)
+
+fact(10)
+fact(20)
+fact(30)
+fact(40)
+fact(50)
+fact(60)
+fact(70)
+fact(80)
+fact(90)
+fact(100)

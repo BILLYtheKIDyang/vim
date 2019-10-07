@@ -21,8 +21,8 @@ let g:REPL_configs['red']={}
 let g:REPL_configs['red']['repl']=['c:/red/red.exe', '--cli']
 let g:REPL_configs['ruby'] = {}
 let g:REPL_configs['ruby']['ends'] = ['end']
-let g:REPL_configs['ruby']['ps1']='>> '
-let g:REPL_configs['ruby']['ps2']='>> '
+let g:REPL_configs['ruby']['ps1']='>>'
+let g:REPL_configs['ruby']['ps2']='?>'
 let g:REPL_configs['ruby']['repl'] = ['irb', '--prompt', 'simple']
 let g:REPL_configs['sbcl']={}
 let g:REPL_configs['sbcl']['ps1']="\\\* "
@@ -100,9 +100,9 @@ function! REPL_get_promptp(filetype)
    let this_line = term_getline(REPL_find_REPL(a:filetype), ".")
    let ps1 = g:REPL_configs[a:filetype]['ps1']
    let ps2 = g:REPL_configs[a:filetype]['ps2']
-   if this_line =~ ps1
+   if this_line =~ '^' . ps1
       return 1
-   elseif this_line =~ ps2
+   elseif this_line =~ '^' . ps2
       return 1
    else
       return 0
@@ -235,9 +235,8 @@ function! REPL_popup(str)
    let list = split(a:str, '\n\+')
    call popup_create(list, 
             \#{ 
-            \pos: 'topleft',
-            \col: 'cursor',
-            \line: 'cursor-1', 
+            \col: col('$')+5,
+            \line: 'cursor', 
             \moved: 'any',
             \} )
 endfunction
