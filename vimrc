@@ -151,8 +151,7 @@ func! MyF4()
    elseif &filetype=="fsharp"
       exe "!" . g:clear . ";fsharpc /nologo % && mono %<.exe"
    elseif &filetype=="python"
-      call TermSendText("exec(open(\"" . WinPath("%:p") . "\").read())")
-      call GetTerminalReplPrint(TermGetButtom() + 1)
+      call REPL_load("exec(open(\"" . WinPath("%:p") . "\").read())")
    elseif &filetype=="clojure"
       call term_sendkeys(term_list()[0], "(load-file \"" . WinPath("~/.vim/.cljrc") . "\")\<CR>")
       call term_sendkeys(term_list()[0], "(tags)\<CR>")

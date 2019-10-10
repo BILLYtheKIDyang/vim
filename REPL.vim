@@ -110,7 +110,12 @@ function! REPL_get_promptp(filetype)
 endfunction
 function! REPL_send_expression()
    if &filetype == 'perl'
-      call REPL_popup( printf("%s", perleval(join(REPL_get_expression(), "\n"))))
+      let perlcode = REPL_get_expression()
+      if len(perlcode) == 1
+         call REPL_popup(printf("%s", perleval("" . trim(perlcode[0], ";") . "")))
+      else
+         call REPL_popup( printf("%s", perleval("" . join(REPL_get_expression(), "\n") . "")))
+      endif
       return 
    endif
    if !has_key(g:REPL_configs, &filetype)
