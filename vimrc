@@ -57,7 +57,6 @@ runtime plugin/persistentvisuals.vim
 runtime plugin/vimpoint.vim
 runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
-runtime plugin/plug.vim
 "runtime plugin/LispIndent.vim
 "set path+=**
 set rtp+=~/YouCompleteMe
@@ -185,5 +184,7 @@ func! Fqb()
    :w
    execute "!/home/a/.local/qb64/qb64 %:p"
 endfunc
-call plug#begin()
+call plug#begin('d:/')
+Plug 'z-huabao/vim-submode'
+Plug 'z-huabao/vim-slime-ipython'
 call plug#end()

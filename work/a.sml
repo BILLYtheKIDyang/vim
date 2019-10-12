@@ -21,7 +21,7 @@ fun circleArea r = Math.pi * r * r;
 fun fact 0 = 1
   | fact n = n * fact(n - 1);
 
-  fact 4;
+fact 4;
 
 fun power(x, 0) = 1.0
   | power(x, n) = x * power(x, n - 1) (* 2 *);

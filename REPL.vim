@@ -14,9 +14,10 @@ let g:REPL_configs['java']['ps1'] = "jshell> "
 let g:REPL_configs['java']['ps2'] = "   \\.\\.\\.> "
 let g:REPL_configs['java']['repl']='jshell'
 let g:REPL_configs['python'] = {}
+let g:REPL_configs['python']['repl'] = ['c:/Users/Administrator/AppData/Local/Programs/Python/Python37/python.exe']
 let g:REPL_configs['python']['ends'] = ['else', 'except'] 
 let g:REPL_configs['python']['ps1'] = ">>>"
-let g:REPL_configs['python']['ps2'] = "\\\.\\\.\\\." 
+let g:REPL_configs['python']['ps2'] = "   \*\\\.\\\.\\\." 
 let g:REPL_configs['red']={}
 let g:REPL_configs['red']['repl']=['c:/red/red.exe', '--cli']
 let g:REPL_configs['ruby'] = {}
@@ -129,6 +130,7 @@ function! REPL_send_expression()
    if &filetype=='python' && len(lines) > 1
       call add(lines, "")
    endif
+
    for line in lines
       call REPL_send_text(&filetype, line)
    endfor
@@ -200,11 +202,7 @@ function! REPL_start_watch(filetype)
    let timer = timer_start(500, 'REPL_handler', {'repeat': -1})
 endfunction
 function! REPL_send_text(filetype, text)
-   return term_sendkeys(
-            \ REPL_start_REPL(a:filetype)
-            \ ,a:text
-            \ . "\<CR>"
-            \)
+   call term_sendkeys(REPL_start_REPL(a:filetype), a:text . "\<CR>")
 endfunction
 
 function! REPL_get_buttom(filetype)
