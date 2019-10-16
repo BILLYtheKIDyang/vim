@@ -1,41 +1,32 @@
 let g:REPL_configs = {}
-let g:REPL_configs['clisp']={}
-let g:REPL_configs['clisp']['ps1']="\\\[\\d\\+\\\]>"
-let g:REPL_configs['clisp']['ps2']="\\\[\\d\\+\\\]>"
-let g:REPL_configs['clojure']={}
-let g:REPL_configs['clojure']['ps1']= "user=> "
-let g:REPL_configs['clojure']['ps2']= "user=> "
-let g:REPL_configs['haskell'] = {}
-let g:REPL_configs['haskell']['ps1'] = ".\\+>"
-let g:REPL_configs['haskell']['ps2'] = ".\\+>"
-let g:REPL_configs['haskell']['repl'] = "ghci"
-let g:REPL_configs['java']={}
-let g:REPL_configs['java']['ps1'] = "jshell> "
-let g:REPL_configs['java']['ps2'] = "   \\.\\.\\.> "
-let g:REPL_configs['java']['repl']='jshell'
 let g:REPL_configs['python'] = {}
-let g:REPL_configs['python']['repl'] = ['c:/Users/Administrator/AppData/Local/Programs/Python/Python37/python.exe']
 let g:REPL_configs['python']['ends'] = ['else', 'except'] 
-let g:REPL_configs['python']['ps1'] = ">>>"
-let g:REPL_configs['python']['ps2'] = "   \*\\\.\\\.\\\." 
-let g:REPL_configs['red']={}
-let g:REPL_configs['red']['repl']=['c:/red/red.exe', '--cli']
-let g:REPL_configs['ruby'] = {}
-let g:REPL_configs['ruby']['ends'] = ['end']
-let g:REPL_configs['ruby']['ps1']='>>'
-let g:REPL_configs['ruby']['ps2']='?>'
-let g:REPL_configs['ruby']['repl'] = ['irb', '--prompt', 'simple']
-let g:REPL_configs['sbcl']={}
-let g:REPL_configs['sbcl']['ps1']="\\\* "
-let g:REPL_configs['sbcl']['ps2']="\\d\\+\\\] "
-let g:REPL_configs['scala']={}
-let g:REPL_configs['scala']['ps1'] = "scala> "
-let g:REPL_configs['scala']['ps2'] = "     | "
-let g:REPL_configs['sml']={}
-let g:REPL_configs['sml']['ends']=['end', ';']
-let g:REPL_configs['sml']['repl']=['d:/SMLNJ/bin/sml.bat']
-let g:REPL_configs['sml']['ps1'] = "-"
-let g:REPL_configs['sml']['ps2'] = "="
+let g:REPL_configs['python']['ps1'] = '>>>'
+let g:REPL_configs['python']['ps2'] = '\.\.\.'
+
+let g:REPL_configs['javascript'] = {}
+let g:REPL_configs['javascript']['repl'] = ['node'] 
+let g:REPL_configs['javascript']['ends'] = ['else', 'except'] 
+let g:REPL_configs['javascript']['ps1'] = '>'
+let g:REPL_configs['javascript']['ps2'] = '\.\.\.'
+
+let g:REPL_configs['sml'] = {}
+let g:REPL_configs['sml']['repl'] = ['sml.bat']
+let g:REPL_configs['sml']['ends'] = ['end', ';'] 
+let g:REPL_configs['sml']['ps1'] = '-'
+let g:REPL_configs['sml']['ps2'] = '='
+
+let g:REPL_configs['red'] = {}
+let g:REPL_configs['red']['repl'] = ['d:/red/red.bat', '--cli']
+let g:REPL_configs['red']['ends'] = [] 
+let g:REPL_configs['red']['ps1'] = '>>'
+let g:REPL_configs['red']['ps2'] = '[ '
+
+let g:REPL_configs['java'] = {}
+let g:REPL_configs['java']['repl'] = ['jshell']
+let g:REPL_configs['java']['ends'] = [] 
+let g:REPL_configs['java']['ps1'] = 'jshell>'
+let g:REPL_configs['java']['ps2'] = '   ...>'
 
 function! REPL_check_ends(filetype, line)
    if has_key(g:REPL_configs, a:filetype) && has_key(g:REPL_configs[a:filetype], 'ends')
@@ -164,8 +155,6 @@ function! REPL_start_REPL(filetype) abort
    endif
 endfunction
 
-
-
 function! REPL_set_REPL(filetype)  abort
    if !has_key(g:REPL_configs, a:filetype)
       return 0
@@ -234,6 +223,7 @@ function! REPL_get_print(filetype, before) abort
    endwhile
    call REPL_popup( join(lines, "\n"))
 endfunction
+"\col: col('$')+5,
 function! REPL_popup(str)
    let list = split(a:str, '\n\+')
    call popup_create(list, 

@@ -5,6 +5,7 @@ autocmd BufWritePost $MYVIMRC source %
 autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePost *.vim source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 color delek
 filetype indent plugin on 
 filetype off                  " required

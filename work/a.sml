@@ -11,7 +11,7 @@ fun fact n =
     f(4 + x)
   end;
 
-  Math.pi;
+Math.pi;
 
 fun circleArea r = Math.pi * r * r;
 
@@ -31,21 +31,21 @@ power (4.0, 2);
 
 fun g(n) = n + 4;
 fun h(x, y) = Math.sqrt(x * x + y * y);
-  h(3.0, 4.0);
+h(3.0, 4.0);
 
 fun f 1 = 1
   | f n = f(n-1) + n;
-  (* sum(m, n) = m + (m + 1) + (m + 2) + ... + (m + (n - 1)) + (m + n) *)
+(* sum(m, n) = m + (m + 1) + (m + 2) + ... + (m + (n - 1)) + (m + n) *)
 fun sum(m, 0) = m
   | sum(m, n) = sum(m, n - 1) + (m + n);
   sum(2,3);
   sum(0,4);
 
-  (* fact (n) = 1 * 2 * 3 ... * (n - 1) * n *)
+(* fact (n) = 1 * 2 * 3 ... * (n - 1) * n *)
 fun fact 0 = 1
   | fact n = fact(n - 1) * n;
 
-  fact 10;
-  fact 5;
+fact 10;
+fact 5;
 
 val inc = fn x => x + 1;
