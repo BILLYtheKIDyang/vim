@@ -1,2 +1,2 @@
 [style]
-spaces_before_comment = 15,20
+spaces_before_comment = 0,5,10,15,20

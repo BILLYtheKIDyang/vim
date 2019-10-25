@@ -1,9 +1,33 @@
 let g:REPL_configs = {}
+
 let g:REPL_configs['python'] = {}
 let g:REPL_configs['python']['ends'] = ['else', 'except'] 
 let g:REPL_configs['python']['ps1'] = '>>>'
 let g:REPL_configs['python']['ps2'] = '\.\.\.'
 
+if 0
+   let g:REPL_configs['vb'] = {}
+   let g:REPL_configs['vb']['repl'] = ['wscirpt', 'c:\\Users\\Administrator\\.vim\\work\\vbsh.vbs'] 
+   let g:REPL_configs['vb']['ends'] = ['else', 'end'] 
+   let g:REPL_configs['vb']['ps1'] = '>>>'
+   let g:REPL_configs['vb']['ps2'] = '\.\.\.'
+endif
+
+if 1
+   let g:REPL_configs['ps1'] = {}
+   let g:REPL_configs['ps1']['repl'] = ['powershell'] 
+   let g:REPL_configs['ps1']['ends'] = ['"@', 'else', 'end'] 
+   let g:REPL_configs['ps1']['ps1'] = 'PS.*>'
+   let g:REPL_configs['ps1']['ps2'] = '>>'
+endif
+
+let g:REPL_configs['perl'] = {}
+let g:REPL_configs['perl']['repl'] = ['perl', 'c:\\Users\\Administrator\\.vim\\work\\eval.pl']
+let g:REPL_configs['perl']['ends'] = ['else', 'except'] 
+let g:REPL_configs['perl']['ps1'] = 'perl>'
+let g:REPL_configs['perl']['ps2'] = '\.\.\.'
+
+let g:REPL_configs['javascript'] = {}
 let g:REPL_configs['javascript'] = {}
 let g:REPL_configs['javascript']['repl'] = ['node'] 
 let g:REPL_configs['javascript']['ends'] = ['else', 'except'] 
@@ -17,7 +41,7 @@ let g:REPL_configs['sml']['ps1'] = '-'
 let g:REPL_configs['sml']['ps2'] = '='
 
 let g:REPL_configs['red'] = {}
-let g:REPL_configs['red']['repl'] = ['d:/red/red.bat', '--cli']
+let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
 let g:REPL_configs['red']['ends'] = [] 
 let g:REPL_configs['red']['ps1'] = '>>'
 let g:REPL_configs['red']['ps2'] = '[ '
@@ -27,6 +51,12 @@ let g:REPL_configs['java']['repl'] = ['jshell']
 let g:REPL_configs['java']['ends'] = [] 
 let g:REPL_configs['java']['ps1'] = 'jshell>'
 let g:REPL_configs['java']['ps2'] = '   ...>'
+
+let g:REPL_configs['ruby'] = {}
+let g:REPL_configs['ruby']['repl'] = ['d:\\ruby\\bin\\irb.bat', '--simple-prompt']
+let g:REPL_configs['ruby']['ends'] = ['end', 'else'] 
+let g:REPL_configs['ruby']['ps1'] = '=>'
+let g:REPL_configs['ruby']['ps2'] = '>>'
 
 function! REPL_check_ends(filetype, line)
    if has_key(g:REPL_configs, a:filetype) && has_key(g:REPL_configs[a:filetype], 'ends')
@@ -101,7 +131,7 @@ function! REPL_get_promptp(filetype)
    endif
 endfunction
 function! REPL_send_expression()
-   if &filetype == 'perl'
+   if 0 && &filetype == 'perl'
       let perlcode = REPL_get_expression()
       if len(perlcode) == 1
          call REPL_popup(printf("%s", perleval("" . trim(perlcode[0], ";") . "")))
@@ -118,8 +148,8 @@ function! REPL_send_expression()
       return
    endif
    let lines = REPL_get_expression()
-   if &filetype=='python' && len(lines) > 1
-      call add(lines, "")
+   if &filetype == 'perl' || len(lines) > 1
+         call add(lines, "")
    endif
 
    for line in lines
@@ -239,4 +269,6 @@ function! REPL_load(cmd)
 endfunction
 inoremap <silent> <C-l> <C-o>:call REPL_send_expression()<CR>
 noremap <silent> <C-l> :call REPL_send_expression()<CR>
+inoremap <silent> <C-k> <C-o>:call REPL_send_text(&filetype, '')<CR>
+noremap <silent>  <C-k>:call REPL_send_text(&filetype, '')<CR>
 autocmd BufEnter * :call REPL_set_REPL(&filetype)

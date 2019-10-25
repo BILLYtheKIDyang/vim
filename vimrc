@@ -6,15 +6,11 @@ autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePost *.vim source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-color delek
+autocmd FileType * set formatoptions-=c formatoptions-=r formatoptions-=o
 filetype indent plugin on 
-filetype off                  " required
+filetype off                 " required
 filetype plugin indent on    " required
 if has("gui_running") |let g:clear=""| else| let g:clear="clear "| endif
-inoremap <s-talb> <c-p>
-"inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-"inoremap <tab> <c-r>=Smart_TabComplete()<cr>
-let g:args=""
 let g:cargs=""
 let g:cmd=""
 let g:cp="-cp ."
@@ -23,8 +19,6 @@ let g:fsharp_interactive_bin="fsharpi"
 let g:fsharp_xbuild_path="msbuild"
 let g:fsharpbinding_debug=1
 let g:gcc="g++ -std=c++11"
-let g:package=""
-let g:rargs=" "
 let g:vim_markdown_math=1
 let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_auto_trigger=1
@@ -61,7 +55,6 @@ runtime plugin/yankmatches.vim
 "runtime plugin/LispIndent.vim
 "set path+=**
 set rtp+=~/YouCompleteMe
-"set rtp+=~/work/c/NeoDebug
 set formatoptions-=ro " 在注释下开新行时，不要自作聪明添加注释符号
 set ambiwidth=double
 set autochdir
@@ -100,6 +93,7 @@ set smarttab
 set so=7 
 set t_vb=
 set tabstop=4
+set tags=./tags;,tags
 set tw=500
 set undodir=$HOME/vimbackup/
 set undofile
@@ -167,9 +161,6 @@ func! MyF4()
    elseif &filetype == "sh"
       call term_sendkeys(term_list()[0], "zsh " . WinPath("%:p") . "\<CR>")
       call GetTerminalReplPrint('', '> ')
-   elseif &filetype=="cs"
-      execute "!" . g:clear . ";echo compiling... && csc /nologo "  . 
-               \g:cargs . " % && echo running... &&  mono %<.exe" . g:args 
    else
       echom "`let g:cmd='!???`"
    endif
@@ -185,7 +176,8 @@ func! Fqb()
    :w
    execute "!/home/a/.local/qb64/qb64 %:p"
 endfunc
-call plug#begin('d:/')
-Plug 'z-huabao/vim-submode'
-Plug 'z-huabao/vim-slime-ipython'
+call plug#begin('d:/vim_plug')
+" Use release branch
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'sheerun/vim-polyglot'
 call plug#end()

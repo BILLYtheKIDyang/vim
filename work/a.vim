@@ -1,1 +1,1 @@
-echo "..." =~ '\.\.\.'
+function fact

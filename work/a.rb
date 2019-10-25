@@ -1,17 +1,37 @@
-def fact(n):
-    if n < 2:
-        return 1
-    else:
-        return n * fact(n - 1)
+def fib(n)
+  if n < 2
+    n
+  else
+    fib(n - 2) + fib(n - 1)
+  end
+end
 
+print "fib (6) = ", fib(6), "\n"
 
-fact(10)
-fact(20)
-fact(30)
-fact(40)
-fact(50)
-fact(60)
-fact(70)
-fact(80)
-fact(90)
-fact(100)
+class Stack
+  def initialize
+    @stack = []
+    @sp = 0
+  end
+
+  def push(value)
+    @stack[@sp] = value
+    @sp += 1
+  end
+
+  def pop
+    return nil if @sp == 0
+    @sp = 1
+    return @stack[@sp]
+  end
+end
+
+stack = Stack.new
+stack.push(1)
+stack.push(2)
+stack.push(3)
+stack.pop()
+stack.pop
+stack.pop
+stack.pop
+
