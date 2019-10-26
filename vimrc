@@ -5,8 +5,7 @@ autocmd BufWritePost $MYVIMRC source %
 autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePost *.vim source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-autocmd FileType * set formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd BufRead,BufNewFile * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
@@ -20,18 +19,18 @@ let g:fsharp_xbuild_path="msbuild"
 let g:fsharpbinding_debug=1
 let g:gcc="g++ -std=c++11"
 let g:vim_markdown_math=1
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_auto_trigger=1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_collect_identifiers_from_tags_files =1 
-let g:ycm_complete_in_strings=1
-let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
-let g:ycm_key_invoke_completion = '<c-n>'
-let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],  'cs,lua,javascript': ['re!\w{2}'],  }
-let g:ycm_server_log_level = 'info'
-let g:ycm_show_diagnostics_ui = 1
-let g:ycm_filetype_specific_completion_to_disable = { 'cs': 1 }
+"let g:ycm_add_preview_to_completeopt = 1
+"let g:ycm_auto_trigger=1
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_collect_identifiers_from_tags_files =1 
+"let g:ycm_complete_in_strings=1
+"let g:ycm_filetype_specific_completion_to_disable = { 'cs': 1 }
+"let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
+"let g:ycm_key_invoke_completion = '<c-n>'
+"let g:ycm_min_num_identifier_candidate_chars = 1
+""let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
+"let g:ycm_server_log_level = 'info'
+"let g:ycm_show_diagnostics_ui = 1
 let mapleader=','
 nmap <leader><space> :nohlsearch<cr>
 nmap <leader>rc :e ~/.vim/vimrc<cr>
@@ -55,7 +54,6 @@ runtime plugin/yankmatches.vim
 "runtime plugin/LispIndent.vim
 "set path+=**
 set rtp+=~/YouCompleteMe
-set formatoptions-=ro " 在注释下开新行时，不要自作聪明添加注释符号
 set ambiwidth=double
 set autochdir
 set autoindent
@@ -93,7 +91,6 @@ set smarttab
 set so=7 
 set t_vb=
 set tabstop=4
-set tags=./tags;,tags
 set tw=500
 set undodir=$HOME/vimbackup/
 set undofile

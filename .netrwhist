@@ -1,0 +1,10 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =8
+let g:netrw_dirhist_8='/home/a/.racket'
+let g:netrw_dirhist_7='/home/a/perl5/lib/perl5'
+let g:netrw_dirhist_6='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a/My Documents/Tencent Files/897830554/FileRecv/MobileFile'
+let g:netrw_dirhist_5='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a/My Documents/Tencent Files/897830554/FileRecv'
+let g:netrw_dirhist_4='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a/My Documents/Tencent Files/897830554'
+let g:netrw_dirhist_3='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a/My Documents/Tencent Files'
+let g:netrw_dirhist_2='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a/My Documents'
+let g:netrw_dirhist_1='/home/a/.deepinwine/Deepin-QQ/drive_c/users/a'

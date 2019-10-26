@@ -1,5 +1,4 @@
-@words = qw(internet answers printer program);
-@guesses = ();
+@words = qw(internet answers printer program, abc);
 $wrong = 0;
 
 $choice = $words[rand @words];
@@ -8,7 +7,6 @@ $hangman = "0-|--<";
 @letters = split(//, $choice);
 @hangman = split(//, $hangman);
 @blankword=(0) x scalar(@hangman);
-OUTER:
 while ($wrong < @hangman) {
    foreach $i (0..$#letters) {
       if ($blankword[$i]) {
@@ -23,9 +21,6 @@ while ($wrong < @hangman) {
    }
    print "\n Your Guess: ";
    $guess = <STDIN>; chomp $guess;
-   foreach(@guesses) {
-      next OUTER if ($_ eq $guess);
-   }
 
    $right = 0;
    for ($i = 0; $i < @letters; $i++) {
@@ -34,7 +29,9 @@ while ($wrong < @hangman) {
          $right = 1;
       }
    }
-   $wrong++ unless (not $right);
+
+   $wrong++ unless $right;
+
    if (join('', @blankword) eq $choice) {
       print "You got it right!\n";
       exit;

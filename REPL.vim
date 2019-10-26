@@ -22,7 +22,7 @@ if 1
 endif
 
 let g:REPL_configs['perl'] = {}
-let g:REPL_configs['perl']['repl'] = ['perl', 'c:\\Users\\Administrator\\.vim\\work\\eval.pl']
+let g:REPL_configs['perl']['repl'] = ['perl', "/home/a/.vim/work/eval.pl"]
 let g:REPL_configs['perl']['ends'] = ['else', 'except'] 
 let g:REPL_configs['perl']['ps1'] = 'perl>'
 let g:REPL_configs['perl']['ps2'] = '\.\.\.'
@@ -131,15 +131,6 @@ function! REPL_get_promptp(filetype)
    endif
 endfunction
 function! REPL_send_expression()
-   if 0 && &filetype == 'perl'
-      let perlcode = REPL_get_expression()
-      if len(perlcode) == 1
-         call REPL_popup(printf("%s", perleval("" . trim(perlcode[0], ";") . "")))
-      else
-         call REPL_popup( printf("%s", perleval("" . join(REPL_get_expression(), "\n") . "")))
-      endif
-      return 
-   endif
    if !has_key(g:REPL_configs, &filetype)
       return
    endif

@@ -66,4 +66,3 @@ print "Today is $day.\n" . calc(3,2007);
 while (($key, $value) = each(%main::)) {
    print "$key:  $value\n";
 }; 
-
