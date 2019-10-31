@@ -17,3 +17,11 @@ var o = new Object(); // 创建一个空对象，和 {} 一样
 var a = new Array(); // 创建一个空数组，和 [] 一样
 var d = new Date();  // 创建一个表示当前时间的 Date 对象
 var r = new RegExp("js"); // 创建一个可以进行模式匹配的 RegExp 对象
+
+// 6.1.3 原型
+r.prototype
+
+var o1 = Object.create({x: 1, y: 2});
+var o2 = Object.create(null);
+var o3 = Object.create(Object.prototype);
+o3

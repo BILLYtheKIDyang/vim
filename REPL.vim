@@ -22,7 +22,7 @@ if 1
 endif
 
 let g:REPL_configs['perl'] = {}
-let g:REPL_configs['perl']['repl'] = ['perl', "/home/a/.vim/work/eval.pl"]
+let g:REPL_configs['perl']['repl'] = ['perl', expand("$HOME/.vim/work/eval.pl")]
 let g:REPL_configs['perl']['ends'] = ['else', 'except'] 
 let g:REPL_configs['perl']['ps1'] = 'perl>'
 let g:REPL_configs['perl']['ps2'] = '\.\.\.'

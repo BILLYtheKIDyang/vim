@@ -111,7 +111,7 @@ func! MyF4()
    if g:cmd != ""
       execute g:cmd
    elseif &filetype=="c"
-      execute "!" .  g:clear . "; echo Compiling... && gcc -std=c11 \"%\" -lm && echo Running... && ./a.out"
+      execute "!" .  g:clear . "; echo Compiling... && gcc -std=c11 \"%\" -lm && echo Running... && a.exe"
    elseif &filetype=="cpp"
       exec "!g++ % && a.exe"
    elseif &filetype=="typescript"
@@ -142,7 +142,7 @@ func! MyF4()
    elseif &filetype=="fsharp"
       exe "!" . g:clear . ";fsharpc /nologo % && mono %<.exe"
    elseif &filetype=="python"
-      call REPL_load("exec(open(\"" . WinPath("%:p") . "\").read())")
+      call REPL_load("exec(open(\"" . WinPath("%:p") . "\", encoding='utf-8').read())")
    elseif &filetype=="clojure"
       call term_sendkeys(term_list()[0], "(load-file \"" . WinPath("~/.vim/.cljrc") . "\")\<CR>")
       call term_sendkeys(term_list()[0], "(tags)\<CR>")
