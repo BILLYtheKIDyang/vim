@@ -1,3 +1,29 @@
+set rtp+=d:/tabular
+set rtp+=D:/YouCompleteMe.old
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+language messages zh_CN.utf-8
+set fileencodings=utf-8,ucs-bom,cp936,big5,gbk
+set fileencoding=utf-8
+let g:vimtweak_dll_path = expand("~/.vim/vimtweak64.dll")
+
+
+command! -nargs=1 VimTweakSetAlpha call libcallnr(g:vimtweak_dll_path, "SetAlpha", 0+<args>)
+command! VimTweakEnableMaximize call libcallnr(g:vimtweak_dll_path, "EnableMaximize", 1)
+command! VimTweakDisableMaximize call libcallnr(g:vimtweak_dll_path, "EnableMaximize", 0)
+command! VimTweakEnableTopMost call libcallnr(g:vimtweak_dll_path, "EnableTopMost", 1)
+command! VimTweakDisableTopMost call libcallnr(g:vimtweak_dll_path, "EnableTopMost", 0)
+command! VimTweakEnableCaption call libcallnr(g:vimtweak_dll_path, "EnableCaption", 1)
+command! VimTweakDisableCaption call libcallnr(g:vimtweak_dll_path, "EnableCaption", 0)
+function! VT()
+   VimTweakSetAlpha 195 
+   VimTweakEnableCaption
+   VimTweakEnableMaximize
+   VimTweakEnableTopMost
+endfunction
+command! VT call VT()
+set guifont=Consolas:h15:cANSI:qDRAFT
+colo darkblue
 au!
 autocmd BufRead,BufNewFile *.scala set filetype=scala
 autocmd BufRead,BufNewFile *.red set filetype=red
