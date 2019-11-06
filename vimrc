@@ -5,7 +5,7 @@ source $VIMRUNTIME/menu.vim
 language messages zh_CN.utf-8
 set fileencodings=utf-8,ucs-bom,cp936,big5,gbk
 set fileencoding=utf-8
-let g:vimtweak_dll_path = expand("~/.vim/vimtweak64.dll")
+let g:vimtweak_dll_path = expand("~/.vim/vimtweak/vimtweak64.dll")
 
 
 command! -nargs=1 VimTweakSetAlpha call libcallnr(g:vimtweak_dll_path, "SetAlpha", 0+<args>)
