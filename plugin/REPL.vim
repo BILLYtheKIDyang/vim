@@ -22,7 +22,7 @@ if 1
 endif
 
 let g:REPL_configs['perl'] = {}
-let g:REPL_configs['perl']['repl'] = ['perl', expand("$HOME/.vim/work/eval.pl")]
+let g:REPL_configs['perl']['repl'] = ['perl', expand("$HOME/.vim/plugin/eval.pl")]
 let g:REPL_configs['perl']['ends'] = ['else', 'except'] 
 let g:REPL_configs['perl']['ps1'] = 'perl>'
 let g:REPL_configs['perl']['ps2'] = '\.\.\.'
@@ -53,7 +53,7 @@ let g:REPL_configs['java']['ps1'] = 'jshell>'
 let g:REPL_configs['java']['ps2'] = '   ...>'
 
 let g:REPL_configs['ruby'] = {}
-let g:REPL_configs['ruby']['repl'] = ['d:\\ruby\\bin\\irb.bat', '--simple-prompt']
+let g:REPL_configs['ruby']['repl'] = ['irb', '--simple-prompt']
 let g:REPL_configs['ruby']['ends'] = ['end', 'else'] 
 let g:REPL_configs['ruby']['ps1'] = '=>'
 let g:REPL_configs['ruby']['ps2'] = '>>'
