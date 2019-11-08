@@ -10,7 +10,9 @@ while (defined($s=<>)) {
       print '..... ';
    } else {
       $code =~ s/^my //;
-      print "\n",Dumper( eval $code),"\n";
+      if (length($code) > 1) {
+         print Dumper( eval $code),"\n";
+      }
       if ($@) { print "WRONG: $@\n";}
       $code = '';
       print 'perl> ';
