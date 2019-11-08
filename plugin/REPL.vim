@@ -134,7 +134,7 @@ function! REPL_send_expression()
    if !has_key(g:REPL_configs, &filetype)
       return
    endif
-   if !REPL_get_promptp(&filetype)
+   if 0 && !REPL_get_promptp(&filetype)
       echo "REPL: evaluating..."
       return
    endif
