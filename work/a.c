@@ -15,5 +15,5 @@ int main() {
         return -1;
     }
     int xs[] = {1,2,3,4};
-    printf("%d\n", binarySearch(xs, 0, 3, 2));
+    printf("%d\n", binarySearch(xs, 0, 2, 2));
 }

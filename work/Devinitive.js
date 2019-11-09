@@ -24,4 +24,3 @@ r.prototype
 var o1 = Object.create({x: 1, y: 2});
 var o2 = Object.create(null);
 var o3 = Object.create(Object.prototype);
-o3

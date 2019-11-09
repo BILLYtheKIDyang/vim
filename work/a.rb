@@ -21,7 +21,7 @@ class Stack
 
   def pop
     return nil if @sp == 0
-    @sp = 1
+    @sp -= 1
     return @stack[@sp]
   end
 end
@@ -34,4 +34,3 @@ stack.pop()
 stack.pop
 stack.pop
 stack.pop
-

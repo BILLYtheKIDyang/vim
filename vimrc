@@ -30,7 +30,7 @@ autocmd BufWritePost $MYVIMRC source %
 autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePost *.vim source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
-autocmd BufRead,BufNewFile * set formatoptions=
+autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
@@ -136,7 +136,7 @@ func! MyF4()
    if g:cmd != ""
       execute g:cmd
    elseif &filetype=="c"
-      execute "!" .  g:clear . "; echo Compiling... && gcc -std=c11 \"%\" -lm && echo Running... && a.exe"
+      execute "!" .  g:clear . "; echo Compiling... && gcc -std=c11 \"%\" -lm -o %< && echo Running... && ./%< "
    elseif &filetype=="cpp"
       exec "!g++ % && a.exe"
    elseif &filetype=="typescript"

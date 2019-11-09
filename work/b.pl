@@ -60,7 +60,7 @@ sub AUTOLOAD {
 }
 
 $day = dir("");
-print "Today is $day.\n" . calc(3,2007);
+print "Today is $day.\n" . calender(3,2007);
 
 
 while (($key, $value) = each(%main::)) {
