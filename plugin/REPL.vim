@@ -1,6 +1,10 @@
 let g:REPL_configs = {}
 
 if has('win32')
+   let g:REPL_configs['elisp'] = {}
+   let g:REPL_configs['elisp']['repl'] = ['e:/bat/elisp.bat']
+   let g:REPL_configs['vim']={}
+   let g:REPL_configs['vim']['repl']=['vim', '-E']
    let g:REPL_configs['red'] = {}
    let g:REPL_configs['red']['continuations'] = [] 
    let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
@@ -85,7 +89,7 @@ function! REPL_send_expression()
       return
    endif
    let lines = REPL_get_expression()
-   if &filetype == 'perl' || len(lines) > 1
+   if &filetype == 'perl' || &filetype == 'elisp' || len(lines) > 1
       call add(lines, "")
    endif
 

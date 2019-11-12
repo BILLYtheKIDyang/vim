@@ -1,4 +1,3 @@
-finish
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ) )<Esc>%:echo getline(".") <CR>%a
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ] ]<Esc>%:echo getline(".") <CR>%a
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap } }<Esc>%:echo getline(".") <CR>%a
