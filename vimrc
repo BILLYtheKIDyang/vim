@@ -15,7 +15,7 @@ command! VimTweakEnableTopMost call libcallnr(g:vimtweak_dll_path, "EnableTopMos
 command! VimTweakDisableTopMost call libcallnr(g:vimtweak_dll_path, "EnableTopMost", 0)
 command! VimTweakEnableCaption call libcallnr(g:vimtweak_dll_path, "EnableCaption", 1)
 command! VimTweakDisableCaption call libcallnr(g:vimtweak_dll_path, "EnableCaption", 0)
-function! VT()
+function! VT()			     				    		     
    VimTweakSetAlpha 195 
    VimTweakEnableCaption
    VimTweakEnableMaximize
