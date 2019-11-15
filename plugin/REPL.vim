@@ -2,9 +2,7 @@ let g:REPL_configs = {}
 
 if has('win32')
    let g:REPL_configs['elisp'] = {}
-   let g:REPL_configs['elisp']['repl'] = ['e:/bat/elisp.bat']
-   let g:REPL_configs['vim']={}
-   let g:REPL_configs['vim']['repl']=['vim', '-E']
+   let g:REPL_configs['elisp']['repl'] = [expand("~/.vim/plugin/elisp.bat")]
    let g:REPL_configs['red'] = {}
    let g:REPL_configs['red']['continuations'] = [] 
    let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
@@ -29,7 +27,7 @@ let g:REPL_configs['python'] = {}
 let g:REPL_configs['python']['continuations'] = ['else', 'except'] 
 let g:REPL_configs['ruby'] = {}
 let g:REPL_configs['ruby']['continuations'] = ['else', 'end']
-let g:REPL_configs['ruby']['repl'] = ['irb']
+let g:REPL_configs['ruby']['repl'] = ['irb.cmd']
 
 function! REPL_is_sub_expression(filetype, line)
    if a:line == '' |  return 1 | endif " 

@@ -1,5 +1,5 @@
 set rtp+=d:/tabular
-set rtp+=D:/YouCompleteMe.old
+"set rtp+=D:/YouCompleteMe.old
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 language messages zh_CN.utf-8
@@ -28,7 +28,6 @@ autocmd BufRead,BufNewFile *.scala set filetype=scala
 autocmd BufRead,BufNewFile *.red set filetype=red
 autocmd BufWritePost $MYVIMRC source %
 autocmd BufWritePost ~/.vim/vimrc source %
-autocmd BufWritePost *.vim source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
 autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
@@ -78,7 +77,7 @@ runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
 "runtime plugin/LispIndent.vim
 "set path+=**
-set rtp+=~/YouCompleteMe
+"set rtp+=~/YouCompleteMe
 set ambiwidth=double
 set autochdir
 set autoindent
@@ -199,6 +198,7 @@ func! Fqb()
 endfunc
 call plug#begin('d:/vim_plug')
 " Use release branch
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sheerun/vim-polyglot'
 call plug#end()
+let g:coc_node_path="d:/node/node.exe"
