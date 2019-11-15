@@ -1,8 +1,7 @@
-;;@echo off
-;;rem -*- emacs-lisp -*-
-;;rem vim: ft=lisp
-;;d:/emacs/bin/emacs --script %~f0
-;;goto :eof
+#!/bin/sh
+":";exec emacs --script "$0"
+; -*- emacs-lisp -*-
+; vim: ft=lisp
 (setf line "")
 (setf code "")
 (setf lisp '())
@@ -32,4 +31,3 @@
   (princ "\nelisp> ")
   (repl))
 (repl)
-

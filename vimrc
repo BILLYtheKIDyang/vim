@@ -196,9 +196,9 @@ func! Fqb()
    :w
    execute "!/home/a/.local/qb64/qb64 %:p"
 endfunc
-call plug#begin('d:/vim_plug')
+call plug#begin('~/vim_plug')
 " Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sheerun/vim-polyglot'
 call plug#end()
-let g:coc_node_path="d:/node/node.exe"
+let g:coc_node_path="/usr/bin/node"

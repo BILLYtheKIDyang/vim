@@ -12,6 +12,9 @@ if has('win32')
    let g:REPL_configs['vb'] = {}
    let g:REPL_configs['vb']['continuations'] = ['else', 'end'] 
    let g:REPL_configs['vb']['repl'] = ['wscirpt', expand("~/.vim/work/vbsh.vbs")]
+else
+   let g:REPL_configs['elisp'] = {}
+   let g:REPL_configs['elisp']['repl'] = [expand("~/.vim/plugin/elisp")]
 endif
 
 let g:REPL_configs['java'] = {}
@@ -87,7 +90,7 @@ function! REPL_send_expression()
       return
    endif
    let lines = REPL_get_expression()
-   if &filetype == 'perl' || &filetype == 'elisp' || len(lines) > 1
+   if &filetype == 'perl' || (&filetype == 'python' && len(lines) > 1)
       call add(lines, "")
    endif
 
