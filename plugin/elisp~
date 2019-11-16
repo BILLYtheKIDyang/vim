@@ -1,3 +1,0 @@
-#!/bin/sh
-":";exec emacs --script "$0" "$@" # mode: emacs-lisp ; lexical-binding: t;-*-
-(princ (+ 1 2))

@@ -1,7 +1,7 @@
 #!/bin/sh
 ":";exec emacs --script "$0"
 ; -*- emacs-lisp -*-
-; vim: ft=lisp
+
 (setf line "")
 (setf code "")
 (setf lisp '())
@@ -25,9 +25,10 @@
          (setf lisp (cons (car lisp-pair) lisp))
          (setf code (substring code (cdr lisp-pair)))))
   (condition-case e
-    (princ (car (last (mapcar #'eval (reverse lisp)))))
+    (and lisp (princ (car (last (mapcar #'eval (reverse lisp))))))
     (error (princ (error-message-string e))))
   (setf lisp '())
   (princ "\nelisp> ")
   (repl))
 (repl)
+; vim: ft=lisp

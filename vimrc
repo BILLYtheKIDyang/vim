@@ -1,5 +1,3 @@
-set rtp+=d:/tabular
-"set rtp+=D:/YouCompleteMe.old
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 language messages zh_CN.utf-8
@@ -201,4 +199,7 @@ call plug#begin('~/vim_plug')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sheerun/vim-polyglot'
 call plug#end()
-let g:coc_node_path="/usr/bin/node"
+if has('win32')
+else
+   let g:coc_node_path="/usr/bin/node"
+endif
