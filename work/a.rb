@@ -34,3 +34,9 @@ stack.pop()
 stack.pop
 stack.pop
 stack.pop
+
+begin
+  eval "3="
+rescue   Exception => e
+  puts $!
+end

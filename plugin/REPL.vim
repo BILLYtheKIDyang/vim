@@ -29,7 +29,8 @@ let g:REPL_configs['perl']['repl'] = ['perl', expand("$HOME/.vim/bin/eval.pl")]
 let g:REPL_configs['python'] = {}
 let g:REPL_configs['python']['continuations'] = ['else', 'except'] 
 let g:REPL_configs['ruby'] = {}
-let g:REPL_configs['ruby']['continuations'] = ['else', 'end']
+let g:REPL_configs['ruby']['repl'] = ['ruby', expand("$HOME/.vim/work/eval.rb")]
+let g:REPL_configs['ruby']['continuations'] = ['else', 'end', 'rescue', 'ensure']
 let g:REPL_configs['ruby']['repl'] = ['irb.cmd']
 
 function! REPL_is_sub_expression(filetype, line)
@@ -90,7 +91,7 @@ function! REPL_send_expression()
       return
    endif
    let lines = REPL_get_expression()
-   if &filetype == 'perl' || (&filetype == 'python' && len(lines) > 1)
+   if &filetype == 'perl' || &filetype == 'elisp' || (&filetype == 'python' && len(lines) > 1)
       call add(lines, "")
    endif
 
