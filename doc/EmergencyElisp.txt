@@ -1,17 +1,23 @@
 Emergency Elisp
-vim:tw=78:nosta:noet:ts=8:sts=0:ft=help:noet:fen:fdm=marker:
+
 *Quick Start*
 To set a variable named foo to the value "bar": >
 
  (setq foo "bar")  ; setq means "set quoted"
+
 To call a function named foo-bar with arguments "flim" and "flam": >
 
    (foo-bar "flim" "flam")
+
 To compute the arithmetic expression (0x15 * (8.2 + (7 << 3))) % 2: >
 
    (% (* #x15 (+ 8.2 (lsh 7 3))) 2)
-The first approach spits the result into the *scratch* buffer, and the next two echo it into the minibuffer. They all also work for atoms – expressions not in parens such as numbers, strings, characters and symbols.
+The first approach spits the result into the *scratch* buffer, and the next two 
+echo it into the minibuffer. They all also work for atoms – expressions not in 
+parens such as numbers, strings, characters and symbols.
+
 Lexical Stuff
+
 Lisp has only a handful of lexical tokens (i.e. atomic program elements).
 Comments:
 Single-line only. They start with a semicolon: >
@@ -30,7 +36,8 @@ Characters:                                    *Characters*
 e.g.: ?a is ascii 97 ('a'), ? (that is, question-mark space) is ascii 32 (' ').
 Some need to be escaped, such as ?\(, ?\) and ?\\
 Emacs 22+ has unicode support. Out of scope for this primer.
-Characters are just int values internally, so you can use arithmetic operations on them (for instance, to iterate through ?a to ?z).
+Characters are just int values internally, so you can use arithmetic operations 
+on them (for instance, to iterate through ?a to ?z).
 Numbers:                                       *Numbers*
 Integers are 29 bits of precision (not the usual 32). -32, 0, 157, etc.
 Binary: start with #b, e.g. #b10010110
@@ -38,7 +45,11 @@ Octal: #o[0-7]+, e.g. #o377
 Hexadecimal: start with #x, e.g. #xabcd, #xDEADBEE
 Floating-point: the usual. -10.005, 0.0, 3.14159265 (64 bits of precision.)
 Scientific: the usual. 6.02e23, 5e-10
-The variables |most-positive-fixnum|and |most-negative-fixnum| are the largest and smallest integers representable in Emacs Lisp without bignum support. Emacs 22+ comes with a fancy bignum/math library called calc, if you need it. Arithmetic operations overflow and underflow the way you'd expect (in, say, C or Java.)
+The variables |most-positive-fixnum|and |most-negative-fixnum| are the largest 
+and smallest integers representable in Emacs Lisp without bignum support. 
+Emacs 22+ comes with a fancy bignum/math library called calc, if you need it. 
+Arithmetic operations overflow and underflow the way you'd expect (in, say, C 
+or Java.)
 Booleans                                         *Booleans*
 The symbol t (just a letter 't' by itself) is true.
 The symbol nil is false (and also means null).
@@ -113,26 +124,41 @@ C/Java/JS Operator	Emacs Lisp	                    Example	        Result >
  >=	                >=	                            (>= 5 3)	        t
  . (field access)	see setf below	                    n/a	                n/a
  [] (array access)	aref/aset	                    (aref [2 4 6] 1)	4
+
+
 Statements                                    *Statements*
-This section has some recipes for simple Java-like statements. It's not comprehensive – just some recipes to get you going.
+----------
+
+This section has some recipes for simple Java-like statements. 
+It's not comprehensive – just some recipes to get you going.
+
 if/else  *if-else*
+
 Case 1: no else clause: (if {test-expr} {expr})
+
 Example: >
 
  (if (>= 3 2)
      (message "hello there"))
+
 Case 2: else clause: (if {test-expr} {then-expr} {else-expr}) >
+
  (if (today-is-friday)         ; test-expr
      (message "yay, friday")   ; then-expr
    (message "boo, other day")) ; else-expr
-If you need multiple expressions (statements) in the then-expr, you wrap them with a call to progn, which is like curly-braces in C or Java: >
+
+If you need multiple expressions (statements) in the then-expr, 
+you wrap them with a call to progn, which is like curly-braces 
+in C or Java: >
 
  (if (zerop 0)
      (progn
        (do-something)
        (do-something-else)
        (etc-etc-etc)))
-You don't need the progn around the else-expr – everything after the then-expr is considered to be part of the else-expr. Hence: >
+
+You don't need the progn around the else-expr – everything after 
+the then-expr is considered to be part of the else-expr. Hence: >
 
  (if (today-is-friday)
      (message "yay, friday")
@@ -201,11 +227,20 @@ Example, which you can evaluate in your *scratch* buffer: >
      (incf total x)  ; add x to total
      (decf x))       ; subtract 1 from x
 First we set two global variables, x=10 and total=0, then run the loop. Then we can evaluate the expression total to see that its value is 55 (the sum of the numbers 1 to 10).
+
 break/continue
 --------------
-Lisp has a facility for upward control-flow transfers called catch/throw. It's very similar to Java or C++ exception handling, albeit possibly somewhat lighter-weight.
-To do a break from inside a loop in elisp, you put a (catch 'break ...) outside the loop, and a (throw 'break value) wherever you want to break inside the loop, like so:
+
+Lisp has a facility for upward control-flow transfers called 
+catch/throw. It's very similar to Java or C++ exception handling, 
+albeit possibly somewhat lighter-weight.
+
+To do a break from inside a loop in elisp, you put a 
+(catch 'break ...) outside the loop, and a (throw 'break value) 
+wherever you want to break inside the loop, like so:
+
    Emacs Lisp	                       JavaScript >
+
    (setq x 0 total 0)                  var x = total = 0;
    (catch 'break                       while (true) {
      (while t                            total += x;
@@ -522,23 +557,31 @@ The Lisp one doesn't look too bad here, but in practice (because Elisp has no na
        (js2-compiler-data-line-number compiler-data) current-line
        (js2-compiler-data-allow-member-expr-as-function-name compiler-data) allow
        (js2-compiler-data-language-version compiler-data) language-version)
+
 So it goes.
 To fetch the value of a field in a struct variable, you concatenate the struct name with the field name and use it as a function call:
 (person-name steve)  ; yields "Steve"
 There's more that defstruct can do – it's a pretty decent facility, all things considered, though it falls well short of a full object system.
 Buffers as classes
 In Elisp programming it can often be useful to think of buffers as instances of your own classes. This is because Emacs supports the notion of buffer-local variables: variables that automatically become buffer-local whenever they are set in any fashion. They become part of the scope chain for any code executing in the buffer, so they act a lot like encapsulated instance variables.
-You can use the function make-variable-buffer-local to declare a variable as buffer-local. Usually it comes right after the defvar or defconst declaration (see below.)
-Variables
-You can declare a variable, optionally giving it some runtime documentation, with defvar or defconst:
-(defconst pi 3.14159 "A gross approximation of pi.")
+You can use the function make-variable-buffer-local to declare a 
+variable as buffer-local. Usually it comes right after the defvar 
+or defconst declaration (see below.)
+Variables *Variables*
+You can declare a variable, optionally giving it some runtime 
+documentation, with defvar or defconst: >
+
+   (defconst pi 3.14159 "A gross approximation of pi.")
+
 The syntax is (defvar name value [ doc-string ]).
-Ironically, defconst is variable and defvar is constant, at least if you re-evaluate them. To change the value of a defvar variable by re-evaluating its declaration you need to use makunbound to unbind it first. You can always change the value of any defvar or defconst variable using setq. The only difference between the two is that defconst makes it clearer to the programmer that the value is not intended to change.
-You can use setq to create brand-new variables, but if you use defvar, the byte-compiler will be able to catch more typos.
-Further reading
-Emacs Lisp is a real programming language. It has a compiler, a debugger, a profiler, pretty-printers, runtime documentation, libraries, I/O, networking, process control and much more. There's a lot to learn, but I'm hoping this little primer has got you over the hump, as it were.
-In spite of its various quirks and annoyances, Elisp is reasonably fun to program in once you get the hang of it. As a language it's not that great, and everyone wishes it were Common Lisp or Scheme or some other reasonable Lisp dialect. Some people even wish it weren't Lisp at all, if you can believe that! (hee)
-But it's really, really useful to be able to customize your editor, and also to be able to fix problems with elisp code you borrowed or inherited. So a little Elisp goes a long way.
-For those of you learning Emacs Lisp, please let me know if you found this useful. If you try writing some Emacs extensions, let me know what you would like to see documented next; I can always do another installment of the Emergency Elisp series if there's enough interest.
-Good luck!
-Posted 25th January 2008 by Steve Yegge
+Ironically, defconst is variable and defvar is constant, 
+at least if you re-evaluate them. To change the value of a defvar
+variable by re-evaluating its declaration you need to use 
+makunbound to unbind it first. You can always change the value 
+of any defvar or defconst variable using setq. The only difference 
+between the two is that defconst makes it clearer to the programmer
+that the value is not intended to change.
+You can use setq to create brand-new variables, but if you use
+defvar, the byte-compiler will be able to catch more typos.
+
+vim:tw=78:nosta:noet:ts=8:sts=0:ft=help:noet:fen:fdm=marker:

@@ -122,8 +122,8 @@ function! REPL_start_REPL(filetype) abort
                \,{
                \ "term_name": "!" . a:filetype
                \,"hidden": 1
-               \,"term_finish": "close"
-               \,"term_kill": "term"
+               \,'term_kill': 'term'
+               \,'term_finish': 'close'
                \})
    endif
 endfunction
