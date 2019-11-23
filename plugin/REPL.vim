@@ -91,7 +91,7 @@ function! REPL_send_expression()
       return
    endif
    let lines = REPL_get_expression()
-   if &filetype == 'perl' || &filetype == 'elisp' || (&filetype == 'python' && len(lines) > 1)
+   if &filetype == 'perl' ||  (&filetype == 'python' && len(lines) > 1)
       call add(lines, "")
    endif
 

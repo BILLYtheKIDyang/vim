@@ -1,4 +1,8 @@
-":";exec emacs --script "$0" "$@" # -*- mode: emacs-lisp ; lexical-binding: t;-*- vim: ft=lisp 
+;;@echo off
+;;rem -*- emacs-lisp -*-
+;;rem vim: ft=lisp
+;;d:/emacs/bin/emacs --script %~f0
+;;goto :eof
 (require 'subr-x)
 (setf line "")
 (setf code "")

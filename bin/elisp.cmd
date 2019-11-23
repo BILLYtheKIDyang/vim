@@ -9,7 +9,7 @@
 (princ "elisp> ")
 
 (defun repl ()
-  (setf line (read-from-minibuffer ""))
+  (setf line (string-trim (read-from-minibuffer ""))
   (if (> (length line) 0) (setf code (concat code "\n" line)))
   (while (< 0 (length code)) 
     (condition-case e
