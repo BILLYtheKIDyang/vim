@@ -4,7 +4,6 @@
 (setf code "")
 (setf lisp '())
 (setf lisp-pair nil)
-(setf code-empty t)
 (setf done nil)
 
 (princ "elisp> ")
