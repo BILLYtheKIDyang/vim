@@ -1,0 +1,426 @@
+                         emacs lisp                         
+Emacs 24.5                                                  
+$ emacs --version                                           
+                         emacs lisp                         
+M-x byte-compile-file                                       
+#!/usr/bin/env emacs --script                               
+M-x ielm                                                    
+whitespace                                                  
+(+ 1 1) ; adding                                            
+                         emacs lisp                         
+case sensitive, cannot start with digit                     
+excluded characters:                                        
+SP ( ) " , ' ` ; # | \ _ [ ]                                
+none                                                        
+(setq white\ space\ symbol 3)                               
+; parallel assignment:                                      
+(lexical-let ((x 3) (y 4))                                  
+  (+ x y))                                                  
+(lexical-let* ((x 3) (y (* x x)))                           
+  (+ x y))                                                  
+(set 'x 3)                                                  
+(setq x 3)                                                  
+(makunbound 'x)                                             
+nil '()                                                     
+(null x)                                                    
+'x                                                          
+(quote x)                                                   
+(symbolp 'x)                                                
+(eq 'x 'x)                                                  
+:foo                                                        
+(set 'x 13)                                                 
+(setf (get 'x :desc) "unlucky")                             
+(get 'x :desc)                                              
+(remprop 'x :desc)                                          
+                         emacs lisp                         
+t nil                                                       
+nil ()                                                      
+(or (not t) (and t nil))                                    
+= /= < > <= >=                                              
+(min 1 2 3)                                                 
+(max 1 2 3)                                                 
+numberp integerp                                            
+none floatp                                                 
+none none                                                   
++ - * / %                                                   
+(/ 7 3)                                                     
+(% 7 3)                                                     
+arith-error                                                 
+integer quotient:                                           
+(/ 7 3)                                                     
+float:                                                      
+(/ 7 (* 3 1.0))                                             
+-1.0e+INF, -0.0e+NaN, or 1.0e+INF                           
+(expt 2 32)                                                 
+(sqrt 2)                                                    
+-0.0e+NaN                                                   
+exp log sin cos tan asin acos atan atan                     
+truncate round ceiling floor                                
+fround fceiling ffloor                                      
+truncate returns integer                                    
+abs signum                                                  
+none none                                                   
+none                                                        
+none none                                                   
+(random 100)                                                
+none                                                        
+none                                                        
+lsh left shift when 2nd argument positive logand logior     
+logxor lognot                                               
+                         emacs lisp                         
+(stringp "foo")                                             
+"foo bar"                                                   
+yes                                                         
+\b \t \n \f \r \" \\ \ooo \uhhhh \xh - \xhhhhhh \C-x \M-x   
+(string ?f ?o ?o)                                           
+(format "%s: %d %.2f" "Foo" 7 13.457)                       
+(string= "foo" "bar")                                       
+(string< "foo" "bar")                                       
+(concat "foo " "bar " "baz")                                
+(make-string 3 ?f)                                          
+(downcase "FOO")                                            
+(upcase "foo")                                              
+; "Foo Bar":                                                
+(capitalize "foo")                                          
+none; see notes for an implementation                       
+(concat                                                     
+  "value: "                                                 
+  (number-to-string 8))                                     
+(+ 7 (string-to-number "12"))                               
+                                                            
+(+ 73.9 (string-to-number ".037"))                          
+(split-string "foo bar baz")                                
+(reduce                                                     
+  (lambda (m o) (concat m " " o))                           
+  '("foo" "bar" "baz"))                                     
+(length "foo")                                              
+(search "bar" "foo bar")                                    
+(substring "foo bar" 4 7)                                   
+?a ?\b ?\t ?\n ?\f ?\r ?\" ?\\ ?\ooo ?\uhhhh ?\xh - ?\x     
+hhhhhh ?\C-x ?\M-x                                          
+(characterp ?x)                                             
+(aref "foo" 0)                                              
+                         emacs lisp                         
+. \w \W \ca \cl \cg \Ca \Cl \Cg \sx                         
+\ca \cl and \cg match ASCII, Latin, and Greek characters.   
+Character classes of the form \sx depend on the current     
+syntax table.                                               
+^ $ \b \B                                                   
+(string-match "bar" "foo bar")                              
+?                                                           
+                                                            
+(replace-regexp-in-string "[^l]l"                           
+  "EL"                                                      
+  "hello hello")                                            
+                         emacs lisp                         
+(current-time)                                              
+(float-time)                                                
+(seconds-to-time (float-time))                              
+(multiple-value-bind (b s)                                  
+  (current-time)                                            
+  (+ (* b (expt 2 16)) s))                                  
+(format-time-string                                         
+  "%Y-%m-%d %H:%M:%S"                                       
+  (current-time))                                           
+(multiple-value-bind                                        
+  (ss mi hr dy mo yr)                                       
+   (decode-time (current-time))                             
+  (list dy mo yr))                                          
+(multiple-value-bind                                        
+  (ss mi hr dy mo yr)                                       
+   (decode-time (current-time))                             
+  (list ss mi hr))                                          
+(encode-time 0 50 8 31 5 2015)                              
+                         emacs lisp                         
+'(1 2 3)                                                    
+(quote (1 2 3))                                             
+(list 1 2 3)                                                
+(listp '(1 2 3))                                            
+nil and '() are synonyms and evaluate as false in a boolean 
+context. All other values are true.                         
+nil                                                         
+(cons 1 '(2 3))                                             
+car                                                         
+(cdr '(1 2 3))                                              
+(rest '(1 2 3))                                             
+both evaluate to nil                                        
+(length '(1 2 3))                                           
+(equal '(1 2 3) '(1 2 3))                                   
+(nth 2 '(1 2 3 4))                                          
+nil                                                         
+(position 7 '(5 6 7 8))                                     
+(append '(1 2 3) '(4 5 6))                                  
+(subseq '(1 2 3 4) 0 2)                                     
+(nthcdr 2 '(1 2 3 4))                                       
+(car (last '(1 2 3)))                                       
+(butlast '(1 2 3))                                          
+(reverse '(1 2 3))                                          
+(sort '(3 2 4 1) '<)                                        
+(remove-duplicates '(1 1 2 3))                              
+(member 7 '(1 2 3)                                          
+(mapcar                                                     
+  (lambda (x) (* x x))                                      
+  '(1 2 3))                                                 
+(remove-if-not                                              
+  (lambda (x) (> x 2))                                      
+  '(1 2 3))                                                 
+; remove-if returns complement                              
+(reduce '-                                                  
+  '(1 2 3 4)                                                
+  :initial-value 0)                                         
+(reduce '-                                                  
+  '(1 2 3 4)                                                
+  :initial-value 0                                          
+  :from-end t)                                              
+(dolist (x '(1 2 3))                                        
+  (print x)                                                 
+  (print (- x)))                                            
+(every                                                      
+  (lambda (i) (= 0 (% i 2)))                                
+  '(1 2 3 4))                                               
+(some                                                       
+  (lambda (i) (= 0 (% i 2)))                                
+  '(1 2 3 4))                                               
+(setq a '(1 2 3)                                            
+(setcar a 3)                                                
+(setq a '(1 2 3)                                            
+(setcar a 3)                                                
+(setcdr a '(4 5 6))                                         
+(setq a '(1 2 3))                                           
+(push 4 a)                                                  
+(pop a)                                                     
+(assoc 3 '((1 2) (3 4)))                                    
+(getf '(1 2 3 4) 3)                                         
+'(1 . 2)                                                    
+(cons '(1 . 2))                                             
+(not (atom '(1 . 2)))                                       
+(sublis '((1 . 2) (3 . 4))                                  
+  '(1 (3 3 (1))))                                           
+                         emacs lisp                         
+[1 2 3]                                                     
+(vector 1 2 3)                                              
+(length [1 2 3])                                            
+(elt [1 2 3] 0)                                             
+(setq v #(1 2 3))                                           
+(setf (aref v 2) 4)                                         
+(coerce [1 2 3] 'list)                                      
+(coerce '(1 2 3) 'vector)                                   
+                         emacs lisp                         
+none                                                        
+(setq h (make-hash-table :test 'equal))                     
+(hash-table-p h)                                            
+(hash-table-count h)                                        
+(gethash "t" h)                                             
+(puthash "t" 1 h)                                           
+returns nil                                                 
+none                                                        
+(remhash "hello" h)                                         
+(maphash                                                    
+  (lambda (k v)                                             
+    (print k)                                               
+    (print v))                                              
+  h)                                                        
+none                                                        
+                         emacs lisp                         
+(defstruct account id balance)                              
+(setq a                                                     
+  (make-account :id 3 :balance 17.12))                      
+(account-id a)                                              
+(setf (account-balance a) 0)                                
+(account-p a)                                               
+                         emacs lisp                         
+(defun add (x y) (+ x y))                                   
+yes                                                         
+(defun add (a &optional b)                                  
+  (if (null b) a (+ a b)))                                  
+(defun add (a &rest b)                                      
+  (if (null b)                                              
+    a                                                       
+    (+ a (eval (cons '+ b)))))                              
+none                                                        
+(defun logarithm                                            
+  (&key number &key base)                                   
+  (if base                                                  
+    (/ (log number) (log base))                             
+    (log number)))                                          
+                                                            
+order significant, not key names:                           
+(logarithm :foo 8 :bar 2)                                   
+values creates a list:                                      
+(defun sqrts (x)                                            
+  (values (sqrt x) (- (sqrt x))))                           
+(multiple-value-bind                                        
+  (r1 r2)                                                   
+  (sqrts 3)                                                 
+  r2)                                                       
+(multiple-value-setq (r1 r2) (sqrts 3))                     
+multiple values are lists                                   
+multiple values are lists                                   
+no                                                          
+(lambda (x) (* x x))                                        
+((lambda (x) (* x x)) 2)                                    
+                                                            
+(apply                                                      
+  #'(lambda (x) (* x x))                                    
+  '(2))                                                     
+                         emacs lisp                         
+progn prog1 prog2                                           
+(setq i 1)                                                  
+(loop (print "hello")                                       
+      (if (> i 10)                                          
+          (return)                                          
+          (setq i (+ i 1))))                                
+(do ((i 1) (sum 0))                                         
+    ((> i 100) sum)                                         
+    (setq sum (+ sum i))                                    
+    (setq i (+ i 1)))                                       
+do* initializes sequentially                                
+(dotimes (i 10 nil)                                         
+  (print "hello\n"))                                        
+(if (< x 0) (- x) x)                                        
+(when (< x y)                                               
+  (print "x is less ")                                      
+  (print "than y"))                                         
+(cond ((> x 0) 1)                                           
+  ((= x 0) 0)                                               
+  (t -1))                                                   
+                         emacs lisp                         
+(error "failed")                                            
+(condition-case e                                           
+  (error "failed")                                          
+  (error (message "error: %s"                               
+    (error-message-string e))))                             
+only symbols and keywords can be thrown and caught          
+(throw 'odd-err t)                                          
+(catch 'failed (throw 'failed nil) t)                       
+none                                                        
+none                                                        
+(unwind-protect                                             
+  (error "failure")                                         
+  (print "clean up"))                                       
+                         emacs lisp                         
+                         emacs lisp                         
+;; list of buffer objects:                                  
+(buffer-list)                                               
+;; name of first buffer in list:                            
+(buffer-name (car (buffer-list)))                           
+;; name of current buffer:                                  
+(buffer-name (current-buffer))                              
+;; name of current buffer:                                  
+(buffer-name (current-buffer))                              
+;; open in current pane:                                    
+(switch-to-buffer "foo.txt")                                
+;; open in other pane:                                      
+(switch-to-buffer-other-window                              
+  "bar.txt")                                                
+;; current buffer:                                          
+(erase-buffer)                                              
+;; buffer named "foo.txt:                                   
+(with-current-buffer "foo.txt"                              
+  (erase-buffer))                                           
+;; 1-based index of char under cursor:                      
+(point)                                                     
+;; go to beginning of current buffer:                       
+(goto-char 1)                                               
+;; go to end of current buffer:                             
+(goto-char (buffer-size))                                   
+;; Set point to character after string.                     
+;; 1st arg is position in buffer beyond                     
+;;   which search stops.                                    
+;; If 2nd arg is true, return nil                           
+;;   on failure, otherwise raise error.                     
+;; 3rd argument is the occurrence                           
+;;   of the string, if negative                             
+;;   search backwards from point.                           
+(search-forward "lorem" nil t 1)                            
+;; takes 1 or more args:                                    
+(insert "lorem" " ipsum")                                   
+(buffer-string)                                             
+(insert-file "/etc/passwd")                                 
+;; to beginning of current buffer:                          
+(set-mark 1)                                                
+;; to point of current buffer:                              
+(set-mark (point))                                          
+                         emacs lisp                         
+(file-exists-p "/etc/hosts")                                
+(file-regular-p "/etc/hosts")                               
+(eighth                                                     
+  (file-attributes "/etc/hosts"))                           
+(set-file-modes "/tmp/foo" #o755)                           
+(copy-file "/tmp/foo" "/tmp/bar")                           
+(delete-file "/tmp/foo")                                    
+(rename-file "/tmp/bar" "/tmp/foo")                         
+(make-symbolic-link "/etc/hosts" /tmp/hosts")               
+returns target if symlink or nil:                           
+(file-symlink-p "/tmp/hosts")                               
+(make-temp-file "foo")                                      
+                         emacs lisp                         
+(file-name-directory "/etc/hosts")                          
+(file-name-nondirectory                                     
+  "/etc/hosts")                                             
+(expand-file-name "..")                                     
+(dolist                                                     
+  (file (directory-files "/etc"))                           
+  (print file)))                                            
+creates parents if 2nd arg non-nil:                         
+(make-directory "/tmp/foo/bar" t)                           
+(delete-directory "/tmp/foo.d")                             
+(delete-directory "/tmp/foo.d" t)                           
+(file-directory-p "/etc")                                   
+                         emacs lisp                         
+in shebang mode only:                                       
+command-line-args or argv                                   
+(getenv "HOME")                                             
+(shell-command "ls /etc")                                   
+(shell-command-to-string "ls /etc")                         
+                         emacs lisp                         
+$ emacs -batch -Q -L . \                                    
+  -f batch-byte-compile a.el                                
+(require "a")                                               
+(load "a")                                                  
+raises file-err                                             
+; adds directory to library path:                           
+(add-to-list 'load-path ("/home/ed/.emacs.d/lib"))          
+EMACSLOADPATH                                               
+$ emacs -L /foo/bar                                         
+No namespaces; a common convention is to use a prefix on all
+identifiers in a library, separated from the rest of the    
+identifier by a hyphen.                                     
+M-x list packages                                           
+M-x list-packages                                           
+Use M-x list-packages to bring up the package menu; i to    
+select a package to install, and x to install it.           
+In the package menu, use d to select a package to uninstall 
+and x to uninstall it.                                      
+                         emacs lisp                         
+                         emacs lisp                         
+(setq op '+)                                                
+(eval `(,op 1 1))                                           
+(defmacro rpn (arg1 arg2 op)                                
+  (list op arg1 arg2))                                      
+(defmacro rpn (arg1 arg2 op)                                
+   `(,op ,arg1 ,arg2))                                       
+none                                                        
+ (macroexpand '(rpn 1 2 +))                                  
+ (defmacro add ( &rest args )                                
+   `(+ ,@args))                                              
+(defmacro add (a &rest b)                                   
+  `(if (null ',b)                                           
+    (+ ,a)                                                  
+      (+ ,a (add ,@b))))                                      
+no                                                          
+(defmacro square-sum (x y)                                  
+  (let ((sum (gensym)))                                     
+    `(let ((,sum (+ ,x ,y)))                                
+      (* ,sum ,sum))))                                      
+                         emacs lisp                         
+(type-of [1 2 3] 'vector)                                   
+(typep [1 2 3] 'vector)                                     
+(vectorp [1 2 3])                                           
+list vector                                                 
+(describe-function 'mapcar)                                 
+(defun add (x y)                                            
+  "add x and y"                                             
+  (+ x y))                                                  
+(apropos "^add$")                                           
+none                                                        

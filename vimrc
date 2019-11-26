@@ -182,7 +182,7 @@ func! MyF4()
       call term_sendkeys(term_list()[0], "zsh " . WinPath("%:p") . "\<CR>")
       call GetTerminalReplPrint('', '> ')
    else
-      echom "`let g:cmd='!???`"
+       silent !start "%"
    endif
 
 endfunc
@@ -196,7 +196,7 @@ func! Fqb()
    execute "!/home/a/.local/qb64/qb64 %:p"
 endfunc
 call plug#begin('~/vim_plug')
-" Use release branch
+Plug 'mattn/emmet-vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sheerun/vim-polyglot'
 call plug#end()

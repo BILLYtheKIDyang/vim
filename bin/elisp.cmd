@@ -13,10 +13,13 @@
 (princ "elisp> ")
 (while t
   (while (not done)
-    (and (or (string= code "") end-of-file)
-         (setf line (string-trim (read-from-minibuffer "")))
-         (if (> (length line) 0) 
-             (setf code (string-trim (concat code "\n" line)))))
+    (if (or (string= code "") end-of-file)
+        (condition-case e
+          (progn
+            (setf line (string-trim (read-from-minibuffer "")))
+            (if (> (length line) 0) 
+                (setf code (string-trim (concat code "\n" line)))))
+          (error (kill-emacs))))
     (condition-case e
       (progn 
         (setf lisp-pair (read-from-string code))
@@ -28,6 +31,7 @@
             (setf done nil)))
       (error
         (let ((type (car e)))
+          (princ "       ")
           (cond
             ((and (eq type 'invalid-read-syntax) 
                   (not (string= code "")))
