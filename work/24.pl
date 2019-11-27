@@ -24,16 +24,13 @@ $numbers = join(', ', (1..10));
 
 $message = "Elvis was here";
 print "The string \"$message\" consists of: ",
-   join('-', split(//, $message));
+join('-', split(//, $message));
 
 @Chiefs = qw(Clinton Bush Reagan Carter Ford Nixon);
 join(' ', sort @Chiefs);
 
 @numbers = (1,3,5,7,9,2,4,6,8,0);
 join(', ', @numbers);
-@sorted = sort { return (1) if ($a > $b); 
-                 return (0) if ($a == $b);
-                 return (-1) if ($a < $b); } @number;
 @sorted = sort { $a <=> $b; } @numbers;
 join(', ', @sorted);
 

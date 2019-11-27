@@ -75,7 +75,7 @@ function! REPL_get_expression()
    endif
    let i = i + 1
    let line = getline(i)
-   
+
    while i <= k && (REPL_is_sub_expression(&filetype, line))
       if len(line) != 0
          call add(lines, line)
@@ -200,11 +200,11 @@ endfunction
 
 function! REPL_popup(str)
    let list = split(a:str, '\n\+')
-   call popup_create(list, #{ 
-            \col: col('$')+5,
-            \line: 'cursor', 
-            \moved: 'any',
-            \})
+   let options = {}
+   let options['line'] = 'cursor'
+   let options['col']  = 'cursor+' . (len(getline(".")) + 3 -  col(".") )
+   let options['moved'] = 'any'
+   call popup_create(list, options)
 endfunction
 function! REPL_load(cmd)
    call REPL_send_text(&filetype, a:cmd)

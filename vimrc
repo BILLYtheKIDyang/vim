@@ -26,16 +26,14 @@ au!
 autocmd BufRead,BufNewFile *.scala set filetype=scala
 autocmd BufRead,BufNewFile *.red set filetype=red
 autocmd BufWritePost $MYVIMRC source %
+autocmd BufWritePost *.vim source %
 autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
 autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
-if has("gui_running") |let g:clear=""| else| let g:clear="clear "| endif
-let g:cargs=""
-let g:cmd=""
-let g:cp="-cp ."
+set guifont=Consolas:h14:cANSI:qDRAFT
 let g:deoplete#enable_at_startup = 1
 let g:fsharp_interactive_bin="fsharpi"
 let g:fsharp_xbuild_path="msbuild"
@@ -127,7 +125,8 @@ vmap  <expr>  <LEFT>   DVB_Drag('left')
 vmap  <expr>  <RIGHT>  DVB_Drag('right') 
 vmap  <expr>  <UP>     DVB_Drag('up')    
 vmap  <expr>  D        DVB_Duplicate()   
-
+let g:cmd='' 
+let g:clear = ''
 func! MyF4()
    :silent :w
    :cd %:p:h

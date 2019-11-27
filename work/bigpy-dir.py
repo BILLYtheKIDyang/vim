@@ -1,6 +1,6 @@
 import os, glob, sys
 
-dirname = '/home/a/.vim/work' if len(sys.argv) == 1 else sys.argv[1]
+dirname = '.' if len(sys.argv) == 1 else sys.argv[1]
 
 allsizes = []
 allpy = glob.glob(dirname + os.sep + '*.py')

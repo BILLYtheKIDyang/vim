@@ -21,3 +21,40 @@
 
 (setf a  (buffer-string) b 1)
 (substring a 0)
+
+(describe-function 'describe-function)
+(type-of [1 2 3])
+(defmacro square-sum (x y)
+  (let ((sum (gensym)))
+    `(let ((,sum (+ ,x ,y)))
+       (* ,sum ,sum))))
+(macroexpand '(square-sum 3 4))
+(setf op '+)
+(eval `(,op 1 2))
+
+
+(defun trim (s)
+  (let ((s* (replace-regexp-in-string "[ \t]*$" "" s)))
+    (replace-regexp-in-string "^[ \t]*" "" s*)))
+
+(trim " I am old ")
+" I am old "
+
+(defun take (n l)
+  (cond
+    ((< n 0) ())
+    ((= n 0) ())
+    ((null l) ())
+    (t (cons (car l) (take (- n 1) (cdr l))))))
+
+(take 3 '(1 2 3 4 5 6))  
+
+(require 'cl)
+(let ((x 3))
+  (defun get-x () x))
+(get-x)
+
+(let ((x 4)) (get-x))
+(lexical-let ((x 3))
+  (defun getx () x))
+(getx)
