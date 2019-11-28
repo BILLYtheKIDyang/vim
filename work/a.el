@@ -58,3 +58,4 @@
 (lexical-let ((x 3))
   (defun getx () x))
 (getx)
+
