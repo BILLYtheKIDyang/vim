@@ -103,6 +103,12 @@ endfunction
 
 function! REPL_get_REPL_buffer_number(filetype)
    for i in term_list()
+      if term_getstatus(i) == 'finished'
+         silent! exe "normal :bd! " . i . "\<CR>" 
+      endif
+   endfor
+   for i in term_list()
+
       let name = bufname(i)
       if name =~ "^!" . a:filetype
          return i
@@ -112,30 +118,24 @@ function! REPL_get_REPL_buffer_number(filetype)
 endfunction
 
 function! REPL_start_REPL(filetype) abort
+   if !has_key(g:REPL_configs, a:filetype)
+      return 0
+   endif
    let t =  REPL_get_REPL_buffer_number(a:filetype)
    if t
       return t
    else
-      return term_start(
-               \has_key(g:REPL_configs, a:filetype) && has_key(g:REPL_configs[a:filetype], 'repl') ?
-               \g:REPL_configs[a:filetype]['repl'] : a:filetype
-               \,{
-               \ "term_name": "!" . a:filetype
-               \,"hidden": 1
-               \,'term_kill': 'term'
-               \,'term_finish': 'close'
-               \})
-   endif
-endfunction
-
-function! REPL_set_REPL(filetype)  abort
-   if has_key(g:REPL_configs, a:filetype)
-      call REPL_start_REPL(a:filetype)
-      function! Lazy(timer) closure
-         let g:seen = REPL_get_buttom(a:filetype)
-         call REPL_start_watch(a:filetype)
-      endfunction
-      call timer_start(500, 'Lazy', {'repeat': 1})
+      let cmd = has_key(g:REPL_configs, a:filetype) && has_key(g:REPL_configs[a:filetype], 'repl') ?
+               \ g:REPL_configs[a:filetype]['repl'] : a:filetype
+      let opt = {}
+      let opt['term_name'] = '!' . a:filetype
+      let opt['hidden'] = 1
+      let opt['term_kill'] = 'term'
+      let t = term_start(cmd, opt)
+      sleep 500ms
+      let g:seen = REPL_get_buttom(a:filetype)
+      call REPL_start_watch(a:filetype)
+      return t
    endif
 endfunction
 
@@ -199,12 +199,13 @@ function! REPL_get_print(filetype, before) abort
 endfunction
 
 function! REPL_popup(str)
-   let list = split(a:str, '\n\+')
-   let options = {}
-   let options['line'] = 'cursor'
-   let options['col']  = 'cursor+' . (len(getline(".")) + 3 -  col(".") )
-   let options['moved'] = 'any'
-   call popup_create(list, options)
+   let list = split(a:str, '\n')
+   let o = {}
+   let o['line'] = 'cursor'
+   let o['col']  = 'cursor+' . (len(getline(".")) + 3 -  col(".") )
+   let o['moved'] = 'any'
+   "let o['border'] = []
+   call popup_create(list, o)
 endfunction
 function! REPL_load(cmd)
    call REPL_send_text(&filetype, a:cmd)
@@ -212,4 +213,3 @@ function! REPL_load(cmd)
 endfunction
 inoremap <silent> <C-l> <C-o>:call REPL_send_expression()<CR>
 noremap <silent> <C-l> :call REPL_send_expression()<CR>
-autocmd BufEnter * :call REPL_set_REPL(&filetype)

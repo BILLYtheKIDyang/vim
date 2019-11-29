@@ -1,5 +1,6 @@
 ; vim:ft=elisp:syntax=lisp:lisp
 (require 'cl)
+(require 'cl-lib)
 (defun self-and-double (x) (list x (+ x x)))
 (defun mappend (fn the-list)
   "Apply fn to each element of list and append the results."
@@ -28,7 +29,7 @@
   (if (null the-list)
       nil
       (append (funcall fn (first the-list))
-        (mappend fn (rest the-list)))))
+              (mappend fn (rest the-list)))))
 
 (funcall #'+ 2 3)
 (apply #'+ '(2 3))
@@ -36,9 +37,31 @@
 (defun list* (x &rest xs)
   (if (null xs)
       x
-    (cons x (apply #'list* xs))))
-(defmacro while (test &rest body)
+      (cons x (apply #'list* xs))))
+(defmacro while* (test &rest body)
   "Repeat body while test is true"
-  (list* 'loop
-    (list 'unless test '(return nil))
-    body))
+  (list* 'cl-loop
+         (list 'unless test '(return nil))
+         body))
+
+(macroexpand '
+             (while* (> 3 2)
+                     (print 3)))
+
+
+(defmacro  t-becomes-nil (variable)
+  `(if (eq ,variable t)
+       (setf ,variable nil)))
+
+(macroexpand '
+             (t-becomes-nil foo)
+             )
+
+(dotimes (i 100) (print i))
+(dotimes (i 100) (princ i) (princ "\n"))
+(documentation 'dotimes)
+(setf border  '
+  ((1 2 3)
+   (4 5 6)
+   (7 8 9)))
+

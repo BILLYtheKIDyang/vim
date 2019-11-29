@@ -36,3 +36,11 @@ join(', ', @sorted);
 
 @lines = qw(I do not like green eggs and ham);
 join(' ', reverse @lines);
+
+$myhome = `ls \$HOME`;
+$myhome = `ls \%WINDIR%`;
+@myhome = `ls \%WINDIR%`;
+@myhome = qx'dir %WINDIR%';
+
+print foreach (sort @myhome)
+

@@ -48,6 +48,7 @@
     (t (cons (car l) (take (- n 1) (cdr l))))))
 
 (take 3 '(1 2 3 4 5 6))  
+(take 33 '(1 2 3))
 
 (require 'cl)
 (let ((x 3))
@@ -59,3 +60,25 @@
   (defun getx () x))
 (getx)
 
+
+
+(defun square (x) (* x x))
+(defun five (x y)
+  (sqrt (+ (square x) (square y))))
+(five 3 4)
+
+(defun foo () 1)
+(defun bar() (foo))
+(bar)
+(defun foo () 2)
+(bar)
+(kill-emacs)
+(documentation 'kill-emacs)
+(symbol-function 'kill-emacs)
+
+(defun fact (n)
+  (if (< n 2)
+      1
+      (* n (fact (- n 1)))))
+(fact 33)
+(fact 10)

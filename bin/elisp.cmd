@@ -4,11 +4,14 @@
 ;;d:/emacs/bin/emacs --script %~f0
 ;;goto :eof
 (require 'subr-x)
-(setf line "")
-(setf code "")
-(setf lisp '())
-(setf lisp-pair nil)
-(setf done nil)
+(require 'cl-lib)
+(require 'cl)
+
+(setf   code "")
+(setf   done nil)
+(setf   line "")
+(setf   lisp nil)
+(setf   lisp-pair nil)
 
 (princ "elisp> ")
 (while t
@@ -39,7 +42,10 @@
             ((eq type 'end-of-file) 
              (setf end-of-file t)))))))
   (condition-case e
-    (princ (car (last (mapcar #'eval (reverse lisp)))))
+    (let ((result (car (last (mapcar #'eval (reverse lisp))))))
+      (if (stringp result)
+          (princ result)
+          (pp result)))
     (error (princ (error-message-string e))))
   (setf done nil)
   (setf lisp '())
