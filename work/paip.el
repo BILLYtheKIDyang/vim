@@ -34,28 +34,15 @@
 (funcall #'+ 2 3)
 (apply #'+ '(2 3))
 (funcall #'+ '(2 3))
-(defun list* (x &rest xs)
-  (if (null xs)
-      x
-      (cons x (apply #'list* xs))))
-(defmacro while* (test &rest body)
-  "Repeat body while test is true"
-  (list* 'cl-loop
-         (list 'unless test '(return nil))
-         body))
+(defun list* (x &rest xs) (if (null xs) x (cons x (apply #'list* xs))))
+(defmacro while (test &rest body) "Repeat body while test is true" (list* 'cl-loop (list 'unless test '(return nil)) body))
 
-(macroexpand '
-             (while* (> 3 2)
-                     (print 3)))
+(macroexpand ' (while (> 3 2) (print 3)))
 
 
-(defmacro  t-becomes-nil (variable)
-  `(if (eq ,variable t)
-       (setf ,variable nil)))
+(defmacro  t-becomes-nil (variable) `(if (eq ,variable t) (setf ,variable nil)))
 
-(macroexpand '
-             (t-becomes-nil foo)
-             )
+(macroexpand ' (t-becomes-nil foo))
 
 (dotimes (i 100) (print i))
 (dotimes (i 100) (princ i) (princ "\n"))
