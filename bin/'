@@ -1,0 +1,25 @@
+;;@echo off
+;;d:/emacs/bin/emacs --script %~f0
+;;goto :eof
+;; vim:ft=elisp:syntax=lisp:lisp
+(let ((symbols '()))
+  (mapatoms (lambda (x) (push x symbols)))
+  (setf symbols (sort symbols #'string< ))
+  (princ "vim:ft=help:lisp\n")
+  (dolist (x symbols)
+    (princ "\n")
+    (princ (make-string 80 ?-))
+    (princ "\n")
+    (let* ((ss (- 80 (+ (* 2 (length (symbol-name x))) 2)))
+           (spaces (if (> ss 0) (make-string ss ?\s) 1)))
+
+      (princ (format "%s%s*%s*" x spaces x))
+      (let ((fd (ignore-errors (documentation x)))
+            (vd (ignore-errors (documentation-property x 'variable-documentation))))
+        (when fd
+          (setf doc-list (split-string fd "\n"))
+          (
+          (princ (format "\n\n%s" fd)))
+        (if vd (princ (format "\n\n%s" vd))))
+      (princ "\n"))))
+

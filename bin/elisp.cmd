@@ -17,9 +17,7 @@
 (setf   lisp-pair nil)
 (princ "elisp> ")
 (while t
-  (princ "while t")
   (while (not done)
-  (princ "while (not done)")
     (if (or (string= code "") end-of-file)
         (condition-case e
           (progn
@@ -35,7 +33,10 @@
         (setf end-of-file nil)
         (if (string= code "")
             (setf done t)
+            (setf done nil))))
+            (setf done t)
             (setf done nil)))
+
       (error
         (let ((type (car e)))
           (princ "       ")

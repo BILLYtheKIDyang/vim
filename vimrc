@@ -203,3 +203,8 @@ if has('win32')
 else
    let g:coc_node_path="/usr/bin/node"
 endif
+let moria_style='white'
+let moria_monochrome=1
+let moria_fontface='mixed'
+colo moria
+
