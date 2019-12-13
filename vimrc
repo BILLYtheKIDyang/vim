@@ -33,7 +33,7 @@ autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
-set guifont=Consolas:h14:cANSI:qDRAFT
+"set guifont=Consolas:h14:cANSI:qDRAFT
 let g:deoplete#enable_at_startup = 1
 let g:fsharp_interactive_bin="fsharpi"
 let g:fsharp_xbuild_path="msbuild"
