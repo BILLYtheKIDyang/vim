@@ -2,17 +2,94 @@
 <?xml-stylesheet type="text/css" href="highlight.css"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.2//EN" "http://www.w3.org/Graphics/SVG/1.2/DTD/svg12.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="full" xml:space="preserve">
-<desc>a.lisp</desc>
+<desc>a.el</desc>
 <g>
 <rect x="0" y="0" width="100%" height="100%"/>
-<text x="10" y="20"><tspan class="slc">;&#160;vim:&#160;ft=clisp&#160;syntax=lisp</tspan></text>
-<text x="10" y="40"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">fact&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">n</tspan><tspan class="opt">)</tspan></text>
-<text x="10" y="60">&#160;<tspan class="opt">(</tspan><tspan class="kwa">if&#160;</tspan><tspan class="opt">(&lt;&#160;</tspan>n&#160;<tspan class="num">2</tspan><tspan class="opt">)</tspan></text>
-<text x="10" y="80">&#160;&#160;<tspan class="num">1</tspan></text>
-<text x="10" y="100">&#160;&#160;<tspan class="opt">(*&#160;</tspan>n&#160;<tspan class="opt">(</tspan><tspan class="kwa">fact&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">-&#160;</tspan>n&#160;<tspan class="num">1</tspan><tspan class="opt">)))))</tspan></text>
-<text x="10" y="120"></text>
-<text x="10" y="140"><tspan class="opt">(</tspan><tspan class="kwa">fact&#160;</tspan><tspan class="num">122</tspan><tspan class="opt">)</tspan></text>
-<text x="10" y="160"></text>
+<text x="10" y="20"><tspan class="slc">;;&#160;vim:ft=elisp:syntax=lisp</tspan></text>
+<text x="10" y="40"><tspan class="opt">(</tspan><tspan class="kwa">require&#160;</tspan><tspan class="opt">'</tspan>cl-lib<tspan class="opt">)</tspan></text>
+<text x="10" y="60"><tspan class="opt">(</tspan><tspan class="kwa">setf&#160;</tspan>x&#160;<tspan class="num">0&#160;</tspan>total&#160;<tspan class="num">0</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="80"><tspan class="opt">(</tspan><tspan class="kwa">catch&#160;</tspan><tspan class="opt">'</tspan>break</text>
+<text x="10" y="100">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">while&#160;</tspan>t</text>
+<text x="10" y="120">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">cl-incf&#160;</tspan>total&#160;x<tspan class="opt">)</tspan></text>
+<text x="10" y="140">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">if&#160;</tspan><tspan class="opt">(&gt;&#160;(</tspan><tspan class="kwa">cl-incf&#160;</tspan>x<tspan class="opt">)&#160;</tspan><tspan class="num">10</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="160">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">throw&#160;</tspan><tspan class="opt">'</tspan>break&#160;total<tspan class="opt">))))</tspan></text>
+<text x="10" y="180"></text>
+<text x="10" y="200"><tspan class="opt">(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">()</tspan></text>
+<text x="10" y="220">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">setf&#160;</tspan>num&#160;<tspan class="num">0</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="240">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">while&#160;</tspan><tspan class="opt">(&lt;&#160;</tspan>num&#160;<tspan class="num">4</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="260">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">princ&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">format&#160;</tspan><tspan class="str">&quot;Iteration&#160;%d.</tspan><tspan class="esc">\n</tspan><tspan class="str">&quot;</tspan>&#160;num<tspan class="opt">))</tspan></text>
+<text x="10" y="280">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">setf&#160;</tspan>num&#160;<tspan class="opt">(</tspan><tspan class="kwa">1</tspan><tspan class="opt">+&#160;</tspan>num<tspan class="opt">))))</tspan></text>
+<text x="10" y="300"></text>
+<text x="10" y="320"><tspan class="opt">(</tspan><tspan class="kwa">while&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">progn</tspan></text>
+<text x="10" y="340">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">forward-line&#160;</tspan><tspan class="num">1</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="360">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">print&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">point</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="380">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">not&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">looking-at&#160;</tspan><tspan class="str">&quot;$&quot;</tspan><tspan class="opt">))))</tspan></text>
+<text x="10" y="400"><tspan class="opt">(</tspan><tspan class="kwa">find-file&#160;</tspan><tspan class="str">&quot;a.el&quot;</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="420"></text>
+<text x="10" y="440"><tspan class="opt">(</tspan><tspan class="kwa">setf&#160;</tspan>a&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">buffer-string</tspan><tspan class="opt">)&#160;</tspan>b&#160;<tspan class="num">1</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="460"><tspan class="opt">(</tspan><tspan class="kwa">substring&#160;</tspan>a&#160;<tspan class="num">0</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="480"></text>
+<text x="10" y="500"><tspan class="opt">(</tspan><tspan class="kwa">describe-function&#160;</tspan><tspan class="opt">'</tspan>describe-function<tspan class="opt">)</tspan></text>
+<text x="10" y="520"><tspan class="opt">(</tspan><tspan class="kwa">type-of&#160;</tspan><tspan class="opt">[</tspan><tspan class="num">1&#160;2&#160;3</tspan><tspan class="opt">])</tspan></text>
+<text x="10" y="540"><tspan class="opt">(</tspan><tspan class="kwa">defmacro&#160;</tspan>square-sum&#160;<tspan class="opt">(</tspan><tspan class="kwa">x&#160;</tspan>y<tspan class="opt">)</tspan></text>
+<text x="10" y="560">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">((</tspan><tspan class="kwa">sum&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">gensym</tspan><tspan class="opt">)))</tspan></text>
+<text x="10" y="580">&#160;&#160;&#160;&#160;<tspan class="opt">`(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">((,</tspan>sum&#160;<tspan class="opt">(+&#160;,</tspan>x&#160;<tspan class="opt">,</tspan>y<tspan class="opt">)))</tspan></text>
+<text x="10" y="600">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(*&#160;,</tspan>sum&#160;<tspan class="opt">,</tspan>sum<tspan class="opt">))))</tspan></text>
+<text x="10" y="620"><tspan class="opt">(</tspan><tspan class="kwa">macroexpand&#160;</tspan><tspan class="opt">'(</tspan><tspan class="kwa">square-sum&#160;</tspan><tspan class="num">3&#160;4</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="640"><tspan class="opt">(</tspan><tspan class="kwa">setf&#160;</tspan>op&#160;<tspan class="opt">'+)</tspan></text>
+<text x="10" y="660"><tspan class="opt">(</tspan><tspan class="kwa">eval&#160;</tspan><tspan class="opt">`(,</tspan>op&#160;<tspan class="num">1&#160;2</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="680"></text>
+<text x="10" y="700"></text>
+<text x="10" y="720"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">trim&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">s</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="740">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">((</tspan><tspan class="kwa">s</tspan><tspan class="opt">*&#160;(</tspan><tspan class="kwa">replace-regexp-in-string&#160;</tspan><tspan class="str">&quot;[&#160;</tspan><tspan class="esc">\t</tspan><tspan class="str">]*$&quot;</tspan>&#160;<tspan class="str">&quot;&quot;</tspan>&#160;s<tspan class="opt">)))</tspan></text>
+<text x="10" y="760">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">replace-regexp-in-string&#160;</tspan><tspan class="str">&quot;^[&#160;</tspan><tspan class="esc">\t</tspan><tspan class="str">]*&quot;</tspan>&#160;<tspan class="str">&quot;&quot;</tspan>&#160;s<tspan class="opt">*)))</tspan></text>
+<text x="10" y="780"></text>
+<text x="10" y="800"><tspan class="opt">(</tspan><tspan class="kwa">trim&#160;</tspan><tspan class="str">&quot;&#160;I&#160;am&#160;old&#160;&quot;</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="820"><tspan class="str">&quot;&#160;I&#160;am&#160;old&#160;&quot;</tspan></text>
+<text x="10" y="840"></text>
+<text x="10" y="860"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">take&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">n&#160;</tspan>l<tspan class="opt">)</tspan></text>
+<text x="10" y="880">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">cond</tspan></text>
+<text x="10" y="900">&#160;&#160;&#160;&#160;<tspan class="opt">((&lt;&#160;</tspan>n&#160;<tspan class="num">0</tspan><tspan class="opt">)&#160;())</tspan></text>
+<text x="10" y="920">&#160;&#160;&#160;&#160;<tspan class="opt">((=&#160;</tspan>n&#160;<tspan class="num">0</tspan><tspan class="opt">)&#160;())</tspan></text>
+<text x="10" y="940">&#160;&#160;&#160;&#160;<tspan class="opt">((</tspan><tspan class="kwa">null&#160;</tspan>l<tspan class="opt">)&#160;())</tspan></text>
+<text x="10" y="960">&#160;&#160;&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">t&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">cons&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">car&#160;</tspan>l<tspan class="opt">)&#160;(</tspan><tspan class="kwa">take&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">-&#160;</tspan>n&#160;<tspan class="num">1</tspan><tspan class="opt">)&#160;(</tspan><tspan class="kwa">cdr&#160;</tspan>l<tspan class="opt">))))))</tspan></text>
+<text x="10" y="980"></text>
+<text x="10" y="1000"><tspan class="opt">(</tspan><tspan class="kwa">take&#160;</tspan><tspan class="num">3&#160;</tspan><tspan class="opt">'(</tspan><tspan class="kwa">1&#160;</tspan><tspan class="num">2&#160;3&#160;4&#160;5&#160;6</tspan><tspan class="opt">))&#160;&#160;</tspan></text>
+<text x="10" y="1020"><tspan class="opt">(</tspan><tspan class="kwa">take&#160;</tspan><tspan class="num">33&#160;</tspan><tspan class="opt">'(</tspan><tspan class="kwa">1&#160;</tspan><tspan class="num">2&#160;3</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="1040"></text>
+<text x="10" y="1060"><tspan class="opt">(</tspan><tspan class="kwa">require&#160;</tspan><tspan class="opt">'</tspan>cl<tspan class="opt">)</tspan></text>
+<text x="10" y="1080"><tspan class="opt">(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">((</tspan><tspan class="kwa">x&#160;</tspan><tspan class="num">3</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="1100">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">get-x&#160;</tspan><tspan class="opt">()&#160;</tspan>x<tspan class="opt">))</tspan></text>
+<text x="10" y="1120"><tspan class="opt">(</tspan><tspan class="kwa">get-x</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1140"></text>
+<text x="10" y="1160"><tspan class="opt">(</tspan><tspan class="kwa">let&#160;</tspan><tspan class="opt">((</tspan><tspan class="kwa">x&#160;</tspan><tspan class="num">4</tspan><tspan class="opt">))&#160;(</tspan><tspan class="kwa">get-x</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="1180"><tspan class="opt">(</tspan><tspan class="kwa">lexical-let&#160;</tspan><tspan class="opt">((</tspan><tspan class="kwa">x&#160;</tspan><tspan class="num">3</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="1200">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">getx&#160;</tspan><tspan class="opt">()&#160;</tspan>x<tspan class="opt">))</tspan></text>
+<text x="10" y="1220"><tspan class="opt">(</tspan><tspan class="kwa">getx</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1240"></text>
+<text x="10" y="1260"></text>
+<text x="10" y="1280"></text>
+<text x="10" y="1300"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">square&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">x</tspan><tspan class="opt">)&#160;(*&#160;</tspan>x&#160;x<tspan class="opt">))</tspan></text>
+<text x="10" y="1320"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">five&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">x&#160;</tspan>y<tspan class="opt">)</tspan></text>
+<text x="10" y="1340">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">sqrt&#160;</tspan><tspan class="opt">(+&#160;(</tspan><tspan class="kwa">square&#160;</tspan>x<tspan class="opt">)&#160;(</tspan><tspan class="kwa">square&#160;</tspan>y<tspan class="opt">))))</tspan></text>
+<text x="10" y="1360"><tspan class="opt">(</tspan><tspan class="kwa">five&#160;</tspan><tspan class="num">3&#160;4</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1380"></text>
+<text x="10" y="1400"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">foo&#160;</tspan><tspan class="opt">()&#160;</tspan><tspan class="num">1</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1420"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">bar</tspan><tspan class="opt">()&#160;(</tspan><tspan class="kwa">foo</tspan><tspan class="opt">))</tspan></text>
+<text x="10" y="1440"><tspan class="opt">(</tspan><tspan class="kwa">bar</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1460"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">foo&#160;</tspan><tspan class="opt">()&#160;</tspan><tspan class="num">2</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1480"><tspan class="opt">(</tspan><tspan class="kwa">bar</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1500"><tspan class="opt">(</tspan><tspan class="kwa">kill-emacs</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1520"><tspan class="opt">(</tspan><tspan class="kwa">documentation&#160;</tspan><tspan class="opt">'</tspan>kill-emacs<tspan class="opt">)</tspan></text>
+<text x="10" y="1540"><tspan class="opt">(</tspan><tspan class="kwa">symbol-function&#160;</tspan><tspan class="opt">'</tspan>kill-emacs<tspan class="opt">)</tspan></text>
+<text x="10" y="1560"></text>
+<text x="10" y="1580"><tspan class="opt">(</tspan><tspan class="kwa">defun&#160;</tspan><tspan class="kwb">fact&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">n</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1600">&#160;&#160;<tspan class="opt">(</tspan><tspan class="kwa">if&#160;</tspan><tspan class="opt">(&lt;&#160;</tspan>n&#160;<tspan class="num">2</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1620">&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="num">1</tspan></text>
+<text x="10" y="1640">&#160;&#160;&#160;&#160;&#160;&#160;<tspan class="opt">(*&#160;</tspan>n&#160;<tspan class="opt">(</tspan><tspan class="kwa">fact&#160;</tspan><tspan class="opt">(</tspan><tspan class="kwa">-&#160;</tspan>n&#160;<tspan class="num">1</tspan><tspan class="opt">)))))</tspan></text>
+<text x="10" y="1660"><tspan class="opt">(</tspan><tspan class="kwa">fact&#160;</tspan><tspan class="num">33</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1680"><tspan class="opt">(</tspan><tspan class="kwa">fact&#160;</tspan><tspan class="num">10</tspan><tspan class="opt">)</tspan></text>
+<text x="10" y="1700"></text>
 </g>
 </svg>
 <!-- SVG generated by Highlight 3.49, http://www.andre-simon.de/ -->

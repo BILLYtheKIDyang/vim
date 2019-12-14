@@ -33,7 +33,7 @@ autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
-"set guifont=Consolas:h14:cANSI:qDRAFT
+set guifont=Consolas:h14:cANSI:qDRAFT
 let g:deoplete#enable_at_startup = 1
 let g:fsharp_interactive_bin="fsharpi"
 let g:fsharp_xbuild_path="msbuild"
@@ -196,15 +196,15 @@ func! Fqb()
 endfunc
 call plug#begin('~/vim_plug')
 Plug 'mattn/emmet-vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'sheerun/vim-polyglot'
 call plug#end()
 if has('win32')
 else
    let g:coc_node_path="/usr/bin/node"
 endif
-let moria_style='white'
-let moria_monochrome=1
+"let moria_style='white'
+"let moria_monochrome=1
 let moria_fontface='mixed'
 colo moria
-
+let g:clojure_fuzzy_indent_patterns=['^.']

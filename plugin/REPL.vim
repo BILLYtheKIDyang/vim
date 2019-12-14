@@ -1,6 +1,8 @@
 let g:REPL_configs = {}
 
 if has('win32')
+   let g:REPL_configs['lisp'] = {}
+   let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
    let g:REPL_configs['elisp'] = {}
    let g:REPL_configs['elisp']['repl'] = [expand("~/.vim/bin/elisp.cmd")]
    let g:REPL_configs['red'] = {}

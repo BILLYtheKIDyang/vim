@@ -33,13 +33,9 @@
         (setf end-of-file nil)
         (if (string= code "")
             (setf done t)
-            (setf done nil))))
-            (setf done t)
             (setf done nil)))
-
       (error
         (let ((type (car e)))
-          (princ "       ")
           (cond
             ((and (eq type 'invalid-read-syntax) 
                   (not (string= code "")))

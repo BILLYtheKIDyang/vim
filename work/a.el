@@ -42,10 +42,10 @@
 
 (defun take (n l)
   (cond
-    ((< n 0) ())
-    ((= n 0) ())
-    ((null l) ())
-    (t (cons (car l) (take (- n 1) (cdr l))))))
+   ((< n 0) ())
+   ((= n 0) ())
+   ((null l) ())
+   (t (cons (car l) (take (- n 1) (cdr l))))))
 
 (take 3 '(1 2 3 4 5 6))  
 (take 33 '(1 2 3))
@@ -57,7 +57,7 @@
 
 (let ((x 4)) (get-x))
 (lexical-let ((x 3))
-  (defun getx () x))
+	     (defun getx () x))
 (getx)
 
 
@@ -79,6 +79,8 @@
 (defun fact (n)
   (if (< n 2)
       1
-      (* n (fact (- n 1)))))
+    (* n (fact (- n 1)))))
 (fact 33)
 (fact 10)
+
+emac

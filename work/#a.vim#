@@ -1,4 +1,0 @@
-  (define-syntax set-x!
-    (syntax-rules ()
-      [(_ e) (set! x e)]))
-  (set-x! (+ x x))
