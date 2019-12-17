@@ -80,8 +80,8 @@ set autochdir
 set autoindent
 set autoread 
 set backspace=eol,indent,start
-set backup
-set backupdir=~/vimbackup/
+"set backup
+"set backupdir=~/vimbackup/
 set clipboard+=unnamed " 从寄存器 + 中粘贴与复制, "+p "+y
 set cmdheight=2 
 set completeopt=menu,menuone
@@ -113,7 +113,7 @@ set so=7
 set t_vb=
 set tabstop=4
 set tw=500
-set undodir=$HOME/vimbackup/
+"set undodir=$HOME/vimbackup/
 set undofile
 set undofile
 set whichwrap+=<,>,h,l
@@ -205,6 +205,6 @@ else
 endif
 "let moria_style='white'
 "let moria_monochrome=1
-let moria_fontface='mixed'
+"let moria_fontface='mixed'
 colo moria
 let g:clojure_fuzzy_indent_patterns=['^.']

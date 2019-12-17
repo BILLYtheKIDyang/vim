@@ -82,5 +82,3 @@
     (* n (fact (- n 1)))))
 (fact 33)
 (fact 10)
-
-emac

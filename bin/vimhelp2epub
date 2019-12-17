@@ -1,56 +1,59 @@
+#!/bin/sh
 rm -rf *.epub
 rm -rf tmp
 mkdir -p tmp
 cd tmp
-
+mkdir -p META-INF
+mkdir -p OEBPS
+echo "application/epub+zip" > mimetype
+echo "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>" > META-INF/container.xml
+echo "<container xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\" version=\"1.0\"><rootfiles><rootfile full-path=\"OEBPS/package.opf\" media-type=\"application/oebps-package+xml\"/></rootfiles></container>" >> META-INF/container.xml
+cd OEBPS
 perl ~/.vim/bin/vim2html.pl "$1"/tags "$1"/*.txt
 
 mkdir -p tmp
 sed 's/["#]/\n/g' help.html | awk '/\.html$$/ {if(!($$1 in lut)) print $$1; lut[$$1]++}' > tmp/help.list
-ls -1 *.html | sort > tmp/html.list
-sort tmp/help.list  > tmp/help.sort.list
-# -@ diff tmp/html.list tmp/help.sort.list
+#ls -1 *.html | sort > tmp/html.list
+echo "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>" > toc.ncx
+echo "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" >> toc.ncx
+echo "   <head>" >> toc.ncx
+echo "      <meta name=\"dtb:uid\" content=\"_book\"/>" >> toc.ncx
+echo "   </head>" >> toc.ncx
+echo "   <docTitle>" >> toc.ncx
+echo "      <text>The Kawa Scheme language</text>" >> toc.ncx
+echo "   </docTitle>" >> toc.ncx
+echo "<navMap>" >> toc.ncx
+cat tmp/help.list| awk '{printf ("<navPoint id=\"%s\" playOrder=\"%s\"><navLabel><text>%s</text></navLabel><content src=\"%s\"/></navPoint>\n", $$1, NR, $$1 ,$$1) }' >> toc.ncx
 
+echo "</navMap>" >> toc.ncx
+echo "</ncx>" >> toc.ncx
 
+echo "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>">package.opf
+echo "<package xmlns=\"http://www.idpf.org/2007/opf\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" version=\"3.0\" xml:lang=\"en\" unique-identifier=\"pub-identifier\">">>package.opf
+echo "  <metadata>">>package.opf
+echo "    <dc:identifier id=\"pub-identifier\">_book</dc:identifier>">>package.opf
+echo "    <meta id=\"meta-identifier\" property=\"dcterms:identifier\">_book</meta>">>package.opf
+echo "    <dc:title id=\"pub-title\">The Kawa Scheme language</dc:title>">>package.opf
+echo "    <meta property=\"dcterms:title\" id=\"meta-title\">The Kawa Scheme language</meta>">>package.opf
+echo "    <dc:language id=\"pub-language\">en</dc:language>">>package.opf
+echo "    <meta property=\"dcterms:language\" id=\"meta-language\">en</meta>">>package.opf
+echo "    <meta property=\"dcterms:modified\">2017-10-02T06:22:07Z</meta>">>package.opf
+echo "  </metadata>">>package.opf
 
-echo "<?xml version=\"1.0\"?>" >> "$2".opf
-echo "<!--" >> "$2".opf
-echo " Ref: " >> "$2".opf
-echo "   http://www.perrygarvin.com/blog/2012/01/16/how-to-make-an-amazon-kindle-book-using-html-and-css/" >> "$2".opf
-echo "   http://rogerx.freeshell.org/programming/kindle-convert_linuxmantomobi.html" >> "$2".opf
-echo "   http://wiki.mobileread.com/wiki/KindleGen" >> "$2".opf
-echo "-->" >> "$2".opf
-echo " " >> "$2".opf
-echo "<package version=\"2.0\" xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookId\">" >> "$2".opf
-echo "  <metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" >> "$2".opf
-echo "    <dc:title>Vim Help</dc:title>" >> "$2".opf
-echo "    <dc:language>en</dc:language>" >> "$2".opf
-echo "    <dc:creator opf:file-as=\"Zhang, Sean\" opf:role=\"aut\">Sean Zhang</dc:creator>" >> "$2".opf
-echo "    <dc:publisher>vimhelp2mobi</dc:publisher>" >> "$2".opf
-echo "    <dc:subject>Reference</dc:subject>" >> "$2".opf
-echo "    <dc:date>2015-02-28</dc:date>" >> "$2".opf
-echo "    <dc:description>Vim Help Files</dc:description>" >> "$2".opf
-echo "  </metadata>" >> "$2".opf
-echo "  <manifest>" >> "$2".opf
+echo "<manifest>" >> package.opf
+echo "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\"/>" >> package.opf 
+cat tmp/help.list | awk '{printf "<item id=\"%s\" href=\"%s\" media-type=\"application/xhtml+xml\"/>\n",$$1,$$1}' >> package.opf
+echo "</manifest>" >> package.opf
+echo "<spine toc=\"ncx\">" >> package.opf
+cat tmp/help.list | awk '{printf "<itemref idref=\"%s\"/>\n",$$1}' >> package.opf
+echo "</spine>" >> package.opf
 
-
-cat tmp/help.list | awk '{printf "<item id=\"%s\" href=\"%s\" media-type=\"application/xhtml+xml\"/>\n",$$1,$$1}' >> "$2".opf
-
-
-echo "</manifest>" >> "$2".opf
-echo "<!-- Each itemref references the id of a document designated in the manifest. The order of the itemref elements organizes the associated content files into the linear reading order of the publication.  -->" >> "$2".opf
-echo "<spine toc=\"ncx\">" >> "$2".opf
-cat tmp/help.list | awk '{printf "<itemref idref=\"%s\"/>\n",$$1}' >> "$2".opf
-echo "</spine>" >> "$2".opf
-
-echo "<!-- The Kindle reading system supports two special guide items which are both mandatory." >> "$2".opf
-echo "type=\"toc\" [mandatory]: a link to the HTML table of contents" >> "$2".opf
-echo "type=\"text\" [mandatory]: a link to where the content of the book starts (typically after the front matter) -->" >> "$2".opf
-echo "" >> "$2".opf
-echo "<guide>" >> "$2".opf
-echo "<reference type=\"toc\" title=\"Table of Contents\" href=\"usr_toc.html\"/>" >> "$2".opf
-echo "<reference type=\"text\" title=\"Beginning\" href=\"help.html\"></reference>" >> "$2".opf
-echo "</guide>" >> "$2".opf
-echo "" >> "$2".opf
-echo "</package>" >> "$2".opf
+echo "<guide>" >> package.opf
+echo "<reference type=\"toc\" title=\"Table of Contents\" href=\"usr_toc.html\"/>" >> package.opf
+echo "<reference type=\"toc\" title=\"Beginning\" href=\"help.html\"/>" >> package.opf
+echo "</guide>" >> package.opf
+echo "" >> package.opf
+echo "</package>" >> package.opf
+#rm -rf tmp
+cd ..
 zip -r ../"$2".epub .

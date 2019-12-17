@@ -4,7 +4,7 @@ if has('win32')
    let g:REPL_configs['lisp'] = {}
    let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
    let g:REPL_configs['elisp'] = {}
-   let g:REPL_configs['elisp']['repl'] = [expand("~/.vim/bin/elisp.cmd")]
+   let g:REPL_configs['elisp']['repl'] = ['elisp.cmd']
    let g:REPL_configs['red'] = {}
    let g:REPL_configs['red']['continuations'] = [] 
    let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
