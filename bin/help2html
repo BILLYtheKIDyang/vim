@@ -1,0 +1,14 @@
+"vim:ft=vim
+call REPL_send_text('elisp', '(kill-emacs)')
+sleep 3
+%s/^=\+[\n]\d\+\.\d* \([a-zA-Z0-9 +-]\+\)/* \1
+%s/^\d\+\.\d\+ \([a-zA-Z0-9 +=]\+\) \~/** \1
+%s/^\([a-zA-Z].*\) \~/*** \1
+%s/|\(.\{-}\)|/\1/g
+%s/: >[\n]\(\_^\s\+:.\+\)\+/\r#+BEGIN_SRC vim\r\0\r#+END_SRC\r/
+w
+call REPL_send_text('elisp', '(find-file "eval.org")')
+call REPL_send_text('elisp', '(load-file "epub.el")')
+call REPL_send_text('elisp', '(load-file "htmlize.el")')
+call REPL_send_text('elisp', '(org-epub-export-to-epub)')
+call REPL_send_text('elisp', '(shell-command "start eval.epub")')
