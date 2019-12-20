@@ -1,0 +1,22 @@
+;; vim:syntax=emacs-lisp:syntax=lisp:lisp
+(defun dis(fn)
+  "disassemble fn and print it"
+  (disassemble fn)
+  (with-current-buffer "*Disassemble*"
+                       (buffer-string)))
+
+(defun elisptags ()
+  "tags elisp"
+  (interactive)
+  (with-temp-file "tags.txt"
+                  (let ((symbols '()))
+                    (mapatoms (lambda (x) (push x symbols)))
+                    (setf symbols (sort symbols #'string< ))
+                    (dolist (x symbols)
+                      (when (and (> (length (symbol-name x)) 3)
+                                 ;(not (string-prefix-p "-" (symbol-name x)))
+                                 ;(not (string-prefix-p ":" (symbol-name x)))
+                                 ;(not (string-prefix-p "&" (symbol-name x)))
+                                 )
+                        (insert (format "(defun %s () %s)\n" x x))))))
+  (shell-command "ctags --fields=+l --language-force=Lisp tags.txt"))
