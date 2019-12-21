@@ -33,7 +33,6 @@ autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
 filetype off                 " required
 filetype plugin indent on    " required
-set guifont=Consolas:h14:cANSI:qDRAFT
 let g:deoplete#enable_at_startup = 1
 let g:fsharp_interactive_bin="fsharpi"
 let g:fsharp_xbuild_path="msbuild"
@@ -72,9 +71,9 @@ runtime plugin/persistentvisuals.vim
 runtime plugin/vimpoint.vim
 runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
-"runtime plugin/LispIndent.vim
+runtime plugin/EmacsLispComplete.vim
 "set path+=**
-"set rtp+=~/YouCompleteMe
+set rtp+=~/YouCompleteMe
 set ambiwidth=double
 set autochdir
 set autoindent

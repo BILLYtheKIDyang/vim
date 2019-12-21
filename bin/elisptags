@@ -1,3 +1,4 @@
+
 ;; vim:syntax=emacs-lisp:syntax=lisp:lisp
 (defun dis(fn)
   "disassemble fn and print it"
@@ -18,5 +19,6 @@
                                  ;(not (string-prefix-p ":" (symbol-name x)))
                                  ;(not (string-prefix-p "&" (symbol-name x)))
                                  )
-                        (insert (format "(defun %s () %s)\n" x x))))))
+                        (insert (format "%s\n" x))))))
   (shell-command "ctags --fields=+l --language-force=Lisp tags.txt"))
+(elisptags)

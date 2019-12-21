@@ -1,4 +1,4 @@
-;; vim:ft=elisp:syntax=lisp
+;; vim:ft=lisp:syntax=lisp
 (require 'cl-lib)
 (setf x 0 total 0)
 (catch 'break
@@ -82,3 +82,8 @@
     (* n (fact (- n 1)))))
 (fact 33)
 (fact 10)
+
+
+heckdoc-ispell-defun
+
+default-frame-alist

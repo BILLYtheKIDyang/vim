@@ -3,8 +3,6 @@ let g:REPL_configs = {}
 if has('win32')
    let g:REPL_configs['lisp'] = {}
    let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
-   let g:REPL_configs['elisp'] = {}
-   let g:REPL_configs['elisp']['repl'] = ['elisp.cmd']
    let g:REPL_configs['red'] = {}
    let g:REPL_configs['red']['continuations'] = [] 
    let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
@@ -15,10 +13,10 @@ if has('win32')
    let g:REPL_configs['vb']['continuations'] = ['else', 'end'] 
    let g:REPL_configs['vb']['repl'] = ['wscirpt', expand("~/.vim/work/vbsh.vbs")]
 else
-   let g:REPL_configs['elisp'] = {}
-   let g:REPL_configs['elisp']['repl'] = [expand("~/.vim/bin/elisp")]
 endif
 
+let g:REPL_configs['elisp'] = {}
+let g:REPL_configs['elisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
 let g:REPL_configs['java'] = {}
 let g:REPL_configs['java']['continuations'] = ['else', 'catch']
 let g:REPL_configs['java']['repl'] = ['jshell']

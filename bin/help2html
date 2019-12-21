@@ -1,14 +1,29 @@
-"vim:ft=vim
-call REPL_send_text('elisp', '(kill-emacs)')
-sleep 3
+0s/^/#+TITLE: vimdoc\r#+AUTHOR: YangShuangcheng\r#+OPTIONS: ^:{}\r/
+%s/*$/* \\\\/
 %s/^=\+[\n]\d\+\.\d* \([a-zA-Z0-9 +-]\+\)/* \1
+%s/^-\+[\n]\d\+\.\d* \([a-zA-Z0-9 +-]\+\)/* \1
 %s/^\d\+\.\d\+ \([a-zA-Z0-9 +=]\+\) \~/** \1
 %s/^\([a-zA-Z].*\) \~/*** \1
 %s/|\(.\{-}\)|/\1/g
-%s/: >[\n]\(\_^\s\+:.\+\)\+/\r#+BEGIN_SRC vim\r\0\r#+END_SRC\r/
+"%s/ >[\n]/\r#+BEGIN_SRC vimrc\r
+"%s/^>[\n]/\r#+BEGIN_SRC vimrc\r
+"%s/^#+BEGIN_SRC vimrc[\n]\+\(\(\s\+.*[\n]\)\|\([\n]\+\)\)*/\0#+END_SRC\r/
+%s/^\(\s\+\):/\=printf(":%s:", repeat(' ', len(submatch(1))))/
+%s/ >[\n]\+\(\(\s\+.*[\n]\+\)\+\)/\=printf("\r:%s", join(split(submatch(1), "\n"), "\r:") .. "\r")
+%s/^>[\n]\+\(\(\s\+.*[\n]\+\)\+\)/\=printf("\r:%s", join(split(submatch(1), "\n"), "\r:") .. "\r")
+%s/^>[\n]\+:/\r:/
+%s/ >[\n]\+:/\r:/
+%s/^\s*[+|]/:\0/
+%s/^:$//
+%s/\[\[//g
+%s/\]\]//g
+g/\[\d\+\] http.*$/d
 w
-call REPL_send_text('elisp', '(find-file "eval.org")')
-call REPL_send_text('elisp', '(load-file "epub.el")')
-call REPL_send_text('elisp', '(load-file "htmlize.el")')
-call REPL_send_text('elisp', '(org-epub-export-to-epub)')
-call REPL_send_text('elisp', '(shell-command "start eval.epub")')
+"call REPL_send_text('elisp', '(find-file "' . expand("%d") . '")')
+"call REPL_send_text('elisp', '(load-file "epub.el")')
+"call REPL_send_text('elisp', '(load-file "htmlize.el")')
+"call REPL_send_text('elisp', '(load-file "vimrc.el")')
+"call REPL_send_text('elisp', '(org-epub-export-to-epub)')
+"call REPL_send_text('elisp', '(shell-command "start eval.epub")')
+" vim:ft=vim
+quit

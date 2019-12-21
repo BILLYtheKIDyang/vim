@@ -1,8 +1,7 @@
-":";exec emacs --script "$0" "$@" # -*- mode: emacs-lisp ; lexical-binding: t;-*- vim: ft=lisp 
+;;vim:ft=elisp:syntax=lisp:lisp
 ;;@echo off
 ;;rem -*- emacs-lisp -*-
 ;;rem vim: ft=lisp
-;;rem d:/emacs/bin/emacs -batch -l %~f0 2>nul
 ;;d:/emacs/bin/emacs -batch -l %~f0
 ;;goto :eof
 (require 'subr-x)

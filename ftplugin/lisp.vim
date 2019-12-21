@@ -5,4 +5,5 @@ set lispwords+=get-dispatch-macro-character
 set lispwords+=defrule
 setlocal dictionary=~/.sbcl_completions
 setlocal complete+=k
-setlocal equalprg=emacsformat
+setlocal equalprg=emacs\ --script\ ~/.vim/bin/emacsformat
+setlocal omnifunc=EmacsLispComplete
