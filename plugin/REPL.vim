@@ -15,6 +15,8 @@ if has('win32')
 else
 endif
 
+let g:REPL_configs['scheme'] = {}
+let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe']      "['java', '-jar', expand("~/.vim/bin/kawa.jar")]
 let g:REPL_configs['elisp'] = {}
 let g:REPL_configs['elisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
 let g:REPL_configs['java'] = {}

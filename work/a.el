@@ -76,14 +76,6 @@
 (documentation 'kill-emacs)
 (symbol-function 'kill-emacs)
 
-(defun fact (n)
-  (if (< n 2)
-      1
-    (* n (fact (- n 1)))))
-(fact 33)
-(fact 10)
+(elisp-get-fnsym-args-string 'defun)
+(elisp-get-fnsym-args-string 'kill-emacs)
 
-
-heckdoc-ispell-defun
-
-default-frame-alist

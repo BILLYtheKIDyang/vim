@@ -49,8 +49,11 @@ let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
 let g:ycm_key_invoke_completion = '<c-n>'
 let g:ycm_min_num_identifier_candidate_chars = 1
 let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
+let g:ycm_semantic_triggers['lisp'] = ['re!\w{1}']
+let g:ycm_semantic_triggers['scheme'] = ['re!\w{1}']
 let g:ycm_server_log_level = 'info'
 let g:ycm_show_diagnostics_ui = 1
+"let g:ycm_cache_omnifunc = 0
 let mapleader=','
 nmap <leader><space> :nohlsearch<cr>
 nmap <leader>rc :e ~/.vim/vimrc<cr>
