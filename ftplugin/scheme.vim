@@ -11,3 +11,4 @@ set lispwords+=defer
 setlocal dictionary=~/.vim/dict/scheme-mode
 setlocal complete+=k
 setlocal keywordprg=:help
+setlocal equalprg=emacsformat

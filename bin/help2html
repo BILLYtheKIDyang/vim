@@ -17,13 +17,14 @@
 %s/^:$//
 %s/\[\[//g
 %s/\]\]//g
+%s/^<[ \t\n]//g
 g/\[\d\+\] http.*$/d
 w
-"call REPL_send_text('elisp', '(find-file "' . expand("%d") . '")')
-"call REPL_send_text('elisp', '(load-file "epub.el")')
-"call REPL_send_text('elisp', '(load-file "htmlize.el")')
-"call REPL_send_text('elisp', '(load-file "vimrc.el")')
-"call REPL_send_text('elisp', '(org-epub-export-to-epub)')
-"call REPL_send_text('elisp', '(shell-command "start eval.epub")')
+call REPL_send_text('elisp', '(find-file "' . expand("%d") . '")')
+call REPL_send_text('elisp', '(load-file "epub.el")')
+call REPL_send_text('elisp', '(load-file "htmlize.el")')
+call REPL_send_text('elisp', '(load-file "vimrc.el")')
+call REPL_send_text('elisp', '(org-epub-export-to-epub)')
+call REPL_send_text('elisp', '(shell-command "start eval.epub")')
 " vim:ft=vim
 quit

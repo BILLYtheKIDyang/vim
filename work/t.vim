@@ -4,8 +4,13 @@ while lnum <= line("$")
    let lnum += 1
 endwhile
 
-echo &filetype
+function Fact(n)
+   let n = a:n
+   if n < 2
+      return 1
+   else
+      return n * Fact(n - 1)
+   endif
+endfunction
 
-
-
-call VimScriptCompleteCache()
+echo Fact(33)

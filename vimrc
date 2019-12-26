@@ -50,6 +50,7 @@ let g:ycm_key_invoke_completion = '<c-n>'
 let g:ycm_min_num_identifier_candidate_chars = 1
 let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
 let g:ycm_semantic_triggers['lisp'] = ['re!\w{1}']
+let g:ycm_semantic_triggers['elisp'] = ['re!\w{1}']
 let g:ycm_semantic_triggers['scheme'] = ['re!\w{1}']
 let g:ycm_server_log_level = 'info'
 let g:ycm_show_diagnostics_ui = 1
@@ -155,12 +156,15 @@ func! MyF4()
       exec "!" . g:clear . ";racket -I typed/racket %"
    elseif &filetype=="perl"
       exec "!" . g:clear . ";perl %"
+   elseif &filetype=="elisp"
+      call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
+      call REPL_send_text("elisp", "(tags)")
    elseif &filetype=="lisp"
-      call term_sendkeys(term_list()[0], "(load \"" . WinPath("%:p") . "\")\<CR>")
+      call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
+      call REPL_send_text("lisp", "(tags)")
    elseif &filetype=="scheme"
-      silent call term_sendkeys(term_list()[0], "(tags)\<CR>")
-      call term_sendkeys(term_list()[0], "(load \"" . WinPath("%:p") . "\")\<CR>")
-      call GetTerminalReplPrint(TermGetButtom() + 2)
+      call REPL_send_text("scheme", "(tags)")
+      call REPL_load('(load "' . WinPath("%:p") . '")')
    elseif &filetype=="vim"
       :so %
    elseif &filetype=="fsharp"
@@ -185,7 +189,7 @@ func! MyF4()
    else
        silent !start "%"
    endif
-
+   call M()
 endfunc
 function! WinPath(p)
    return substitute(expand(a:p), '\\', '\\\\', 'g')

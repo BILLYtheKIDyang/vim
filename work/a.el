@@ -17,7 +17,6 @@
          (forward-line 1)
          (print (point))
          (not (looking-at "$"))))
-(find-file "a.el")
 
 (setf a  (buffer-string) b 1)
 (substring a 0)
@@ -72,10 +71,8 @@
 (bar)
 (defun foo () 2)
 (bar)
-(kill-emacs)
 (documentation 'kill-emacs)
 (symbol-function 'kill-emacs)
 
 (elisp-get-fnsym-args-string 'defun)
-(elisp-get-fnsym-args-string 'kill-emacs)
 

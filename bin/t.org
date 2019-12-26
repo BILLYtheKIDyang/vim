@@ -398,7 +398,6 @@ as its Python support is broken. If you don't already use MacVim [20], install
 it with Homebrew [21]. Install CMake as well:
 
 :  brew install cmake macvim
-<
 Install YouCompleteMe with Vundle [22].
 
 **Remember:** YCM is a plugin with a compiled component. If you **update** YCM
@@ -415,24 +414,20 @@ Compiling YCM **with** semantic support for C-family languages through
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --clang-completer
-<
 Compiling YCM **with** semantic support for C-family languages through
 **clangd**:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --clangd-completer
-<
 Note that you can install YCM with both **libclang** and **clangd** enabled. In
 that case **clangd** will be preferred unless you have the following in your
 'vimrc':
 
 :  let g:ycm_use_clangd = 0
-<
 Compiling YCM **without** semantic support for C-family languages:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py
-<
 The following additional language support options are available:
 
 - C# support: install Mono with Homebrew [21] or by downloading the Mono
@@ -460,7 +455,6 @@ adding '--clangd-completer'. So, to install with all language features, ensure
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --all
-<
 That's it. You're done. Refer to the _User Guide_ section on how to use YCM.
 Don't forget that if you want the C-family semantic completion engine to work,
 you will need to provide the compilation flags for your project to YCM. It's
@@ -511,24 +505,20 @@ Compiling YCM **with** semantic support for C-family languages through
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  python3 install.py --clang-completer
-<
 Compiling YCM **with** semantic support for C-family languages through
 **clangd**:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  python3 install.py --clangd-completer
-<
 Note that you can install YCM with both **libclang** and **clangd** enabled. In
 that case **clangd** will be preferred unless you have the following in your
 'vimrc':
 
 :  let g:ycm_use_clangd = 0
-<
 Compiling YCM **without** semantic support for C-family languages:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  python3 install.py
-<
 The following additional language support options are available:
 
 - C# support: install Mono [29] and add '--cs-completer' when calling
@@ -556,7 +546,6 @@ adding '--clangd-completer'. So, to install with all language features, ensure
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  python3 install.py --all
-<
 That's it. You're done. Refer to the _User Guide_ section on how to use YCM.
 Don't forget that if you want the C-family semantic completion engine to work,
 you will need to provide the compilation flags for your project to YCM. It's
@@ -590,7 +579,6 @@ Python 2 and Python 3 support [30] are available.
 Add the line:
 
 :  set encoding=utf-8
-<
 to your vimrc [31] if not already present. This option is required by YCM. Note
 that it does not prevent you from editing a file in another encoding than
 UTF-8. You can do that by specifying the '++enc' argument to the ':e'
@@ -626,24 +614,20 @@ Compiling YCM **with** semantic support for C-family languages through
 
 :  cd %USERPROFILE%/vimfiles/bundle/YouCompleteMe
 :  python install.py --clang-completer
-<
 Compiling YCM **with** semantic support for C-family languages through
 **clangd**:
 
 :  cd %USERPROFILE%/vimfiles/bundle/YouCompleteMe
 :  python install.py --clangd-completer
-<
 Note that you can install YCM with both **libclang** and **clangd** enabled. In
 that case **clangd** will be preferred unless you have the following in your
 'vimrc':
 
 :  let g:ycm_use_clangd = 0
-<
 Compiling YCM **without** semantic support for C-family languages:
 
 :  cd %USERPROFILE%/vimfiles/bundle/YouCompleteMe
 :  python install.py
-<
 The following additional language support options are available:
 
 - C# support: add '--cs-completer' when calling 'install.py'. Be sure that
@@ -671,7 +655,6 @@ adding '--clangd-completer'. So, to install with all language features, ensure
 
 :  cd %USERPROFILE%/vimfiles/bundle/YouCompleteMe
 :  python install.py --all
-<
 You can specify the Microsoft Visual C++ (MSVC) version using the '--msvc'
 option. YCM officially supports MSVC 14 (Visual Studio 2015) and 15 (2017).
 
@@ -704,7 +687,6 @@ of Vim installed by running 'vim --version'.
 For FreeBSD 11.x, the requirement is cmake:
 
 :  pkg install cmake
-<
 Install YouCompleteMe with Vundle [22].
 
 **Remember:** YCM is a plugin with a compiled component. If you **update** YCM
@@ -716,29 +698,24 @@ Compiling YCM **with** semantic support for C-family languages through
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --clang-completer
-<
 Compiling YCM **with** semantic support for C-family languages through
 **clangd**:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --clangd-completer
-<
 Note that you can install YCM with both **libclang** and **clangd** enabled. In
 that case **clangd** will be preferred unless you have the following in your
 'vimrc':
 
 :  let g:ycm_use_clangd = 0
-<
 Compiling YCM **without** semantic support for C-family languages:
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py
-<
 If the 'python' executable is not present, or the default 'python' is not the
 one that should be compiled against, specify the python interpreter explicitly:
 
 :  python3 install.py --clang-completer
-<
 The following additional language support options are available:
 
 - C# support: install Mono and add '--cs-completer' when calling
@@ -766,7 +743,6 @@ adding '--clangd-completer'. So, to install with all language features, ensure
 
 :  cd ~/.vim/bundle/YouCompleteMe
 :  ./install.py --all
-<
 That's it. You're done. Refer to the _User Guide_ section on how to use YCM.
 Don't forget that if you want the C-family semantic completion engine to work,
 you will need to provide the compilation flags for your project to YCM. It's
@@ -879,13 +855,11 @@ will notify you to recompile it. You should then rerun the install process.
 :   cd ~
 :   mkdir ycm_build
 :   cd ycm_build
-<
    Now we need to generate the makefiles. If you DON'T care about semantic
    support for C-family languages or plan to use **experimental** clangd [8]
    based completer, run the following command in the 'ycm_build' directory:
 
 :   cmake -G "<generator>" . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp
-<
    where '<generator>' is 'Unix Makefiles' on Unix systems and one of the
    following Visual Studio generators on Windows:
 
@@ -920,14 +894,12 @@ will notify you to recompile it. You should then rerun the install process.
    directory:
 
 :   cmake -G "<generator>" -DPATH_TO_LLVM_ROOT=~/ycm_temp/llvm_root_dir . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp
-<
    where '<generator>' is replaced like above.
 
    Now that configuration files have been generated, compile the libraries
    using this command:
 
 :   cmake --build . --target ycm_core --config Release
-<
    The '--config Release' part is specific to Windows and will be ignored on
    a Unix OS.
 
@@ -954,7 +926,6 @@ will notify you to recompile it. You should then rerun the install process.
    following line to your 'vimrc':
 
 :   let g:ycm_clangd_binary_path = "/path/to/clangd"
-<
    You need to change '/path/to/clangd' with the path of binary you
    downloaded in step 3.
 
@@ -969,7 +940,6 @@ will notify you to recompile it. You should then rerun the install process.
 :   cd regex_build
 :   cmake -G "<generator>" . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/third_party/cregex
 :   cmake --build . --target _regex --config Release
-<
    where '<generator>' is the same generator used in the previous step.
 
 6. Set up support for additional languages, as desired:
@@ -1347,7 +1317,6 @@ YouCompleteMe:
 :    return {
 :      'flags': [ '-x', 'c++', '-Wall', '-Wextra', '-Werror' ],
 :    }
-<
 As you can see from the trivial example, YCM calls the 'Settings' method which
 returns a dictionary with a single element "'flags'". This element is a 'list'
 of compiler flags to pass to libclang for the current file. The absolute path
@@ -1474,7 +1443,6 @@ enabling Java support, please **manually disable Syntastic Java diagnostics**.
 Add the following to your 'vimrc':
 
 :  let g:syntastic_java_checkers = []
-<
 -------------------------------------------------------------------------------
                                        *youcompleteme-diagnostic-display-eclim* \\
 *** Diagnostic display - Eclim
@@ -1486,7 +1454,6 @@ Java support, please **manually disable Eclim Java diagnostics**.
 Add the following to your 'vimrc':
 
 :  let g:EclimFileTypeValidate = 0
-<
 **NOTE**: We recommend disabling Eclim entirely when editing Java with YCM's
 native Java support. This can be done temporarily with ':EclimDisable'.
 
@@ -1509,12 +1476,10 @@ your project and to edit the '.classpath' to add additional libraries, such as:
 
 :  <classpathentry kind="lib" path="/path/to/external/jar" />
 :  <classpathentry kind="lib" path="/path/to/external/java/source" />
-<
 It may also be necessary to change the directory in which your source files are
 located (paths are relative to the .project file itself):
 
 :  <classpathentry kind="src" output="target/classes" path="path/to/src/" />
-<
 **NOTE**: The eclipse project and classpath files are not a public interface
 and it is highly recommended to use Maven or Gradle project definitions if you
 don't already use eclipse to manage your projects.
@@ -1553,7 +1518,6 @@ If you're not getting completions or diagnostics, check the server health:
 
 :  --   jdt.ls Java Language Server running
 :  --   jdt.ls Java Language Server Startup Status: Ready
-<
 - If the above lines don't appear after a few minutes, check the jdt.ls and
   ycmd log files using :YcmToggleLogs. The jdt.ls log file is called '.log'
   (for some reason).
@@ -1596,7 +1560,6 @@ not in any of the parent directories of the currently edited file. Example:
 :  def CSharpSolutionFile( filepath ):
 :    # `filepath` is the path of the file user is editing
 :    return '/path/to/solution/file' # Can be relative to the `.ycm_extra_conf.py`
-<
 If the path returned by 'CSharpSolutionFile' is not an actual file, YCM will
 fall back to the other way of finding the file.
 
@@ -1624,7 +1587,6 @@ at the root of your project with the following contents:
 :    return {
 :      'interpreter_path': '/path/to/virtual/environment/python'
 :    }
-<
 where '/path/to/virtual/environment/python' is the path to the Python used by
 the virtual environment you are working in. Typically, the executable can be
 found in the 'Scripts' folder of the virtual environment directory on Windows
@@ -1653,7 +1615,6 @@ instance, the following '.ycm_extra_conf.py'
 :        '/path/to/another/third_party/package'
 :      ]
 :    }
-<
 adds the paths '/path/to/some/third_party/package' and
 '/path/to/another/third_party/package' at the start of 'sys.path'.
 
@@ -1671,7 +1632,6 @@ the second position of 'sys.path':
 :    sys_path = kwargs[ 'sys_path' ]
 :    sys_path.insert( 1, '/path/to/third_party/package' )
 :    return sys_path
-<
 A more advanced example can be found in YCM's own '.ycm_extra_conf.py' [61].
 
 -------------------------------------------------------------------------------
@@ -1696,7 +1656,6 @@ it in your HOME folder. You should then add the following lines to your vimrc:
 :    \  'g:ycm_python_sys_path'
 :    \]
 :  let g:ycm_global_ycm_extra_conf = '~/global_extra_conf.py'
-<
 and create the '~/global_extra_conf.py' file with the following contents:
 
 :  def Settings( **kwargs ):
@@ -1705,7 +1664,6 @@ and create the '~/global_extra_conf.py' file with the following contents:
 :      'interpreter_path': client_data[ 'g:ycm_python_interpreter_path' ],
 :      'sys_path': client_data[ 'g:ycm_python_sys_path' ]
 :    }
-<
 That's it. You are done. Note that you don't need to restart the server when
 setting one of the options. YCM will automatically pick the new values.
 
@@ -1764,7 +1722,6 @@ To get diagnostics in JavaScript, set the 'checkJs' option to 'true' in your
 :          "checkJs": true
 :      }
 :  }
-<
 -------------------------------------------------------------------------------
                         *youcompleteme-semantic-completion-for-other-languages* \\
 *** Semantic Completion for Other Languages
@@ -1797,7 +1754,6 @@ be:
 :    \     'project_root_files': [ 'Cargo.toml' ]
 :    \   }
 :    \ ]
-<
 'project_root_files' is an optional key, since not all servers need it.
 
 When configuring a LSP server the value of the 'name' key will be used as the
@@ -1837,7 +1793,6 @@ configuration.
 :  def Settings( **kwargs ):
 :    if kwargs[ 'language' ] == 'java':
 :      return { 'ls': { 'java.format.onType.enabled': True } }
-<
 The 'ls' key tells YCM that the dictionary should be passed to thet LSP server.
 For each of the LSP server's configuration you should look up the respective
 server's documentation.
@@ -1947,7 +1902,6 @@ but no signs in the Vim gutter, ensure that your Vim version is 7.4.2201 or
 later and set the 'signcolumn' option to 'off' in your vimrc:
 
 :  set signcolumn=off
-<
 The syntax groups used to highlight regions of text with errors/warnings: -
 'YcmErrorSection', which falls back to group 'SyntasticError' if it exists and
 then 'SpellBad' - 'YcmWarningSection', which falls back to group
@@ -1956,7 +1910,6 @@ then 'SpellBad' - 'YcmWarningSection', which falls back to group
 Here's how you'd change the style for a group:
 
 :  highlight YcmErrorLine guibg=#3f0000
-<
 ===============================================================================
                                                        *youcompleteme-commands* \\
 *** Commands
@@ -2174,7 +2127,6 @@ differs, the derived type.
 For example:
 
 :  std::string s;
-<
 Invoking this command on 's' returns 'std::string => std::basic_string<char>'
 
 **NOTE:** Causes re-parsing of the current translation unit.
@@ -2212,7 +2164,6 @@ For example:
 :  void C::f() {
 :  
 :  }
-<
 In the out-of-line definition of 'C::f', the semantic parent is the class 'C',
 of which this function is a member.
 
@@ -2427,7 +2378,6 @@ function returns 0.
 For example:
 
 :  call youcompleteme#GetErrorCount()
-<
 Both this function and youcompleteme#GetWarningCount can be useful when
 integrating YCM with other Vim plugins. For example, a lightline [73] user
 could add a diagnostics section to their statusline which would display the
@@ -2442,7 +2392,6 @@ function returns 0.
 For example:
 
 :  call youcompleteme#GetWarningCount()
-<
 ===============================================================================
                                                    *youcompleteme-autocommands* \\
 *** Autocommands
@@ -2467,7 +2416,6 @@ For instance:
 :  endfunction
 :  
 :  autocmd User YcmLocationOpened call s:CustomizeYcmLocationWindow()
-<
 -------------------------------------------------------------------------------
 The *YcmQuickFixOpened* autocommand
 
@@ -2486,7 +2434,6 @@ quickfix window. For instance:
 :  endfunction
 :  
 :  autocmd User YcmQuickFixOpened call s:CustomizeYcmQuickFixWindow()
-<
 ===============================================================================
                                                         *youcompleteme-options* \\
 *** Options
@@ -2496,7 +2443,6 @@ you don't need to change any options. These options can be configured in your
 vimrc script [31] by including a line like this:
 
 :  let g:ycm_min_num_of_chars_for_completion = 1
-<
 Note that after changing an option in your vimrc script [31] you have to
 restart ycmd [44] with the :YcmRestartServer command for the changes to take
 effect.
@@ -2516,7 +2462,6 @@ identifier completion engine and just leaves the semantic engine.
 Default: '2'
 
 :  let g:ycm_min_num_of_chars_for_completion = 2
-<
 -------------------------------------------------------------------------------
 The *g:ycm_min_num_identifier_candidate_chars* option
 
@@ -2532,7 +2477,6 @@ effect on the various semantic completers.
 Default: '0'
 
 :  let g:ycm_min_num_identifier_candidate_chars = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_max_num_candidates* option
 
@@ -2550,7 +2494,6 @@ of suggestions.
 Default: '50'
 
 :  let g:ycm_max_num_candidates = 50
-<
 -------------------------------------------------------------------------------
 The *g:ycm_max_num_identifier_candidates* option
 
@@ -2566,7 +2509,6 @@ of suggestions.
 Default: '10'
 
 :  let g:ycm_max_num_identifier_candidates = 10
-<
 -------------------------------------------------------------------------------
 The *g:ycm_auto_trigger* option
 
@@ -2582,7 +2524,6 @@ number like '99'.
 Default: '1'
 
 :  let g:ycm_auto_trigger = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filetype_whitelist* option
 
@@ -2613,7 +2554,6 @@ You can get the filetype of the current file in Vim with ':set ft?'.
 Default: "{'*': 1}"
 
 :  let g:ycm_filetype_whitelist = {'*': 1}
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filetype_blacklist* option
 
@@ -2638,7 +2578,6 @@ Default: '[see next line]'
 :        \ 'infolog': 1,
 :        \ 'mail': 1
 :        \}
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filetype_specific_completion_to_disable* option
 
@@ -2661,7 +2600,6 @@ Default: '[see next line]'
 :  let g:ycm_filetype_specific_completion_to_disable = {
 :        \ 'gitcommit': 1
 :        \}
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filepath_blacklist* option
 
@@ -2675,7 +2613,6 @@ The '*' key is special and matches all filetypes. Use this key if you want to
 completely disable filepath completion:
 
 :  let g:ycm_filepath_blacklist = {'*': 1}
-<
 You can get the filetype of the current file in Vim with ':set ft?'.
 
 Default: '[see next line]'
@@ -2685,7 +2622,6 @@ Default: '[see next line]'
 :        \ 'jsx': 1,
 :        \ 'xml': 1,
 :        \}
-<
 -------------------------------------------------------------------------------
 The *g:ycm_show_diagnostics_ui* option
 
@@ -2709,7 +2645,6 @@ GCC Syntastic checkers, unset this option.
 Default: '1'
 
 :  let g:ycm_show_diagnostics_ui = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_error_symbol* option
 
@@ -2723,7 +2658,6 @@ before using this option's default.
 Default: '>>'
 
 :  let g:ycm_error_symbol = '>>'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_warning_symbol* option
 
@@ -2737,7 +2671,6 @@ before using this option's default.
 Default: '>>'
 
 :  let g:ycm_warning_symbol = '>>'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_enable_diagnostic_signs* option
 
@@ -2752,7 +2685,6 @@ before using this option's default.
 Default: '1'
 
 :  let g:ycm_enable_diagnostic_signs = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_enable_diagnostic_highlighting* option
 
@@ -2766,7 +2698,6 @@ option before using this option's default.
 Default: '1'
 
 :  let g:ycm_enable_diagnostic_highlighting = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_echo_current_diagnostic* option
 
@@ -2781,7 +2712,6 @@ option before using this option's default.
 Default: '1'
 
 :  let g:ycm_echo_current_diagnostic = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filter_diagnostics* option
 
@@ -2814,7 +2744,6 @@ Default: '{}'
 :    \      ...
 :    \    }
 :    \ }
-<
 -------------------------------------------------------------------------------
 The *g:ycm_always_populate_location_list* option
 
@@ -2832,7 +2761,6 @@ default.
 Default: '0'
 
 :  let g:ycm_always_populate_location_list = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_open_loclist_on_ycm_diags* option
 
@@ -2844,7 +2772,6 @@ See ':help location-list' in Vim to learn more about the location list.
 Default: '1'
 
 :  let g:ycm_open_loclist_on_ycm_diags = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_complete_in_comments* option
 
@@ -2854,7 +2781,6 @@ typing inside comments.
 Default: '0'
 
 :  let g:ycm_complete_in_comments = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_complete_in_strings* option
 
@@ -2870,7 +2796,6 @@ as well.
 Default: '1'
 
 :  let g:ycm_complete_in_strings = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_collect_identifiers_from_comments_and_strings* option
 
@@ -2881,7 +2806,6 @@ strings will be ignored.
 Default: '0'
 
 :  let g:ycm_collect_identifiers_from_comments_and_strings = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_collect_identifiers_from_tags_files* option
 
@@ -2905,7 +2829,6 @@ network directory.
 Default: '0'
 
 :  let g:ycm_collect_identifiers_from_tags_files = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_seed_identifiers_with_syntax* option
 
@@ -2920,7 +2843,6 @@ Usually at least 95% of the keywords are successfully extracted.
 Default: '0'
 
 :  let g:ycm_seed_identifiers_with_syntax = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_extra_conf_vim_data* option
 
@@ -2937,20 +2859,17 @@ function will be called like this:
 
 :  # The '801' value is of course contingent on Vim 8.1; in 8.0 it would be '800'
 :  Settings( ..., client_data = { 'v:version': 801 } )
-<
 So the 'client_data' parameter is a dictionary mapping Vim expression strings
 to their values at the time of the request.
 
 The correct way to define parameters for your 'Settings' function:
 
 :  def Settings( **kwargs ):
-<
 You can then get to 'client_data' with "kwargs['client_data']".
 
 Default: '[]'
 
 :  let g:ycm_extra_conf_vim_data = []
-<
 -------------------------------------------------------------------------------
 The *g:ycm_server_python_interpreter* option
 
@@ -2965,7 +2884,6 @@ inside Vim.
 Default: "''"
 
 :  let g:ycm_server_python_interpreter = ''
-<
 -------------------------------------------------------------------------------
 The *g:ycm_keep_logfiles* option
 
@@ -2978,7 +2896,6 @@ To see where the logfiles are, call :YcmDebugInfo.
 Default: '0'
 
 :  let g:ycm_keep_logfiles = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_log_level* option
 
@@ -2991,7 +2908,6 @@ Note that 'debug' is _very_ verbose.
 Default: 'info'
 
 :  let g:ycm_log_level = 'info'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_auto_start_csharp_server* option
 
@@ -3001,7 +2917,6 @@ When set to '1', the OmniSharp-Roslyn server will be automatically started
 Default: '1'
 
 :  let g:ycm_auto_start_csharp_server = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_auto_stop_csharp_server* option
 
@@ -3011,7 +2926,6 @@ closing Vim.
 Default: '1'
 
 :  let g:ycm_auto_stop_csharp_server = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_csharp_server_port* option
 
@@ -3022,7 +2936,6 @@ provided by the OS.
 Default: '0'
 
 :  let g:ycm_csharp_server_port = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_csharp_insert_namespace_expr* option
 
@@ -3040,7 +2953,6 @@ will not occur.
 Default: ''
 
 :  let g:ycm_csharp_insert_namespace_expr = ''
-<
 -------------------------------------------------------------------------------
 The *g:ycm_add_preview_to_completeopt* option
 
@@ -3059,7 +2971,6 @@ overloads in the window if the current completion is a function name.
 Default: '0'
 
 :  let g:ycm_add_preview_to_completeopt = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_autoclose_preview_window_after_completion* option
 
@@ -3071,7 +2982,6 @@ irrelevant. See the g:ycm_add_preview_to_completeopt option for more details.
 Default: '0'
 
 :  let g:ycm_autoclose_preview_window_after_completion = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_autoclose_preview_window_after_insertion* option
 
@@ -3084,7 +2994,6 @@ details.
 Default: '0'
 
 :  let g:ycm_autoclose_preview_window_after_insertion = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_max_diagnostics_to_display* option
 
@@ -3097,7 +3006,6 @@ A special value of '0' means there is no limit.
 Default: '30'
 
 :  let g:ycm_max_diagnostics_to_display = 30
-<
 -------------------------------------------------------------------------------
 The *g:ycm_key_list_select_completion* option
 
@@ -3110,7 +3018,6 @@ Some users like adding '<Enter>' to this list.
 Default: "['<TAB>', '<Down>']"
 
 :  let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
-<
 -------------------------------------------------------------------------------
 The *g:ycm_key_list_previous_completion* option
 
@@ -3126,7 +3033,6 @@ Vim.
 Default: "['<S-TAB>', '<Up>']"
 
 :  let g:ycm_key_list_previous_completion = ['<S-TAB>', '<Up>']
-<
 -------------------------------------------------------------------------------
 The *g:ycm_key_list_stop_completion* option
 
@@ -3138,7 +3044,6 @@ navigate through it.
 Default: "['<C-y>']"
 
 :  let g:ycm_key_list_stop_completion = ['<C-y>']
-<
 -------------------------------------------------------------------------------
 The *g:ycm_key_invoke_completion* option
 
@@ -3159,7 +3064,6 @@ Setting this option to an empty string will make sure no mapping is created.
 Default: '<C-Space>'
 
 :  let g:ycm_key_invoke_completion = '<C-Space>'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_key_detailed_diagnostics* option
 
@@ -3172,7 +3076,6 @@ Setting this option to an empty string will make sure no mapping is created.
 Default: '<leader>d'
 
 :  let g:ycm_key_detailed_diagnostics = '<leader>d'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_global_ycm_extra_conf* option
 
@@ -3186,7 +3089,6 @@ You can place such a global file anywhere in your filesystem.
 Default: "''"
 
 :  let g:ycm_global_ycm_extra_conf = ''
-<
 -------------------------------------------------------------------------------
 The *g:ycm_confirm_extra_conf* option
 
@@ -3200,7 +3102,6 @@ To selectively get YCM to ask/not ask about loading certain
 Default: '1'
 
 :  let g:ycm_confirm_extra_conf = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_extra_conf_globlist* option
 
@@ -3222,7 +3123,6 @@ Rules:
 Example:
 
 :  let g:ycm_extra_conf_globlist = ['~/dev/*','!~/*']
-<
 - The first rule will match everything contained in the '~/dev' directory so
   '.ycm_extra_conf.py' files from there will be loaded.
 
@@ -3239,7 +3139,6 @@ matched against the filename.
 Default: '[]'
 
 :  let g:ycm_extra_conf_globlist = []
-<
 -------------------------------------------------------------------------------
 The *g:ycm_filepath_completion_use_working_dir* option
 
@@ -3251,7 +3150,6 @@ relative to Vim's current working directory.
 Default: '0'
 
 :  let g:ycm_filepath_completion_use_working_dir = 0
-<
 -------------------------------------------------------------------------------
 The *g:ycm_semantic_triggers* option
 
@@ -3291,7 +3189,6 @@ Default: '[see next line]'
 :    \   'lua': ['.', ':'],
 :    \   'erlang': [':'],
 :    \ }
-<
 -------------------------------------------------------------------------------
 The *g:ycm_cache_omnifunc* option
 
@@ -3304,7 +3201,6 @@ cause stuttering and lagginess if the omnifunc is slow.
 Default: '1'
 
 :  let g:ycm_cache_omnifunc = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_use_ultisnips_completer* option
 
@@ -3314,7 +3210,6 @@ snippet triggers. This option can turn that behavior off.
 Default: '1'
 
 :  let g:ycm_use_ultisnips_completer = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_goto_buffer_command* option
 
@@ -3334,12 +3229,10 @@ of the following modifiers: ':aboveleft', ':belowright', ':botright',
 split vertically to the right of the current window, run the command:
 
 :  :rightbelow vertical YcmCompleter GoTo
-<
 To open in a new tab page, use the ':tab' modifier with the "'split'" or
 "'split-or-existing-window'" options e.g.:
 
 :  :tab YcmCompleter GoTo
-<
 **NOTE:** command modifiers were added in Vim 7.4.1898. If you are using an
 older version, you can still configure this by setting the option to one of the
 deprecated values: "'vertical-split'", "'new-tab'", or "'new-or-existing-tab'".
@@ -3347,7 +3240,6 @@ deprecated values: "'vertical-split'", "'new-tab'", or "'new-or-existing-tab'".
 Default: "'same-buffer'"
 
 :  let g:ycm_goto_buffer_command = 'same-buffer'
-<
 -------------------------------------------------------------------------------
 The *g:ycm_disable_for_files_larger_than_kb* option
 
@@ -3358,7 +3250,6 @@ opening.
 Default: 1000
 
 :  let g:ycm_disable_for_files_larger_than_kb = 1000
-<
 -------------------------------------------------------------------------------
 The *g:ycm_use_clangd* option
 
@@ -3373,7 +3264,6 @@ meanings:
 Default: '1'
 
 :  let g:ycm_use_clangd = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_clangd_binary_path* option
 
@@ -3383,7 +3273,6 @@ When 'ycm_use_clangd' option is set to '1', this option sets the path to
 Default: "''"
 
 :  let g:ycm_clangd_binary_path = ''
-<
 -------------------------------------------------------------------------------
 The *g:ycm_clangd_args* option
 
@@ -3393,7 +3282,6 @@ appends new options and overrides the existing ones.
 Default: '[]'
 
 :  let g:ycm_clangd_args = []
-<
 -------------------------------------------------------------------------------
 The *g:ycm_clangd_uses_ycmd_caching* option
 
@@ -3406,7 +3294,6 @@ completion items. It can take values:
 Default: '1'
 
 :  let g:ycm_clangd_uses_ycmd_caching = 1
-<
 -------------------------------------------------------------------------------
 The *g:ycm_language_server* option
 
@@ -3421,7 +3308,6 @@ A simple working example of this option can be found in the section called
 Default: '[]'
 
 :  let g:ycm_language_server = []
-<
 -------------------------------------------------------------------------------
 The *g:ycm_disable_signature_help* option
 
@@ -3434,7 +3320,6 @@ Default: '0'
 
 :  " Disable signature help
 :  let g:ycm_disable_signature_help = 1
-<
 ===============================================================================
                                                             *youcompleteme-faq* \\
 *** FAQ
@@ -3466,11 +3351,9 @@ trying to load them into a Python 3 process (or the other way around).
 For instance, if building for Python 2 but loading in Python 3:
 
 :  ImportError: dynamic module does not define init function (PyInit_ycm_core)
-<
 If building for Python 3 but loading in Python 2:
 
 :  ImportError: dynamic module does not define init function (initycm_core)
-<
 Setting the g:ycm_server_python_interpreter option to force the use of a
 specific Python interpreter for 'ycmd' is usually the easiest way to solve the
 problem. Common values for that option are '/usr/bin/python' and
@@ -3576,12 +3459,10 @@ Look at the output of your CMake call. There should be a line in it like the
 following (with '.dylib' in place of '.so' on macOS):
 
 :  -- Found PythonLibs: /usr/lib/libpython2.7.so (Required is at least version "2.5")
-<
 That would be the **correct** output. An example of **incorrect** output would
 be the following:
 
 :  -- Found PythonLibs: /usr/lib/libpython2.7.so (found suitable version "2.5.1", minimum required is "2.5")
-<
 Notice how there's an extra bit of output there, the 'found suitable version
 "<version>"' part, where '<version>' is not the same as the version of the
 dynamic library. In the example shown, the library is version 2.7 but the
@@ -3595,7 +3476,6 @@ You should probably add the following flags to your cmake call (again, 'dylib'
 instead of 'so' on macOS):
 
 :  -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
-<
 This will force the paths to the Python include directory and the Python
 library to use. You may need to set these flags to something else, but you need
 to make sure you use the same version of Python that your Vim binary is built
@@ -3609,7 +3489,6 @@ The error is usually encountered when compiling YCM on Centos or RHEL. The full
 error looks something like the following:
 
 :  /usr/bin/ld: /usr/local/lib/libpython2.7.a(abstract.o): relocation R_X86_64_32 against `a local symbol' can not be used when making a shared object; recompile with -fPIC
-<
 It's possible to get a slightly different error that's similar to the one
 above. Here's the problem and how you solve it:
 
@@ -3708,7 +3587,6 @@ options:
 :  g:UltiSnipsExpandTrigger
 :  g:UltiSnipsJumpForwardTrigger
 :  g:UltiSnipsJumpBackwardTrigger
-<
 -------------------------------------------------------------------------------
 *youcompleteme-snippets-added-with-ultisnipsaddfiletypes-do-not-appear-in-popup-menu* \\
 *** Snippets added with ':UltiSnipsAddFiletypes' do not appear in the popup menu
@@ -3718,7 +3596,6 @@ visiting a buffer or setting its filetype. You can force YCM to retrieve them
 by manually triggering the 'FileType' autocommand:
 
 :  :doautocmd FileType
-<
 -------------------------------------------------------------------------------
                *youcompleteme-why-isnt-ycm-just-written-in-plain-vimscript-ffs* \\
 *** Why isn't YCM just written in plain VimScript, FFS?
@@ -3771,7 +3648,6 @@ force the build script to run only one compile job at a time. You can do this
 by setting the 'YCM_CORES' environment variable to '1'. Example:
 
 :  YCM_CORES=1 ./install.py --clang-completer
-<
 -------------------------------------------------------------------------------
                   *youcompleteme-i-get-weird-errors-when-i-press-ctrl-c-in-vim* \\
 *** I get weird errors when I press 'Ctrl-C' in Vim
@@ -3876,7 +3752,6 @@ entries from the path.
 :  path = [folder for folder in path if not contains_msvcr_lib(folder)]
 :  os.environ['PATH'] = ';'.join(path)
 :  EOF
-<
 -------------------------------------------------------------------------------
             *youcompleteme-i-hear-that-ycm-only-supports-python-2-is-that-true* \\
 *** I hear that YCM only supports Python 2, is that true?
@@ -3908,7 +3783,6 @@ virtual environment you're in. To resolve this you should create a
 :    return {
 :      'interpreter_path': '/path/to/virtual/env/bin/python'
 :    }
-<
 See the Python Semantic Completion section for more details.
 
 -------------------------------------------------------------------------------
@@ -3923,7 +3797,6 @@ In recent versions of Vim, you can install YCM in a folder under
 :    autocmd CursorHold, CursorHoldI * :packadd YouCompleteMe
 :                                  \ | autocmd! load_ycm
 :  augroup END
-<
 -------------------------------------------------------------------------------
                          *youcompleteme-ycm-does-not-shut-down-when-i-quit-vim* \\
 *** YCM does not shut down when I quit Vim
@@ -3951,7 +3824,6 @@ e.g.
 :    return {
 :      'interpreter_path': '/path/to/anaconda/python'
 :    }
-<
 See the Python Semantic Completion section for more details.
 
 -------------------------------------------------------------------------------
@@ -3972,7 +3844,6 @@ using this key to cycle through YCM's suggestions without changing the value of
 
 :  autocmd CmdwinEnter * inoremap <expr><buffer> <TAB>
 :        \ pumvisible() ? "\<C-n>" : "\<TAB>"
-<
 ===============================================================================
                                     *youcompleteme-contributor-code-of-conduct* \\
 *** Contributor Code of Conduct

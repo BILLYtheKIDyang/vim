@@ -1,9 +1,7 @@
-function! SchemeCompleteCache()
-   let g:Complete_data = systemlist("ss.cmd")
-endfunction
-function! EmacsLispCompleteCache()
-   let g:Complete_data =systemlist("es.cmd")
-endfunction
+let g:Complete_data = []
+fun! M()
+   let g:Complete_data = readfile(expand("~/.MyComplete"))
+endfun
 fun! MyComplete(start, base)
    if a:start
       let line = getline('.')
@@ -15,9 +13,16 @@ fun! MyComplete(start, base)
    else
       let base = a:base
       let res = []
+
+      let new =  ['.*']
+      for c in   split(base, '\zs')
+         call add(new, c)
+         call add(new, '.*')
+      endfor
       for symboldoc in sort(g:Complete_data)
          let sd = split(trim(symboldoc), ",")
          if len(sd) > 0 && sd[0] =~ '^' .. base
+         "if len(sd) > 0 && sd[0] =~ '^' .. join(new, '')
             call add(res, {
                      \ 'icase': 1,
                      \ 'word': sd[0],

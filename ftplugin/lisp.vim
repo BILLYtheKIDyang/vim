@@ -6,4 +6,4 @@ set lispwords+=defrule
 setlocal dictionary=~/.sbcl_completions
 setlocal complete+=k
 setlocal equalprg=emacs\ --script\ ~/.vim/bin/emacsformat
-setlocal omnifunc=EmacsLispComplete
+setlocal omnifunc=MyComplete

@@ -1,19 +1,15 @@
-(define (fact n)
-  (if (< n 2)
-      1
-      (* n (fact (- n 1)))))
+(require 'javafx-defs)
 
-(fact 33)
+(define-alias Canvas javafx.scene.canvas.Canvas)
 
-(fact 123)
+(javafx-application)
 
-(define (fact n)
-  (if (< n 2)
-      1
-      (* n (fact (- n 1)))))
-(fact 33)
-
-(top-level-bound? 'fact)
-(top-level-value 'fact)
-
-(define-syntax
+(javafx-scene
+ title: "Hello Canvas"
+ width: 600 height: 450
+ (let* ((canvas (Canvas
+		 width: 600
+		 height: 450))
+	(gc (canvas:getGraphicsContext2D)))
+   (gc:strokeLine 0 0 600 450)
+   canvas))

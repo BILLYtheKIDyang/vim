@@ -16,9 +16,12 @@ else
 endif
 
 let g:REPL_configs['scheme'] = {}
-let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe']      "['java', '-jar', expand("~/.vim/bin/kawa.jar")]
+let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe', expand("~/.vim/bin/ss.cmd")]
+let g:REPL_configs['scheme']['repl'] = ['kawa.bat']
 let g:REPL_configs['elisp'] = {}
 let g:REPL_configs['elisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
+let g:REPL_configs['lisp'] = {}
+let g:REPL_configs['lisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
 let g:REPL_configs['java'] = {}
 let g:REPL_configs['java']['continuations'] = ['else', 'catch']
 let g:REPL_configs['java']['repl'] = ['jshell']
@@ -210,6 +213,7 @@ function! REPL_popup(str)
    call popup_create(list, o)
 endfunction
 function! REPL_load(cmd)
+   echom a:cmd
    call REPL_send_text(&filetype, a:cmd)
    let g:seen = REPL_get_buttom(&filetype) + 1
 endfunction
