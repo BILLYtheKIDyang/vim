@@ -213,7 +213,6 @@ function! REPL_popup(str)
    call popup_create(list, o)
 endfunction
 function! REPL_load(cmd)
-   echom a:cmd
    call REPL_send_text(&filetype, a:cmd)
    let g:seen = REPL_get_buttom(&filetype) + 1
 endfunction

@@ -76,3 +76,14 @@
 
 (elisp-get-fnsym-args-string 'defun)
 
+(defun fact (n)
+  "Factorial!!!"
+  (if (< n 2)
+      1
+    (* n (fact (- n 1)))))
+
+(fact 33)
+(fact 5)
+(documentation 'fact)
+
+(emacs-pid)

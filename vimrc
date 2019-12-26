@@ -21,7 +21,6 @@ function! VT()
    VimTweakEnableTopMost
 endfunction
 command! VT call VT()
-colo darkblue
 au!
 autocmd BufRead,BufNewFile *.scala set filetype=scala
 autocmd BufRead,BufNewFile *.red set filetype=red
@@ -212,5 +211,8 @@ endif
 "let moria_style='white'
 "let moria_monochrome=1
 "let moria_fontface='mixed'
-colo moria
 let g:clojure_fuzzy_indent_patterns=['^.']
+if has('win32')
+   set guifont=Consolas:h13:cANSI:qDRAFT
+else
+endif
