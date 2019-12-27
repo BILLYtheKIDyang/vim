@@ -186,7 +186,7 @@ func! MyF4()
       call term_sendkeys(term_list()[0], "zsh " . WinPath("%:p") . "\<CR>")
       call GetTerminalReplPrint('', '> ')
    else
-       silent !start "%"
+      silent !start "%"
    endif
    call M()
 endfunc
@@ -201,8 +201,7 @@ func! Fqb()
 endfunc
 call plug#begin('~/vim_plug')
 Plug 'mattn/emmet-vim'
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'sheerun/vim-polyglot'
+Plug 'vim-script/AutoComplPop'
 call plug#end()
 if has('win32')
 else
@@ -216,3 +215,6 @@ if has('win32')
    set guifont=Consolas:h13:cANSI:qDRAFT
 else
 endif
+
+let g:ycm_language_server = []
+let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]

@@ -1,4 +1,3 @@
-
 let lnum = 1
 while lnum <= line("$")
    let lnum += 1
@@ -14,3 +13,5 @@ function Fact(n)
 endfunction
 
 echo Fact(33)
+
+echo sin(33)
