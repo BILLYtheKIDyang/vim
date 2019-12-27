@@ -21,8 +21,9 @@ fun! MyComplete(start, base)
       endfor
       for symboldoc in sort(g:Complete_data)
          let sd = split(trim(symboldoc), ",")
-         if len(sd) > 0 && sd[0] =~ '^' .. base
+         "if len(sd) > 0 && sd[0] =~ '^' .. base
          "if len(sd) > 0 && sd[0] =~ '^' .. join(new, '')
+         if len(sd) > 1 && sd[0] =~ '^.*' .. base
             call add(res, {
                      \ 'icase': 1,
                      \ 'word': sd[0],

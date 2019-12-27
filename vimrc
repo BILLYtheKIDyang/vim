@@ -188,6 +188,7 @@ func! MyF4()
    else
       silent !start "%"
    endif
+   let g:Complete_data=[]
    call M()
 endfunc
 function! WinPath(p)
@@ -212,9 +213,11 @@ endif
 "let moria_fontface='mixed'
 let g:clojure_fuzzy_indent_patterns=['^.']
 if has('win32')
-   set guifont=Consolas:h13:cANSI:qDRAFT
+   set guifont=Consolas:h11:cANSI:qDRAFT
 else
+   set guifont=Droid\ Sans\ Mono\ 11
 endif
 
 let g:ycm_language_server = []
 let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
+colo Monokai

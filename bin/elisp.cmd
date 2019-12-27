@@ -9,23 +9,35 @@
 (require 'cl-lib)
 (require 'cl)
 
-
+(defun gethome () 
+  (or (getenv "HOME") 
+      (concat (getenv "HOMEPATH")
+	      (getenv "HOMEPATH"))))
+(defun getcomplete () 
+  (let ((home (gethome)))
+    (concat home 
+	    (if (string-equal (substring home 0 1) "/")
+		"/" "\\")
+        ".MyComplete")))
 (setf inhibit-message t)
 (defun tags()
-  (let ((file (concat (getenv "HOMEDRIVE") (getenv "HOMEPATH") "\\.MyComplete")))
+  (let ((file (getcomplete)))
     (with-temp-file file
       (mapatoms
        (lambda (x)
 	 (insert 
-	  (format "%s,%s\n"
-		  x 
-		  (or 
-		   (ignore-errors
-		     (let ((doc (or (elisp-get-fnsym-args-string x) (elisp-get-var-docstring x))))
-		       (substring doc (+ 2 (search ":" doc))))) ""))))))))
-
-
-
+	  (format 
+	   "%s,%s\n"
+	   x
+	   (let ((doc (or  
+                      (ignore-errors (elisp-get-fnsym-args-string x))
+                      (and (or (macrop x) (functionp x)) (car (last (split-string (or (documentation x) "") "\n"))))
+                      (elisp-get-var-docstring x)
+			          ": ")))
+	     (let ((col (search ":" doc)))
+               (if col
+                   (substring doc (+ 2 col))
+                   doc))))))))))
 (setf   code "")
 (setf   done nil)
 (setf   line "")
