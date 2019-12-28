@@ -6,7 +6,6 @@ def fib(n)
   end
 end
 
-print "fib (6) = ", fib(6), "\n"
 
 class Stack
   def initialize
@@ -24,6 +23,9 @@ class Stack
     @sp -= 1
     return @stack[@sp]
   end
+  def inspect
+    [@stack,@sp]
+  end
 end
 
 stack = Stack.new
@@ -34,9 +36,4 @@ stack.pop()
 stack.pop
 stack.pop
 stack.pop
-
-begin
-  eval "3="
-rescue   Exception => e
-  puts $!
-end
+print stack.inspect

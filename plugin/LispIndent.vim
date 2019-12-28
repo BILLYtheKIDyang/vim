@@ -2,6 +2,7 @@ finish
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ) )<Esc>%:echo getline(".") <CR>%a
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ] ]<Esc>%:echo getline(".") <CR>%a
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap } }<Esc>%:echo getline(".") <CR>%a
+finish
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp setlocal debug=msg
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp setlocal equalprg=
 autocmd FileType clojure,lisp,scheme,racket,emacs-lisp setlocal indentexpr=LI()

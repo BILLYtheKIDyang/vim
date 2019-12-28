@@ -18,6 +18,7 @@ foreach $cone (@flavors) {
    'A Boy Named Sue, Goo Goo Dolls');
 foreach $record (@Music) {
    ($record_name, $artist) = split(/,/, $record);
+   print $record_name ,"\n";
 }
 
 $numbers = join(', ', (1..10));
@@ -43,4 +44,3 @@ $myhome = `ls \%WINDIR%`;
 @myhome = qx'dir %WINDIR%';
 
 print foreach (sort @myhome)
-

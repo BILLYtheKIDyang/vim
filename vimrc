@@ -76,7 +76,7 @@ runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
 runtime plugin/EmacsLispComplete.vim
 "set path+=**
-set rtp+=~/YouCompleteMe
+"set rtp+=~/YouCompleteMe
 set ambiwidth=double
 set autochdir
 set autoindent
@@ -221,3 +221,6 @@ endif
 let g:ycm_language_server = []
 let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
 colo Monokai
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_classes_in_global = 1
+let g:rubycomplete_rails = 1
