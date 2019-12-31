@@ -77,7 +77,7 @@ runtime plugin/yankmatches.vim
 runtime plugin/EmacsLispComplete.vim
 runtime plugin/REPL.vim
 "set path+=**
-"set rtp+=~/YouCompleteMe
+set rtp+=~/YouCompleteMe
 set ambiwidth=double
 set autochdir
 set autoindent
