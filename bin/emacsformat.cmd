@@ -16,7 +16,7 @@
 	(push line code))
     (error
      (with-temp-buffer
-       (lisp-mode)
+       (scheme-mode)
        (insert (string-join (reverse code) "\n"))
        (setf code nil)
        (indent-region (point-min) (point-max) nil)

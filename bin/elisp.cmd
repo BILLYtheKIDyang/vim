@@ -10,9 +10,10 @@
 (require 'cl)
 
 (defun gethome () 
-  (or (getenv "HOME") 
+  (if (eql system-type  "windows-nt")
       (concat (getenv "HOMEPATH")
-	      (getenv "HOMEPATH"))))
+	      (getenv "HOMEPATH"))
+      (getenv "HOME")))
 (defun getcomplete () 
   (let ((home (gethome)))
     (concat home 
@@ -27,7 +28,7 @@
        (lambda (x)
 	 (insert 
 	  (format 
-	   "%s,%s\n"
+	   "%s;%s\n"
 	   x
 	   (let ((doc (or  
                       (ignore-errors (elisp-get-fnsym-args-string x))

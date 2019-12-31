@@ -1,6 +1,13 @@
-let g:Complete_data = []
+let g:Complete_dict = {}
 fun! M()
-   let g:Complete_data = readfile(expand("~/.MyComplete"))
+   let g:Complete_dict = {}
+   for line in readfile(expand("~/.MyComplete"))
+      let t = split(line, ';')
+      if len(t) > 1
+         let [name;doc] = split(line, ';')
+         let g:Complete_dict[name] = join(doc, ';')
+      endif
+   endfor
 endfun
 fun! MyComplete(start, base)
    if a:start
@@ -19,16 +26,10 @@ fun! MyComplete(start, base)
          call add(new, c)
          call add(new, '.*')
       endfor
-      for symboldoc in sort(g:Complete_data)
-         let sd = split(trim(symboldoc), ",")
-         "if len(sd) > 0 && sd[0] =~ '^' .. base
-         "if len(sd) > 0 && sd[0] =~ '^' .. join(new, '')
-         if len(sd) > 1 && sd[0] =~ '^.*' .. base
-            call add(res, {
-                     \ 'icase': 1,
-                     \ 'word': sd[0],
-                     \ 'menu': join(sd[1:],''),
-                     \ })
+      "for symboldoc in sort(g:Complete_dict)
+      for name in sort(keys(g:Complete_dict))
+         if name =~ '^.*' .. base
+            call add(res, { 'icase': 1, 'word': name, 'menu': g:Complete_dict[name] } )
          endif
       endfor
       return res 
@@ -70,13 +71,29 @@ function! VimScriptCompleteCache()
    let types += ['tag_listfiles']
    let types += ['user']
    let types += ['var']
-   let g:Complete_data = []
+   let g:Complete_dict = {}
    for type in types
       try
-         let g:Complete_data += map(getcompletion('', type), 'v:val . "," . type')
+         for name in map(getcompletion('', type), 'split(v:val, "(")[0]')
+            let g:Complete_dict[ name ] = type
+         endfor
       catch 
       endtry
    endfor
+
+
+
+   let funargs=''
+   redir => funargs
+   :silent function
+   redir END
+   for fd in split(funargs, "\n")
+      let t = split(fd[9:], '(')
+      if len(t) > 1
+         let g:Complete_dict[t[0]] = '(' .. t[1]
+      end
+   endfor
 endfunction
+
 
 set omnifunc=MyComplete

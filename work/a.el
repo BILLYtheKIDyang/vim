@@ -86,4 +86,4 @@
 (fact 5)
 (documentation 'fact)
 
-(emacs-pid)
+(substring "33" 0 1)

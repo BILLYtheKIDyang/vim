@@ -75,6 +75,7 @@ runtime plugin/vimpoint.vim
 runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
 runtime plugin/EmacsLispComplete.vim
+runtime plugin/REPL.vim
 "set path+=**
 "set rtp+=~/YouCompleteMe
 set ambiwidth=double
@@ -213,14 +214,16 @@ endif
 "let moria_fontface='mixed'
 let g:clojure_fuzzy_indent_patterns=['^.']
 if has('win32')
-   set guifont=Consolas:h11:cANSI:qDRAFT
+   set guifont=Consolas:h12:cANSI:qDRAFT
 else
-   set guifont=Droid\ Sans\ Mono\ 11
+   set guifont=Droid\ Sans\ Mono\ 12
 endif
 
 let g:ycm_language_server = []
-let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
+"let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
 colo Monokai
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
+let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe', expand("~/.vim/bin/ss.cmd")]
+"let g:REPL_configs['scheme']['repl'] = ['D:/Racket/Racket.exe']
