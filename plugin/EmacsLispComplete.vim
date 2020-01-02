@@ -1,3 +1,30 @@
+fun! DictionaryAdd(dict, key, type, val)
+   let [dict, key, type, val] = [a:dict, a:key, a:type, a:val]
+   if has_key(dict, key)
+      if has_key(dict[key], type)
+         let dict[key][type] = val
+      else
+         let dict[key][type] = val
+      endif
+   else
+      let dict[key] = {}
+      let dict[key][type] = val
+   endif
+endfunction
+
+fun! DictionaryToString(d)
+   let d = a:d
+   let s = ''
+   for key in keys(d)
+      if d[key] == ''
+         let s =key .. " " .. s
+      else
+         let s = s .. " " .. key .. ': ' .. d[key]
+      endif
+   endfor
+   return trim(s)
+endfunction
+
 let g:Complete_dict = {}
 fun! M()
    let g:Complete_dict = {}
@@ -5,7 +32,8 @@ fun! M()
       let t = split(line, ';')
       if len(t) > 1
          let [name;doc] = split(line, ';')
-         let g:Complete_dict[name] = join(doc, ';')
+         "let g:Complete_dict[name] = join(doc, ';')
+         call DictionaryAdd(g:Complete_dict, name, join(doc, ';'), '')
       endif
    endfor
 endfun
@@ -13,7 +41,7 @@ fun! MyComplete(start, base)
    if a:start
       let line = getline('.')
       let start = col('.') - 1
-      while start > 0 && line[start - 1] =~ '\k'
+      while start > 0 && (line[start - 1] =~ '\k' || line[start - 1] =~ "[-:&]")
          let start -= 1
       endwhile
       return start
@@ -26,10 +54,9 @@ fun! MyComplete(start, base)
          call add(new, c)
          call add(new, '.*')
       endfor
-      "for symboldoc in sort(g:Complete_dict)
       for name in sort(keys(g:Complete_dict))
          if name =~ '^.*' .. base
-            call add(res, { 'icase': 1, 'word': name, 'menu': g:Complete_dict[name] } )
+            call add(res, { 'icase': 1, 'word': name, 'menu': printf("%s", DictionaryToString(g:Complete_dict[name])) } )
          endif
       endfor
       return res 
@@ -48,7 +75,7 @@ function! VimScriptCompleteCache()
    let types += ['dir']
    let types += ['environment']
    let types += ['event']
-   let types += ['expression']
+   "let types += ['expression']
    let types += ['file']
    let types += ['file_in_path']
    let types += ['filetype']
@@ -74,8 +101,11 @@ function! VimScriptCompleteCache()
    let g:Complete_dict = {}
    for type in types
       try
-         for name in map(getcompletion('', type), 'split(v:val, "(")[0]')
-            let g:Complete_dict[ name ] = type
+         for name in getcompletion('', type)
+            let name = split(name, '(')
+            if len(name) > 0
+            call DictionaryAdd(g:Complete_dict, name[0], type, '')
+         endif
          endfor
       catch /E433/
       endtry
@@ -90,496 +120,497 @@ function! VimScriptCompleteCache()
    for fd in split(funargs, "\n")
       let t = split(fd[9:], '(')
       if len(t) > 1
-         let g:Complete_dict[t[0]] = '(' .. t[1]
+         "let g:Complete_dict[t[0]] = '(' .. t[1]
+         call DictionaryAdd(g:Complete_dict, t[0], 'function', '(' .. t[1])
       end
    endfor
 
 
-   let g:Complete_dict["abs"] = "({expr}) : Float or Number  absolute value of {expr}"
-   let g:Complete_dict["acos"] = "({expr}) : Float	arc cosine of {expr}"
-   let g:Complete_dict["add"] = "({object}, {item}) : List/Blob   append {item} to {object}"
-   let g:Complete_dict["and"] = "({expr}, {expr}) : Number	bitwise AND"
-   let g:Complete_dict["append"] = "({lnum}, {text}) : Number	append {text} below line {lnum}"
-   let g:Complete_dict["appendbufline"] = "({expr}, {lnum}, {text}) : Number	append {text} below line {lnum} in buffer {expr}"
-   let g:Complete_dict["argc"] = "([{winid}]) : Number	number of files in the argument list"
-   let g:Complete_dict["argidx"] = "() : Number	current index in the argument list"
-   let g:Complete_dict["arglistid"] = "([{winnr} [, {tabnr}]]) : Number	argument list id"
-   let g:Complete_dict["argv"] = "([-1, {winid}]) : List	the argument list"
-   let g:Complete_dict["argv"] = "({nr} [, {winid}]) : String	{nr} entry of the argument list"
-   let g:Complete_dict["asin"] = "({expr}) : Float	arc sine of {expr}"
-   let g:Complete_dict["assert_beeps"] = "({cmd}) : Number	assert {cmd} causes a beep"
-   let g:Complete_dict["assert_equal"] = "({exp}, {act} [, {msg}]) : Number	assert {exp} is equal to {act}"
-   let g:Complete_dict["assert_equalfile"] = "({fname-one}, {fname-two}) : Number	assert file contents is equal"
-   let g:Complete_dict["assert_exception"] = "({error} [, {msg}]) : Number	assert {error} is in v:exception"
-   let g:Complete_dict["assert_fails"] = "({cmd} [, {error} [, {msg}]]) : Number	assert {cmd} fails"
-   let g:Complete_dict["assert_false"] = "({actual} [, {msg}]) : Number	assert {actual} is false"
-   let g:Complete_dict["assert_inrange"] = "({lower}, {upper}, {actual} [, {msg}]) : Number	assert {actual} is inside the range"
-   let g:Complete_dict["assert_match"] = "({pat}, {text} [, {msg}]) : Number	assert {pat} matches {text}"
-   let g:Complete_dict["assert_notequal"] = "({exp}, {act} [, {msg}]) : Number	assert {exp} is not equal {act}"
-   let g:Complete_dict["assert_notmatch"] = "({pat}, {text} [, {msg}]) : Number	assert {pat} not matches {text}"
-   let g:Complete_dict["assert_report"] = "({msg}) : Number	report a test failure"
-   let g:Complete_dict["assert_true"] = "({actual} [, {msg}]) : Number	assert {actual} is true"
-   let g:Complete_dict["atan"] = "({expr}) : Float	arc tangent of {expr}"
-   let g:Complete_dict["atan2"] = "({expr1}, {expr2}) : Float	arc tangent of {expr1} / {expr2}"
-   let g:Complete_dict["balloon_gettext"] = "() : String	current text in the balloon"
-   let g:Complete_dict["balloon_show"] = "({expr}) : none	show {expr} inside the balloon"
-   let g:Complete_dict["balloon_split"] = "({msg}) : List	split {msg} as used for a balloon"
-   let g:Complete_dict["browse"] = "({save}, {title}, {initdir}, {default}) : String	put up a file requester"
-   let g:Complete_dict["browsedir"] = "({title}, {initdir}) : String	put up a directory requester"
-   let g:Complete_dict["bufadd"] = "({name}) : Number	add a buffer to the buffer list"
-   let g:Complete_dict["bufexists"] = "({expr}) : Number	|TRUE| if buffer {expr} exists"
-   let g:Complete_dict["buflisted"] = "({expr}) : Number	|TRUE| if buffer {expr} is listed"
-   let g:Complete_dict["bufload"] = "({expr}) : Number	load buffer {expr} if not loaded yet"
-   let g:Complete_dict["bufloaded"] = "({expr}) : Number	|TRUE| if buffer {expr} is loaded"
-   let g:Complete_dict["bufname"] = "([{expr}]) : String	Name of the buffer {expr}"
-   let g:Complete_dict["bufnr"] = "([{expr} [, {create}]]) : Number	Number of the buffer {expr}"
-   let g:Complete_dict["bufwinid"] = "({expr}) : Number	window ID of buffer {expr}"
-   let g:Complete_dict["bufwinnr"] = "({expr}) : Number	window number of buffer {expr}"
-   let g:Complete_dict["byte2line"] = "({byte}) : Number	line number at byte count {byte}"
-   let g:Complete_dict["byteidx"] = "({expr}, {nr}) : Number	byte index of {nr}'th char in {expr}"
-   let g:Complete_dict["byteidxcomp"] = "({expr}, {nr}) : Number	byte index of {nr}'th char in {expr}"
-   let g:Complete_dict["call"] = "({func}, {arglist} [, {dict}]) : any	call {func} with arguments {arglist}"
-   let g:Complete_dict["ceil"] = "({expr}) : Float	round {expr} up"
-   let g:Complete_dict["ch_canread"] = "({handle}) : Number	check if there is something to read"
-   let g:Complete_dict["ch_close"] = "({handle}) : none	close {handle}"
-   let g:Complete_dict["ch_close_in"] = "({handle}) : none	close in part of {handle}"
-   let g:Complete_dict["ch_evalexpr"] = "({handle}, {expr} [, {options}]) : any	evaluate {expr} on JSON {handle}"
-   let g:Complete_dict["ch_evalraw"] = "({handle}, {string} [, {options}]) : any	evaluate {string} on raw {handle}"
-   let g:Complete_dict["ch_getbufnr"] = "({handle}, {what}) : Number	get buffer number for {handle}/{what}"
-   let g:Complete_dict["ch_getjob"] = "({channel}) : Job	get the Job of {channel}"
-   let g:Complete_dict["ch_info"] = "({handle}) : String	info about channel {handle}"
-   let g:Complete_dict["ch_log"] = "({msg} [, {handle}]) : none	write {msg} in the channel log file"
-   let g:Complete_dict["ch_logfile"] = "({fname} [, {mode}]) : none	start logging channel activity"
-   let g:Complete_dict["ch_open"] = "({address} [, {options}]) : Channel	open a channel to {address}"
-   let g:Complete_dict["ch_read"] = "({handle} [, {options}]) : String	read from {handle}"
-   let g:Complete_dict["ch_readblob"] = "({handle} [, {options}]) : Blob	read Blob from {handle}"
-   let g:Complete_dict["ch_readraw"] = "({handle} [, {options}]) : String	read raw from {handle}"
-   let g:Complete_dict["ch_sendexpr"] = "({handle}, {expr} [, {options}]) : any	send {expr} over JSON {handle}"
-   let g:Complete_dict["ch_sendraw"] = "({handle}, {expr} [, {options}]) : any	send {expr} over raw {handle}"
-   let g:Complete_dict["ch_setoptions"] = "({handle}, {options}) : none	set options for {handle}"
-   let g:Complete_dict["ch_status"] = "({handle} [, {options}]) : String	status of channel {handle}"
-   let g:Complete_dict["changenr"] = "() : Number	current change number"
-   let g:Complete_dict["char2nr"] = "({expr} [, {utf8}]) : Number	ASCII/UTF8 value of first char in {expr}"
-   let g:Complete_dict["chdir"] = "({dir}) : String	change current working directory"
-   let g:Complete_dict["cindent"] = "({lnum}) : Number	C indent for line {lnum}"
-   let g:Complete_dict["clearmatches"] = "([{win}]) : none	clear all matches"
-   let g:Complete_dict["col"] = "({expr}) : Number	column nr of cursor or mark"
-   let g:Complete_dict["complete"] = "({startcol}, {matches}) : none	set Insert mode completion"
-   let g:Complete_dict["complete_add"] = "({expr}) : Number	add completion match"
-   let g:Complete_dict["complete_check"] = "() : Number	check for key typed during completion"
-   let g:Complete_dict["complete_info"] = "([{what}]) : Dict	get current completion information"
-   let g:Complete_dict["confirm"] = "({msg} [, {choices} [, {default} [, {type}]]]) : Number	number of choice picked by user"
-   let g:Complete_dict["copy"] = "({expr}) : any	make a shallow copy of {expr}"
-   let g:Complete_dict["cos"] = "({expr}) : Float	cosine of {expr}"
-   let g:Complete_dict["cosh"] = "({expr}) : Float	hyperbolic cosine of {expr}"
-   let g:Complete_dict["count"] = "({comp}, {expr} [, {ic} [, {start}]]) : Number	count how many {expr} are in {comp}"
-   let g:Complete_dict["cscope_connection"] = "([{num}, {dbpath} [, {prepend}]]) : Number	checks existence of cscope connection"
-   let g:Complete_dict["cursor"] = "({list}) : Number	move cursor to position in {list}"
-   let g:Complete_dict["cursor"] = "({lnum}, {col} [, {off}]) : Number	move cursor to {lnum}, {col}, {off}"
-   let g:Complete_dict["debugbreak"] = "({pid}) : Number  interrupt process being debugged"
-   let g:Complete_dict["deepcopy"] = "({expr} [, {noref}]) : any	make a full copy of {expr}"
-   let g:Complete_dict["delete"] = "({fname} [, {flags}]) : Number	delete the file or directory {fname}"
-   let g:Complete_dict["deletebufline"] = "({expr}, {first} [, {last}]) : Number	delete lines from buffer {expr}"
-   let g:Complete_dict["did_filetype"] = "() : Number	|TRUE| if FileType autocmd event used"
-   let g:Complete_dict["diff_filler"] = "({lnum}) : Number	diff filler lines about {lnum}"
-   let g:Complete_dict["diff_hlID"] = "({lnum}, {col}) : Number	diff highlighting at {lnum}/{col}"
-   let g:Complete_dict["empty"] = "({expr}) : Number	|TRUE| if {expr} is empty"
-   let g:Complete_dict["environ"] = "() : Dict	return environment variables"
-   let g:Complete_dict["escape"] = "({string}, {chars}) : String	escape {chars} in {string} with '\'"
-   let g:Complete_dict["eval"] = "({string}) : any	evaluate {string} into its value"
-   let g:Complete_dict["eventhandler"] = "() : Number	|TRUE| if inside an event handler"
-   let g:Complete_dict["executable"] = "({expr}) : Number	1 if executable {expr} exists"
-   let g:Complete_dict["execute"] = "({command}) : String	execute {command} and get the output"
-   let g:Complete_dict["exepath"] = "({expr}) : String	full path of the command {expr}"
-   let g:Complete_dict["exists"] = "({expr}) : Number	|TRUE| if {expr} exists"
-   let g:Complete_dict["exp"] = "({expr}) : Float	exponential of {expr}"
-   let g:Complete_dict["expand"] = "({expr} [, {nosuf} [, {list}]]) : any	expand special keywords in {expr}"
-   let g:Complete_dict["expandcmd"] = "({expr}) : String	expand {expr} like with `:edit`"
-   let g:Complete_dict["extend"] = "({expr1}, {expr2} [, {expr3}]) : List/Dict insert items of {expr2} into {expr1}"
-   let g:Complete_dict["feedkeys"] = "({string} [, {mode}]) : Number	add key sequence to typeahead buffer"
-   let g:Complete_dict["filereadable"] = "({file}) : Number	|TRUE| if {file} is a readable file"
-   let g:Complete_dict["filewritable"] = "({file}) : Number	|TRUE| if {file} is a writable file"
-   let g:Complete_dict["filter"] = "({expr1}, {expr2}) : List/Dict  remove items from {expr1} where {expr2} is 0"
-   let g:Complete_dict["finddir"] = "({name} [, {path} [, {count}]]) : String	find directory {name} in {path}"
-   let g:Complete_dict["findfile"] = "({name} [, {path} [, {count}]]) : String	find file {name} in {path}"
-   let g:Complete_dict["float2nr"] = "({expr}) : Number	convert Float {expr} to a Number"
-   let g:Complete_dict["floor"] = "({expr}) : Float	round {expr} down"
-   let g:Complete_dict["fmod"] = "({expr1}, {expr2}) : Float	remainder of {expr1} / {expr2}"
-   let g:Complete_dict["fnameescape"] = "({fname}) : String	escape special characters in {fname}"
-   let g:Complete_dict["fnamemodify"] = "({fname}, {mods}) : String	modify file name"
-   let g:Complete_dict["foldclosed"] = "({lnum}) : Number	first line of fold at {lnum} if closed"
-   let g:Complete_dict["foldclosedend"] = "({lnum}) : Number	last line of fold at {lnum} if closed"
-   let g:Complete_dict["foldlevel"] = "({lnum}) : Number	fold level at {lnum}"
-   let g:Complete_dict["foldtext"] = "() : String	line displayed for closed fold"
-   let g:Complete_dict["foldtextresult"] = "({lnum}) : String	text for closed fold at {lnum}"
-   let g:Complete_dict["foreground"] = "() : Number	bring the Vim window to the foreground"
-   let g:Complete_dict["funcref"] = "({name} [, {arglist}] [, {dict}]) : Funcref	reference to function {name}"
-   let g:Complete_dict["function"] = "({name} [, {arglist}] [, {dict}]) : Funcref	named reference to function {name}"
-   let g:Complete_dict["garbagecollect"] = "([{atexit}]) : none	free memory, breaking cyclic references"
-   let g:Complete_dict["get"] = "({dict}, {key} [, {def}]) : any	get item {key} from {dict} or {def}"
-   let g:Complete_dict["get"] = "({func}, {what}) : any	get property of funcref/partial {func}"
-   let g:Complete_dict["get"] = "({list}, {idx} [, {def}]) : any	get item {idx} from {list} or {def}"
-   let g:Complete_dict["getbufinfo"] = "([{expr}]) : List	information about buffers"
-   let g:Complete_dict["getbufline"] = "({expr}, {lnum} [, {end}]) : List	lines {lnum} to {end} of buffer {expr}"
-   let g:Complete_dict["getbufvar"] = "({expr}, {varname} [, {def}]) : any	variable {varname} in buffer {expr}"
-   let g:Complete_dict["getchangelist"] = "([{expr}]) : List	list of change list items"
-   let g:Complete_dict["getchar"] = "([expr]) : Number	get one character from the user"
-   let g:Complete_dict["getcharmod"] = "() : Number	modifiers for the last typed character"
-   let g:Complete_dict["getcharsearch"] = "() : Dict	last character search"
-   let g:Complete_dict["getcmdline"] = "() : String	return the current command-line"
-   let g:Complete_dict["getcmdpos"] = "() : Number	return cursor position in command-line"
-   let g:Complete_dict["getcmdtype"] = "() : String	return current command-line type"
-   let g:Complete_dict["getcmdwintype"] = "() : String	return current command-line window type"
-   let g:Complete_dict["getcompletion"] = "({pat}, {type} [, {filtered}]) : List	list of cmdline completion matches"
-   let g:Complete_dict["getcurpos"] = "() : List	position of the cursor"
-   let g:Complete_dict["getcwd"] = "([{winnr} [, {tabnr}]]) : String	get the current working directory"
-   let g:Complete_dict["getenv"] = "({name}) : String	return environment variable"
-   let g:Complete_dict["getfontname"] = "([{name}]) : String	name of font being used"
-   let g:Complete_dict["getfperm"] = "({fname}) : String	file permissions of file {fname}"
-   let g:Complete_dict["getfsize"] = "({fname}) : Number	size in bytes of file {fname}"
-   let g:Complete_dict["getftime"] = "({fname}) : Number	last modification time of file"
-   let g:Complete_dict["getftype"] = "({fname}) : String	description of type of file {fname}"
-   let g:Complete_dict["getimstatus"] = "() : Number	|TRUE| if the IME status is active"
-   let g:Complete_dict["getjumplist"] = "([{winnr} [, {tabnr}]]) : List	list of jump list items"
-   let g:Complete_dict["getline"] = "({lnum}) : String	line {lnum} of current buffer"
-   let g:Complete_dict["getline"] = "({lnum}, {end}) : List	lines {lnum} to {end} of current buffer"
-   let g:Complete_dict["getloclist"] = "({nr} [, {what}]) : List	list of location list items"
-   let g:Complete_dict["getmatches"] = "([{win}]) : List	list of current matches"
-   let g:Complete_dict["getmousepos"] = "() : Dict	last known mouse position"
-   let g:Complete_dict["getpid"] = "() : Number	process ID of Vim"
-   let g:Complete_dict["getpos"] = "({expr}) : List	position of cursor, mark, etc."
-   let g:Complete_dict["getqflist"] = "([{what}]) : List	list of quickfix items"
-   let g:Complete_dict["getreg"] = "([{regname} [, 1 [, {list}]]]) : String or List   contents of register"
-   let g:Complete_dict["getregtype"] = "([{regname}]) : String	type of register"
-   let g:Complete_dict["gettabinfo"] = "([{expr}]) : List	list of tab pages"
-   let g:Complete_dict["gettabvar"] = "({nr}, {varname} [, {def}]) : any	variable {varname} in tab {nr} or {def}"
-   let g:Complete_dict["gettabwinvar"] = "({tabnr}, {winnr}, {name} [, {def}]) : any	{name} in {winnr} in tab page {tabnr}"
-   let g:Complete_dict["gettagstack"] = "([{nr}]) : Dict	get the tag stack of window {nr}"
-   let g:Complete_dict["getwininfo"] = "([{winid}]) : List	list of info about each window"
-   let g:Complete_dict["getwinpos"] = "([{timeout}]) : List	X and Y coord in pixels of the Vim window"
-   let g:Complete_dict["getwinposx"] = "() : Number	X coord in pixels of the Vim window"
-   let g:Complete_dict["getwinposy"] = "() : Number	Y coord in pixels of the Vim window"
-   let g:Complete_dict["getwinvar"] = "({nr}, {varname} [, {def}]) : any	variable {varname} in window {nr}"
-   let g:Complete_dict["glob"] = "({expr} [, {nosuf} [, {list} [, {alllinks}]]]) : any	expand file wildcards in {expr}"
-   let g:Complete_dict["glob2regpat"] = "({expr}) : String	convert a glob pat into a search pat"
-   let g:Complete_dict["globpath"] = "({path}, {expr} [, {nosuf} [, {list} [, {alllinks}]]]) : String	do glob({expr}) for all dirs in {path}"
-   let g:Complete_dict["has"] = "({feature}) : Number	|TRUE| if feature {feature} supported"
-   let g:Complete_dict["has_key"] = "({dict}, {key}) : Number	|TRUE| if {dict} has entry {key}"
-   let g:Complete_dict["haslocaldir"] = "([{winnr} [, {tabnr}]]) : Number	|TRUE| if the window executed |:lcd| or |:tcd|"
-   let g:Complete_dict["hasmapto"] = "({what} [, {mode} [, {abbr}]]) : Number	|TRUE| if mapping to {what} exists"
-   let g:Complete_dict["histadd"] = "({history}, {item}) : String	add an item to a history"
-   let g:Complete_dict["histdel"] = "({history} [, {item}]) : String	remove an item from a history"
-   let g:Complete_dict["histget"] = "({history} [, {index}]) : String	get the item {index} from a history"
-   let g:Complete_dict["histnr"] = "({history}) : Number	highest index of a history"
-   let g:Complete_dict["hlID"] = "({name}) : Number	syntax ID of highlight group {name}"
-   let g:Complete_dict["hlexists"] = "({name}) : Number	|TRUE| if highlight group {name} exists"
-   let g:Complete_dict["hostname"] = "() : String	name of the machine Vim is running on"
-   let g:Complete_dict["iconv"] = "({expr}, {from}, {to}) : String	convert encoding of {expr}"
-   let g:Complete_dict["indent"] = "({lnum}) : Number	indent of line {lnum}"
-   let g:Complete_dict["index"] = "({object}, {expr} [, {start} [, {ic}]]) : Number	index in {object} where {expr} appears"
-   let g:Complete_dict["input"] = "({prompt} [, {text} [, {completion}]]) : String	get input from the user"
-   let g:Complete_dict["inputdialog"] = "({prompt} [, {text} [, {completion}]]) : String	like input() but in a GUI dialog"
-   let g:Complete_dict["inputlist"] = "({textlist}) : Number	let the user pick from a choice list"
-   let g:Complete_dict["inputrestore"] = "() : Number	restore typeahead"
-   let g:Complete_dict["inputsave"] = "() : Number	save and clear typeahead"
-   let g:Complete_dict["inputsecret"] = "({prompt} [, {text}]) : String	like input() but hiding the text"
-   let g:Complete_dict["insert"] = "({object}, {item} [, {idx}]) : List	insert {item} in {object} [before {idx}]"
-   let g:Complete_dict["interrupt"] = "() : none	interrupt script execution"
-   let g:Complete_dict["invert"] = "({expr}) : Number	bitwise invert"
-   let g:Complete_dict["isdirectory"] = "({directory}) : Number	|TRUE| if {directory} is a directory"
-   let g:Complete_dict["isinf"] = "({expr}) : Number	determine if {expr} is infinity value (positive or negative)"
-   let g:Complete_dict["islocked"] = "({expr}) : Number	|TRUE| if {expr} is locked"
-   let g:Complete_dict["isnan"] = "({expr}) : Number	|TRUE| if {expr} is NaN"
-   let g:Complete_dict["items"] = "({dict}) : List	key-value pairs in {dict}"
-   let g:Complete_dict["job_getchannel"] = "({job}) : Channel	get the channel handle for {job}"
-   let g:Complete_dict["job_info"] = "([{job}]) : Dict	get information about {job}"
-   let g:Complete_dict["job_setoptions"] = "({job}, {options}) : none	set options for {job}"
-   let g:Complete_dict["job_start"] = "({command} [, {options}]) : Job	start a job"
-   let g:Complete_dict["job_status"] = "({job}) : String	get the status of {job}"
-   let g:Complete_dict["job_stop"] = "({job} [, {how}]) : Number	stop {job}"
-   let g:Complete_dict["join"] = "({list} [, {sep}]) : String	join {list} items into one String"
-   let g:Complete_dict["js_decode"] = "({string}) : any	decode JS style JSON"
-   let g:Complete_dict["js_encode"] = "({expr}) : String	encode JS style JSON"
-   let g:Complete_dict["json_decode"] = "({string}) : any	decode JSON"
-   let g:Complete_dict["json_encode"] = "({expr}) : String	encode JSON"
-   let g:Complete_dict["keys"] = "({dict}) : List	keys in {dict}"
-   let g:Complete_dict["len"] = "({expr}) : Number	the length of {expr}"
-   let g:Complete_dict["libcall"] = "({lib}, {func}, {arg}) : String	call {func} in library {lib} with {arg}"
-   let g:Complete_dict["libcallnr"] = "({lib}, {func}, {arg}) : Number	idem, but return a Number"
-   let g:Complete_dict["line"] = "({expr} [, {winid}]) : Number	line nr of cursor, last line or mark"
-   let g:Complete_dict["line2byte"] = "({lnum}) : Number	byte count of line {lnum}"
-   let g:Complete_dict["lispindent"] = "({lnum}) : Number	Lisp indent for line {lnum}"
-   let g:Complete_dict["list2str"] = "({list} [, {utf8}]) : String	turn numbers in {list} into a String"
-   let g:Complete_dict["listener_add"] = "({callback} [, {buf}]) : Number	add a callback to listen to changes"
-   let g:Complete_dict["listener_flush"] = "([{buf}]) : none	invoke listener callbacks"
-   let g:Complete_dict["listener_remove"] = "({id}) : none	remove a listener callback"
-   let g:Complete_dict["localtime"] = "() : Number	current time"
-   let g:Complete_dict["log"] = "({expr}) : Float	natural logarithm (base e) of {expr}"
-   let g:Complete_dict["log10"] = "({expr}) : Float	logarithm of Float {expr} to base 10"
-   let g:Complete_dict["luaeval"] = "({expr} [, {expr}]) : any	evaluate |Lua| expression"
-   let g:Complete_dict["map"] = "({expr1}, {expr2}) : List/Dict  change each item in {expr1} to {expr}"
-   let g:Complete_dict["maparg"] = "({name} [, {mode} [, {abbr} [, {dict}]]]) : String or Dict rhs of mapping {name} in mode {mode}"
-   let g:Complete_dict["mapcheck"] = "({name} [, {mode} [, {abbr}]]) : String	check for mappings matching {name}"
-   let g:Complete_dict["match"] = "({expr}, {pat} [, {start} [, {count}]]) : Number	position where {pat} matches in {expr}"
-   let g:Complete_dict["matchadd"] = "({group}, {pattern} [, {priority} [, {id} [, {dict}]]]) : Number	highlight {pattern} with {group}"
-   let g:Complete_dict["matchaddpos"] = "({group}, {pos} [, {priority} [, {id} [, {dict}]]]) : Number	highlight positions with {group}"
-   let g:Complete_dict["matcharg"] = "({nr}) : List	arguments of |:match|"
-   let g:Complete_dict["matchdelete"] = "({id} [, {win}]) : Number	delete match identified by {id}"
-   let g:Complete_dict["matchend"] = "({expr}, {pat} [, {start} [, {count}]]) : Number	position where {pat} ends in {expr}"
-   let g:Complete_dict["matchlist"] = "({expr}, {pat} [, {start} [, {count}]]) : List	match and submatches of {pat} in {expr}"
-   let g:Complete_dict["matchstr"] = "({expr}, {pat} [, {start} [, {count}]]) : String	{count}'th match of {pat} in {expr}"
-   let g:Complete_dict["matchstrpos"] = "({expr}, {pat} [, {start} [, {count}]]) : List	{count}'th match of {pat} in {expr}"
-   let g:Complete_dict["max"] = "({expr}) : Number	maximum value of items in {expr}"
-   let g:Complete_dict["min"] = "({expr}) : Number	minimum value of items in {expr}"
-   let g:Complete_dict["mkdir"] = "({name} [, {path} [, {prot}]]) : Number	create directory {name}"
-   let g:Complete_dict["mode"] = "([expr]) : String	current editing mode"
-   let g:Complete_dict["mzeval"] = "({expr}) : any	evaluate |MzScheme| expression"
-   let g:Complete_dict["nextnonblank"] = "({lnum}) : Number	line nr of non-blank line >= {lnum}"
-   let g:Complete_dict["nr2char"] = "({expr} [, {utf8}]) : String	single char with ASCII/UTF8 value {expr}"
-   let g:Complete_dict["or"] = "({expr}, {expr}) : Number	bitwise OR"
-   let g:Complete_dict["pathshorten"] = "({expr}) : String	shorten directory names in a path"
-   let g:Complete_dict["perleval"] = "({expr}) : any	evaluate |Perl| expression"
-   let g:Complete_dict["popup_atcursor"] = "({what}, {options}) : Number create popup window near the cursor"
-   let g:Complete_dict["popup_beval"] = "({what}, {options}) : Number	create popup window for 'ballooneval'"
-   let g:Complete_dict["popup_clear"] = "() : none	close all popup windows"
-   let g:Complete_dict["popup_close"] = "({id} [, {result}]) : none	close popup window {id}"
-   let g:Complete_dict["popup_create"] = "({what}, {options}) : Number	create a popup window"
-   let g:Complete_dict["popup_dialog"] = "({what}, {options}) : Number	create a popup window used as a dialog"
-   let g:Complete_dict["popup_filter_menu"] = "({id}, {key}) : Number	filter for a menu popup window"
-   let g:Complete_dict["popup_filter_yesno"] = "({id}, {key}) : Number	filter for a dialog popup window"
-   let g:Complete_dict["popup_findinfo"] = "() : Number	get window ID of info popup window"
-   let g:Complete_dict["popup_findpreview"] = "() : Number	get window ID of preview popup window"
-   let g:Complete_dict["popup_getoptions"] = "({id}) : Dict	get options of popup window {id}"
-   let g:Complete_dict["popup_getpos"] = "({id}) : Dict	get position of popup window {id}"
-   let g:Complete_dict["popup_hide"] = "({id}) : none	hide popup menu {id}"
-   let g:Complete_dict["popup_menu"] = "({what}, {options}) : Number	create a popup window used as a menu"
-   let g:Complete_dict["popup_move"] = "({id}, {options}) : none	set position of popup window {id}"
-   let g:Complete_dict["popup_notification"] = "({what}, {options}) : Number	create a notification popup window"
-   let g:Complete_dict["popup_setoptions"] = "({id}, {options}) : none	set options for popup window {id}"
-   let g:Complete_dict["popup_settext"] = "({id}, {text}) : none	set the text of popup window {id}"
-   let g:Complete_dict["popup_show"] = "({id}) : none	unhide popup window {id}"
-   let g:Complete_dict["pow"] = "({x}, {y}) : Float	{x} to the power of {y}"
-   let g:Complete_dict["prevnonblank"] = "({lnum}) : Number	line nr of non-blank line <= {lnum}"
-   let g:Complete_dict["printf"] = "({fmt}, {expr1}...) : String	format text"
-   let g:Complete_dict["prompt_setcallback"] = "({buf}, {expr}) : none	set prompt callback function"
-   let g:Complete_dict["prompt_setinterrupt"] = "({buf}, {text}) : none	set prompt interrupt function"
-   let g:Complete_dict["prompt_setprompt"] = "({buf}, {text}) : none	set prompt text"
-   let g:Complete_dict["prop_add"] = "({lnum}, {col}, {props}) : none	add a text property"
-   let g:Complete_dict["prop_clear"] = "({lnum} [, {lnum-end} [, {props}]]) : none	remove all text properties"
-   let g:Complete_dict["prop_find"] = "({props} [, {direction}]) : Dict	search for a text property"
-   let g:Complete_dict["prop_list"] = "({lnum} [, {props}) : List	text properties in {lnum}"
-   let g:Complete_dict["prop_remove"] = "({props} [, {lnum} [, {lnum-end}]]) : Number	remove a text property"
-   let g:Complete_dict["prop_type_add"] = "({name}, {props}) : none	define a new property type"
-   let g:Complete_dict["prop_type_change"] = "({name}, {props}) : none	change an existing property type"
-   let g:Complete_dict["prop_type_delete"] = "({name} [, {props}]) : none	delete a property type"
-   let g:Complete_dict["prop_type_get"] = "([{name} [, {props}]) : Dict	get property type values"
-   let g:Complete_dict["prop_type_list"] = "([{props}]) : List	get list of property types"
-   let g:Complete_dict["pum_getpos"] = "() : Dict	position and size of pum if visible"
-   let g:Complete_dict["pumvisible"] = "() : Number	whether popup menu is visible"
-   let g:Complete_dict["py3eval"] = "({expr}) : any	evaluate |python3| expression"
-   let g:Complete_dict["pyeval"] = "({expr}) : any	evaluate |Python| expression"
-   let g:Complete_dict["pyxeval"] = "({expr}) : any	evaluate |python_x| expression"
-   let g:Complete_dict["rand"] = "([{expr}]) : Number	get pseudo-random number"
-   let g:Complete_dict["range"] = "({expr} [, {max} [, {stride}]]) : List	items from {expr} to {max}"
-   let g:Complete_dict["readdir"] = "({dir} [, {expr}]) : List	file names in {dir} selected by {expr}"
-   let g:Complete_dict["readfile"] = "({fname} [, {type} [, {max}]]) : List	get list of lines from file {fname}"
-   let g:Complete_dict["reg_executing"] = "() : String	get the executing register name"
-   let g:Complete_dict["reg_recording"] = "() : String	get the recording register name"
-   let g:Complete_dict["reltime"] = "([{start} [, {end}]]) : List	get time value"
-   let g:Complete_dict["reltimefloat"] = "({time}) : Float	turn the time value into a Float"
-   let g:Complete_dict["reltimestr"] = "({time}) : String	turn time value into a String"
-   let g:Complete_dict["remote_expr"] = "({server}, {string} [, {idvar} [, {timeout}]]) : String	send expression"
-   let g:Complete_dict["remote_foreground"] = "({server}) : Number	bring Vim server to the foreground"
-   let g:Complete_dict["remote_peek"] = "({serverid} [, {retvar}]) : Number	check for reply string"
-   let g:Complete_dict["remote_read"] = "({serverid} [, {timeout}]) : String	read reply string"
-   let g:Complete_dict["remote_send"] = "({server}, {string} [, {idvar}]) : String	send key sequence"
-   let g:Complete_dict["remote_startserver"] = "({name}) : none	become server {name}"
-   let g:Complete_dict["remove"] = "({blob}, {idx} [, {end}]) : Number/Blob remove bytes {idx}-{end} from {blob}"
-   let g:Complete_dict["remove"] = "({dict}, {key}) : any	remove entry {key} from {dict}"
-   let g:Complete_dict["remove"] = "({list}, {idx} [, {end}]) : any/List remove items {idx}-{end} from {list}"
-   let g:Complete_dict["rename"] = "({from}, {to}) : Number	rename (move) file from {from} to {to}"
-   let g:Complete_dict["repeat"] = "({expr}, {count}) : String	repeat {expr} {count} times"
-   let g:Complete_dict["resolve"] = "({filename}) : String	get filename a shortcut points to"
-   let g:Complete_dict["reverse"] = "({list}) : List	reverse {list} in-place"
-   let g:Complete_dict["round"] = "({expr}) : Float	round off {expr}"
-   let g:Complete_dict["rubyeval"] = "({expr}) : any	evaluate |Ruby| expression"
-   let g:Complete_dict["screenattr"] = "({row}, {col}) : Number	attribute at screen position"
-   let g:Complete_dict["screenchar"] = "({row}, {col}) : Number	character at screen position"
-   let g:Complete_dict["screenchars"] = "({row}, {col}) : List	List of characters at screen position"
-   let g:Complete_dict["screencol"] = "() : Number	current cursor column"
-   let g:Complete_dict["screenpos"] = "({winid}, {lnum}, {col}) : Dict	screen row and col of a text character"
-   let g:Complete_dict["screenrow"] = "() : Number	current cursor row"
-   let g:Complete_dict["screenstring"] = "({row}, {col}) : String	characters at screen position"
-   let g:Complete_dict["search"] = "({pattern} [, {flags} [, {stopline} [, {timeout}]]]) : Number	search for {pattern}"
-   let g:Complete_dict["searchdecl"] = "({name} [, {global} [, {thisblock}]]) : Number	search for variable declaration"
-   let g:Complete_dict["searchpair"] = "({start}, {middle}, {end} [, {flags} [, {skip} [...]]]) : Number	search for other end of start/end pair"
-   let g:Complete_dict["searchpairpos"] = "({start}, {middle}, {end} [, {flags} [, {skip} [...]]]) : List	search for other end of start/end pair"
-   let g:Complete_dict["searchpos"] = "({pattern} [, {flags} [, {stopline} [, {timeout}]]]) : List	search for {pattern}"
-   let g:Complete_dict["server2client"] = "({clientid}, {string}) : Number	send reply string"
-   let g:Complete_dict["serverlist"] = "() : String	get a list of available servers"
-   let g:Complete_dict["setbufline"] = "({expr}, {lnum}, {text}) : Number	set line {lnum} to {text} in buffer {expr}"
-   let g:Complete_dict["setbufvar"] = "({expr}, {varname}, {val}) : none	set {varname} in buffer {expr} to {val}"
-   let g:Complete_dict["setcharsearch"] = "({dict}) : Dict	set character search from {dict}"
-   let g:Complete_dict["setcmdpos"] = "({pos}) : Number	set cursor position in command-line"
-   let g:Complete_dict["setenv"] = "({name}, {val}) : none	set environment variable"
-   let g:Complete_dict["setfperm"] = "({fname}, {mode}) : Number	set {fname} file permissions to {mode}"
-   let g:Complete_dict["setline"] = "({lnum}, {line}) : Number	set line {lnum} to {line}"
-   let g:Complete_dict["setloclist"] = "({nr}, {list} [, {action} [, {what}]]) : Number	modify location list using {list}"
-   let g:Complete_dict["setmatches"] = "({list} [, {win}]) : Number	restore a list of matches"
-   let g:Complete_dict["setpos"] = "({expr}, {list}) : Number	set the {expr} position to {list}"
-   let g:Complete_dict["setqflist"] = "({list} [, {action} [, {what}]]) : Number	modify quickfix list using {list}"
-   let g:Complete_dict["setreg"] = "({n}, {v} [, {opt}]) : Number	set register to value and type"
-   let g:Complete_dict["settabvar"] = "({nr}, {varname}, {val}) : none	set {varname} in tab page {nr} to {val}"
-   let g:Complete_dict["settabwinvar"] = "({tabnr}, {winnr}, {varname}, {val}) : none	set {varname} in window {winnr} in tab page {tabnr} to {val}"
-   let g:Complete_dict["settagstack"] = "({nr}, {dict} [, {action}]) : Number	modify tag stack using {dict}"
-   let g:Complete_dict["setwinvar"] = "({nr}, {varname}, {val}) : none	set {varname} in window {nr} to {val}"
-   let g:Complete_dict["sha256"] = "({string}) : String	SHA256 checksum of {string}"
-   let g:Complete_dict["shellescape"] = "({string} [, {special}]) : String	escape {string} for use as shell command argument"
-   let g:Complete_dict["shiftwidth"] = "([{col}]) : Number	effective value of 'shiftwidth'"
-   let g:Complete_dict["sign_define"] = "({list}) : List	define or update a list of signs"
-   let g:Complete_dict["sign_define"] = "({name} [, {dict}]) : Number	define or update a sign"
-   let g:Complete_dict["sign_getdefined"] = "([{name}]) : List	get a list of defined signs"
-   let g:Complete_dict["sign_getplaced"] = "([{expr} [, {dict}]]) : List	get a list of placed signs"
-   let g:Complete_dict["sign_jump"] = "({id}, {group}, {expr}) : Number	jump to a sign"
-   let g:Complete_dict["sign_place"] = "({id}, {group}, {name}, {expr} [, {dict}]) : Number	place a sign"
-   let g:Complete_dict["sign_placelist"] = "({list}) : List	place a list of signs"
-   let g:Complete_dict["sign_undefine"] = "([{name}]) : Number	undefine a sign"
-   let g:Complete_dict["sign_undefine"] = "({list}) : List	undefine a list of signs"
-   let g:Complete_dict["sign_unplace"] = "({group} [, {dict}]) : Number	unplace a sign"
-   let g:Complete_dict["sign_unplacelist"] = "({list}) : List	unplace a list of signs"
-   let g:Complete_dict["simplify"] = "({filename}) : String	simplify filename as much as possible"
-   let g:Complete_dict["sin"] = "({expr}) : Float	sine of {expr}"
-   let g:Complete_dict["sinh"] = "({expr}) : Float	hyperbolic sine of {expr}"
-   let g:Complete_dict["sort"] = "({list} [, {func} [, {dict}]]) : List	sort {list}, using {func} to compare"
-   let g:Complete_dict["sound_clear"] = "() : none	stop playing all sounds"
-   let g:Complete_dict["sound_playevent"] = "({name} [, {callback}]) : Number	play an event sound"
-   let g:Complete_dict["sound_playfile"] = "({path} [, {callback}]) : Number	play sound file {path}"
-   let g:Complete_dict["sound_stop"] = "({id}) : none	stop playing sound {id}"
-   let g:Complete_dict["soundfold"] = "({word}) : String	sound-fold {word}"
-   let g:Complete_dict["spellbadword"] = "() : String	badly spelled word at cursor"
-   let g:Complete_dict["spellsuggest"] = "({word} [, {max} [, {capital}]]) : List	spelling suggestions"
-   let g:Complete_dict["split"] = "({expr} [, {pat} [, {keepempty}]]) : List	make |List| from {pat} separated {expr}"
-   let g:Complete_dict["sqrt"] = "({expr}) : Float	square root of {expr}"
-   let g:Complete_dict["srand"] = "([{expr}]) : List	get seed for |rand()|"
-   let g:Complete_dict["state"] = "([{what}]) : String	current state of Vim"
-   let g:Complete_dict["str2float"] = "({expr}) : Float	convert String to Float"
-   let g:Complete_dict["str2list"] = "({expr} [, {utf8}]) : List	convert each character of {expr} to ASCII/UTF8 value"
-   let g:Complete_dict["str2nr"] = "({expr} [, {base} [, {quoted}]]) : Number	convert String to Number"
-   let g:Complete_dict["strcharpart"] = "({str}, {start} [, {len}]) : String	{len} characters of {str} at {start}"
-   let g:Complete_dict["strchars"] = "({expr} [, {skipcc}]) : Number	character length of the String {expr}"
-   let g:Complete_dict["strdisplaywidth"] = "({expr} [, {col}]) : Number display length of the String {expr}"
-   let g:Complete_dict["strftime"] = "({format} [, {time}]) : String	format time with a specified format"
-   let g:Complete_dict["strgetchar"] = "({str}, {index}) : Number	get char {index} from {str}"
-   let g:Complete_dict["stridx"] = "({haystack}, {needle} [, {start}]) : Number	index of {needle} in {haystack}"
-   let g:Complete_dict["string"] = "({expr}) : String	String representation of {expr} value"
-   let g:Complete_dict["strlen"] = "({expr}) : Number	length of the String {expr}"
-   let g:Complete_dict["strpart"] = "({str}, {start} [, {len}]) : String	{len} characters of {str} at {start}"
-   let g:Complete_dict["strptime"] = "({format}, {timestring}) : Number	Convert {timestring} to unix timestamp"
-   let g:Complete_dict["strridx"] = "({haystack}, {needle} [, {start}]) : Number	last index of {needle} in {haystack}"
-   let g:Complete_dict["strtrans"] = "({expr}) : String	translate string to make it printable"
-   let g:Complete_dict["strwidth"] = "({expr}) : Number	display cell length of the String {expr}"
-   let g:Complete_dict["submatch"] = "({nr} [, {list}]) : String or List specific match in ':s' or substitute()"
-   let g:Complete_dict["substitute"] = "({expr}, {pat}, {sub}, {flags}) : String	all {pat} in {expr} replaced with {sub}"
-   let g:Complete_dict["swapinfo"] = "({fname}) : Dict	information about swap file {fname}"
-   let g:Complete_dict["swapname"] = "({expr}) : String	swap file of buffer {expr}"
-   let g:Complete_dict["synID"] = "({lnum}, {col}, {trans}) : Number	syntax ID at {lnum} and {col}"
-   let g:Complete_dict["synIDattr"] = "({synID}, {what} [, {mode}]) : String	attribute {what} of syntax ID {synID}"
-   let g:Complete_dict["synIDtrans"] = "({synID}) : Number	translated syntax ID of {synID}"
-   let g:Complete_dict["synconcealed"] = "({lnum}, {col}) : List	info about concealing"
-   let g:Complete_dict["synstack"] = "({lnum}, {col}) : List	stack of syntax IDs at {lnum} and {col}"
-   let g:Complete_dict["system"] = "({expr} [, {input}]) : String	output of shell command/filter {expr}"
-   let g:Complete_dict["systemlist"] = "({expr} [, {input}]) : List	output of shell command/filter {expr}"
-   let g:Complete_dict["tabpagebuflist"] = "([{arg}]) : List	list of buffer numbers in tab page"
-   let g:Complete_dict["tabpagenr"] = "([{arg}]) : Number	number of current or last tab page"
-   let g:Complete_dict["tabpagewinnr"] = "({tabarg} [, {arg}]) : Number	number of current window in tab page"
-   let g:Complete_dict["tagfiles"] = "() : List	tags files used"
-   let g:Complete_dict["taglist"] = "({expr} [, {filename}]) : List	list of tags matching {expr}"
-   let g:Complete_dict["tan"] = "({expr}) : Float	tangent of {expr}"
-   let g:Complete_dict["tanh"] = "({expr}) : Float	hyperbolic tangent of {expr}"
-   let g:Complete_dict["tempname"] = "() : String	name for a temporary file"
-   let g:Complete_dict["term_dumpdiff"] = "({filename}, {filename} [, {options}]) : Number  display difference between two dumps"
-   let g:Complete_dict["term_dumpload"] = "({filename} [, {options}]) : Number	displaying a screen dump"
-   let g:Complete_dict["term_dumpwrite"] = "({buf}, {filename} [, {options}]) : none	dump terminal window contents"
-   let g:Complete_dict["term_getaltscreen"] = "({buf}) : Number	get the alternate screen flag"
-   let g:Complete_dict["term_getansicolors"] = "({buf}) : List	get ANSI palette in GUI color mode"
-   let g:Complete_dict["term_getattr"] = "({attr}, {what}) : Number	get the value of attribute {what}"
-   let g:Complete_dict["term_getcursor"] = "({buf}) : List	get the cursor position of a terminal"
-   let g:Complete_dict["term_getjob"] = "({buf}) : Job	get the job associated with a terminal"
-   let g:Complete_dict["term_getline"] = "({buf}, {row}) : String	get a line of text from a terminal"
-   let g:Complete_dict["term_getscrolled"] = "({buf}) : Number	get the scroll count of a terminal"
-   let g:Complete_dict["term_getsize"] = "({buf}) : List	get the size of a terminal"
-   let g:Complete_dict["term_getstatus"] = "({buf}) : String	get the status of a terminal"
-   let g:Complete_dict["term_gettitle"] = "({buf}) : String	get the title of a terminal"
-   let g:Complete_dict["term_gettty"] = "({buf}, [{input}]) : String	get the tty name of a terminal"
-   let g:Complete_dict["term_list"] = "() : List	get the list of terminal buffers"
-   let g:Complete_dict["term_scrape"] = "({buf}, {row}) : List	get row of a terminal screen"
-   let g:Complete_dict["term_sendkeys"] = "({buf}, {keys}) : none	send keystrokes to a terminal"
-   let g:Complete_dict["term_setansicolors"] = "({buf}, {colors}) : none	set ANSI palette in GUI color mode"
-   let g:Complete_dict["term_setapi"] = "({buf}, {expr}) : none	set |terminal-api| function name prefix"
-   let g:Complete_dict["term_setkill"] = "({buf}, {how}) : none	set signal to stop job in terminal"
-   let g:Complete_dict["term_setrestore"] = "({buf}, {command}) : none	set command to restore terminal"
-   let g:Complete_dict["term_setsize"] = "({buf}, {rows}, {cols}) : none	set the size of a terminal"
-   let g:Complete_dict["term_start"] = "({cmd} [, {options}]) : Number	open a terminal window and run a job"
-   let g:Complete_dict["term_wait"] = "({buf} [, {time}]) : Number  wait for screen to be updated"
-   let g:Complete_dict["test_alloc_fail"] = "({id}, {countdown}, {repeat}) : none	make memory allocation fail"
-   let g:Complete_dict["test_autochdir"] = "() : none	enable 'autochdir' during startup"
-   let g:Complete_dict["test_feedinput"] = "({string}) : none	add key sequence to input buffer"
-   let g:Complete_dict["test_garbagecollect_now"] = "() : none	free memory right now for testing"
-   let g:Complete_dict["test_garbagecollect_soon"] = "() : none	free memory soon for testing"
-   let g:Complete_dict["test_getvalue"] = "({string}) : any	get value of an internal variable"
-   let g:Complete_dict["test_ignore_error"] = "({expr}) : none	ignore a specific error"
-   let g:Complete_dict["test_null_blob"] = "() : Blob	null value for testing"
-   let g:Complete_dict["test_null_channel"] = "() : Channel	null value for testing"
-   let g:Complete_dict["test_null_dict"] = "() : Dict	null value for testing"
-   let g:Complete_dict["test_null_job"] = "() : Job	null value for testing"
-   let g:Complete_dict["test_null_list"] = "() : List	null value for testing"
-   let g:Complete_dict["test_null_partial"] = "() : Funcref	null value for testing"
-   let g:Complete_dict["test_null_string"] = "() : String	null value for testing"
-   let g:Complete_dict["test_option_not_set"] = "({name}) : none	reset flag indicating option was set"
-   let g:Complete_dict["test_override"] = "({expr}, {val}) : none	test with Vim internal overrides"
-   let g:Complete_dict["test_refcount"] = "({expr}) : Number	get the reference count of {expr}"
-   let g:Complete_dict["test_scrollbar"] = "({which}, {value}, {dragging}) : none	scroll in the GUI for testing"
-   let g:Complete_dict["test_setmouse"] = "({row}, {col}) : none	set the mouse position for testing"
-   let g:Complete_dict["test_settime"] = "({expr}) : none	set current time for testing"
-   let g:Complete_dict["timer_info"] = "([{id}]) : List	information about timers"
-   let g:Complete_dict["timer_pause"] = "({id}, {pause}) : none	pause or unpause a timer"
-   let g:Complete_dict["timer_start"] = "({time}, {callback} [, {options}]) : Number	create a timer"
-   let g:Complete_dict["timer_stop"] = "({timer}) : none	stop a timer"
-   let g:Complete_dict["timer_stopall"] = "() : none	stop all timers"
-   let g:Complete_dict["tolower"] = "({expr}) : String	the String {expr} switched to lowercase"
-   let g:Complete_dict["toupper"] = "({expr}) : String	the String {expr} switched to uppercase"
-   let g:Complete_dict["tr"] = "({src}, {fromstr}, {tostr}) : String	translate chars of {src} in {fromstr} to chars in {tostr}"
-   let g:Complete_dict["trim"] = "({text} [, {mask}]) : String	trim characters in {mask} from {text}"
-   let g:Complete_dict["trunc"] = "({expr}) : Float	truncate Float {expr}"
-   let g:Complete_dict["type"] = "({name}) : Number	type of variable {name}"
-   let g:Complete_dict["undofile"] = "({name}) : String	undo file name for {name}"
-   let g:Complete_dict["undotree"] = "() : List	undo file tree"
-   let g:Complete_dict["uniq"] = "({list} [, {func} [, {dict}]]) : List	remove adjacent duplicates from a list"
-   let g:Complete_dict["values"] = "({dict}) : List	values in {dict}"
-   let g:Complete_dict["virtcol"] = "({expr}) : Number	screen column of cursor or mark"
-   let g:Complete_dict["visualmode"] = "([expr]) : String	last visual mode used"
-   let g:Complete_dict["wildmenumode"] = "() : Number	whether 'wildmenu' mode is active"
-   let g:Complete_dict["win_execute"] = "({id}, {command} [, {silent}]) : String	execute {command} in window {id}"
-   let g:Complete_dict["win_findbuf"] = "({bufnr}) : List	find windows containing {bufnr}"
-   let g:Complete_dict["win_getid"] = "([{win} [, {tab}]]) : Number	get window ID for {win} in {tab}"
-   let g:Complete_dict["win_gotoid"] = "({expr}) : Number	go to window with ID {expr}"
-   let g:Complete_dict["win_id2tabwin"] = "({expr}) : List	get tab and window nr from window ID"
-   let g:Complete_dict["win_id2win"] = "({expr}) : Number	get window nr from window ID"
-   let g:Complete_dict["win_screenpos"] = "({nr}) : List	get screen position of window {nr}"
-   let g:Complete_dict["win_splitmove"] = "({nr}, {target} [, {options}]) : Number	move window {nr} to split of {target}"
-   let g:Complete_dict["winbufnr"] = "({nr}) : Number	buffer number of window {nr}"
-   let g:Complete_dict["wincol"] = "() : Number	window column of the cursor"
-   let g:Complete_dict["winheight"] = "({nr}) : Number	height of window {nr}"
-   let g:Complete_dict["winlayout"] = "([{tabnr}]) : List	layout of windows in tab {tabnr}"
-   let g:Complete_dict["winline"] = "() : Number	window line of the cursor"
-   let g:Complete_dict["winnr"] = "([{expr}]) : Number	number of current window"
-   let g:Complete_dict["winrestcmd"] = "() : String	returns command to restore window sizes"
-   let g:Complete_dict["winrestview"] = "({dict}) : none	restore view of current window"
-   let g:Complete_dict["winsaveview"] = "() : Dict	save view of current window"
-   let g:Complete_dict["winwidth"] = "({nr}) : Number	width of window {nr}"
-   let g:Complete_dict["wordcount"] = "() : Dict	get byte/char/word statistics"
-   let g:Complete_dict["writefile"] = "({object}, {fname} [, {flags}]) : Number	write |Blob| or |List| of lines to file"
-   let g:Complete_dict["xor"] = "({expr}, {expr}) : Number	bitwise XOR"
+   call DictionaryAdd(g:Complete_dict, "abs", 'function', "({expr}) : Float or Number  absolute value of {expr}")
+   call DictionaryAdd(g:Complete_dict, "acos", 'function', "({expr}) : Float	arc cosine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "add", 'function', "({object}, {item}) : List/Blob   append {item} to {object}")
+   call DictionaryAdd(g:Complete_dict, "and", 'function', "({expr}, {expr}) : Number	bitwise AND")
+   call DictionaryAdd(g:Complete_dict, "append", 'function', "({lnum}, {text}) : Number	append {text} below line {lnum}")
+   call DictionaryAdd(g:Complete_dict, "appendbufline", 'function', "({expr}, {lnum}, {text}) : Number	append {text} below line {lnum} in buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "argc", 'function', "([{winid}]) : Number	number of files in the argument list")
+   call DictionaryAdd(g:Complete_dict, "argidx", 'function', "() : Number	current index in the argument list")
+   call DictionaryAdd(g:Complete_dict, "arglistid", 'function', "([{winnr} [, {tabnr}]]) : Number	argument list id")
+   call DictionaryAdd(g:Complete_dict, "argv", 'function', "([-1, {winid}]) : List	the argument list")
+   call DictionaryAdd(g:Complete_dict, "argv", 'function', "({nr} [, {winid}]) : String	{nr} entry of the argument list")
+   call DictionaryAdd(g:Complete_dict, "asin", 'function', "({expr}) : Float	arc sine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "assert_beeps", 'function', "({cmd}) : Number	assert {cmd} causes a beep")
+   call DictionaryAdd(g:Complete_dict, "assert_equal", 'function', "({exp}, {act} [, {msg}]) : Number	assert {exp} is equal to {act}")
+   call DictionaryAdd(g:Complete_dict, "assert_equalfile", 'function', "({fname-one}, {fname-two}) : Number	assert file contents is equal")
+   call DictionaryAdd(g:Complete_dict, "assert_exception", 'function', "({error} [, {msg}]) : Number	assert {error} is in v:exception")
+   call DictionaryAdd(g:Complete_dict, "assert_fails", 'function', "({cmd} [, {error} [, {msg}]]) : Number	assert {cmd} fails")
+   call DictionaryAdd(g:Complete_dict, "assert_false", 'function', "({actual} [, {msg}]) : Number	assert {actual} is false")
+   call DictionaryAdd(g:Complete_dict, "assert_inrange", 'function', "({lower}, {upper}, {actual} [, {msg}]) : Number	assert {actual} is inside the range")
+   call DictionaryAdd(g:Complete_dict, "assert_match", 'function', "({pat}, {text} [, {msg}]) : Number	assert {pat} matches {text}")
+   call DictionaryAdd(g:Complete_dict, "assert_notequal", 'function', "({exp}, {act} [, {msg}]) : Number	assert {exp} is not equal {act}")
+   call DictionaryAdd(g:Complete_dict, "assert_notmatch", 'function', "({pat}, {text} [, {msg}]) : Number	assert {pat} not matches {text}")
+   call DictionaryAdd(g:Complete_dict, "assert_report", 'function', "({msg}) : Number	report a test failure")
+   call DictionaryAdd(g:Complete_dict, "assert_true", 'function', "({actual} [, {msg}]) : Number	assert {actual} is true")
+   call DictionaryAdd(g:Complete_dict, "atan", 'function', "({expr}) : Float	arc tangent of {expr}")
+   call DictionaryAdd(g:Complete_dict, "atan2", 'function', "({expr1}, {expr2}) : Float	arc tangent of {expr1} / {expr2}")
+   call DictionaryAdd(g:Complete_dict, "balloon_gettext", 'function', "() : String	current text in the balloon")
+   call DictionaryAdd(g:Complete_dict, "balloon_show", 'function', "({expr}) : none	show {expr} inside the balloon")
+   call DictionaryAdd(g:Complete_dict, "balloon_split", 'function', "({msg}) : List	split {msg} as used for a balloon")
+   call DictionaryAdd(g:Complete_dict, "browse", 'function', "({save}, {title}, {initdir}, {default}) : String	put up a file requester")
+   call DictionaryAdd(g:Complete_dict, "browsedir", 'function', "({title}, {initdir}) : String	put up a directory requester")
+   call DictionaryAdd(g:Complete_dict, "bufadd", 'function', "({name}) : Number	add a buffer to the buffer list")
+   call DictionaryAdd(g:Complete_dict, "bufexists", 'function', "({expr}) : Number	|TRUE| if buffer {expr} exists")
+   call DictionaryAdd(g:Complete_dict, "buflisted", 'function', "({expr}) : Number	|TRUE| if buffer {expr} is listed")
+   call DictionaryAdd(g:Complete_dict, "bufload", 'function', "({expr}) : Number	load buffer {expr} if not loaded yet")
+   call DictionaryAdd(g:Complete_dict, "bufloaded", 'function', "({expr}) : Number	|TRUE| if buffer {expr} is loaded")
+   call DictionaryAdd(g:Complete_dict, "bufname", 'function', "([{expr}]) : String	Name of the buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "bufnr", 'function', "([{expr} [, {create}]]) : Number	Number of the buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "bufwinid", 'function', "({expr}) : Number	window ID of buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "bufwinnr", 'function', "({expr}) : Number	window number of buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "byte2line", 'function', "({byte}) : Number	line number at byte count {byte}")
+   call DictionaryAdd(g:Complete_dict, "byteidx", 'function', "({expr}, {nr}) : Number	byte index of {nr}'th char in {expr}")
+   call DictionaryAdd(g:Complete_dict, "byteidxcomp", 'function', "({expr}, {nr}) : Number	byte index of {nr}'th char in {expr}")
+   call DictionaryAdd(g:Complete_dict, "call", 'function', "({func}, {arglist} [, {dict}]) : any	call {func} with arguments {arglist}")
+   call DictionaryAdd(g:Complete_dict, "ceil", 'function', "({expr}) : Float	round {expr} up")
+   call DictionaryAdd(g:Complete_dict, "ch_canread", 'function', "({handle}) : Number	check if there is something to read")
+   call DictionaryAdd(g:Complete_dict, "ch_close", 'function', "({handle}) : none	close {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_close_in", 'function', "({handle}) : none	close in part of {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_evalexpr", 'function', "({handle}, {expr} [, {options}]) : any	evaluate {expr} on JSON {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_evalraw", 'function', "({handle}, {string} [, {options}]) : any	evaluate {string} on raw {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_getbufnr", 'function', "({handle}, {what}) : Number	get buffer number for {handle}/{what}")
+   call DictionaryAdd(g:Complete_dict, "ch_getjob", 'function', "({channel}) : Job	get the Job of {channel}")
+   call DictionaryAdd(g:Complete_dict, "ch_info", 'function', "({handle}) : String	info about channel {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_log", 'function', "({msg} [, {handle}]) : none	write {msg} in the channel log file")
+   call DictionaryAdd(g:Complete_dict, "ch_logfile", 'function', "({fname} [, {mode}]) : none	start logging channel activity")
+   call DictionaryAdd(g:Complete_dict, "ch_open", 'function', "({address} [, {options}]) : Channel	open a channel to {address}")
+   call DictionaryAdd(g:Complete_dict, "ch_read", 'function', "({handle} [, {options}]) : String	read from {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_readblob", 'function', "({handle} [, {options}]) : Blob	read Blob from {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_readraw", 'function', "({handle} [, {options}]) : String	read raw from {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_sendexpr", 'function', "({handle}, {expr} [, {options}]) : any	send {expr} over JSON {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_sendraw", 'function', "({handle}, {expr} [, {options}]) : any	send {expr} over raw {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_setoptions", 'function', "({handle}, {options}) : none	set options for {handle}")
+   call DictionaryAdd(g:Complete_dict, "ch_status", 'function', "({handle} [, {options}]) : String	status of channel {handle}")
+   call DictionaryAdd(g:Complete_dict, "changenr", 'function', "() : Number	current change number")
+   call DictionaryAdd(g:Complete_dict, "char2nr", 'function', "({expr} [, {utf8}]) : Number	ASCII/UTF8 value of first char in {expr}")
+   call DictionaryAdd(g:Complete_dict, "chdir", 'function', "({dir}) : String	change current working directory")
+   call DictionaryAdd(g:Complete_dict, "cindent", 'function', "({lnum}) : Number	C indent for line {lnum}")
+   call DictionaryAdd(g:Complete_dict, "clearmatches", 'function', "([{win}]) : none	clear all matches")
+   call DictionaryAdd(g:Complete_dict, "col", 'function', "({expr}) : Number	column nr of cursor or mark")
+   call DictionaryAdd(g:Complete_dict, "complete", 'function', "({startcol}, {matches}) : none	set Insert mode completion")
+   call DictionaryAdd(g:Complete_dict, "complete_add", 'function', "({expr}) : Number	add completion match")
+   call DictionaryAdd(g:Complete_dict, "complete_check", 'function', "() : Number	check for key typed during completion")
+   call DictionaryAdd(g:Complete_dict, "complete_info", 'function', "([{what}]) : Dict	get current completion information")
+   call DictionaryAdd(g:Complete_dict, "confirm", 'function', "({msg} [, {choices} [, {default} [, {type}]]]) : Number	number of choice picked by user")
+   call DictionaryAdd(g:Complete_dict, "copy", 'function', "({expr}) : any	make a shallow copy of {expr}")
+   call DictionaryAdd(g:Complete_dict, "cos", 'function', "({expr}) : Float	cosine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "cosh", 'function', "({expr}) : Float	hyperbolic cosine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "count", 'function', "({comp}, {expr} [, {ic} [, {start}]]) : Number	count how many {expr} are in {comp}")
+   call DictionaryAdd(g:Complete_dict, "cscope_connection", 'function', "([{num}, {dbpath} [, {prepend}]]) : Number	checks existence of cscope connection")
+   call DictionaryAdd(g:Complete_dict, "cursor", 'function', "({list}) : Number	move cursor to position in {list}")
+   call DictionaryAdd(g:Complete_dict, "cursor", 'function', "({lnum}, {col} [, {off}]) : Number	move cursor to {lnum}, {col}, {off}")
+   call DictionaryAdd(g:Complete_dict, "debugbreak", 'function', "({pid}) : Number  interrupt process being debugged")
+   call DictionaryAdd(g:Complete_dict, "deepcopy", 'function', "({expr} [, {noref}]) : any	make a full copy of {expr}")
+   call DictionaryAdd(g:Complete_dict, "delete", 'function', "({fname} [, {flags}]) : Number	delete the file or directory {fname}")
+   call DictionaryAdd(g:Complete_dict, "deletebufline", 'function', "({expr}, {first} [, {last}]) : Number	delete lines from buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "did_filetype", 'function', "() : Number	|TRUE| if FileType autocmd event used")
+   call DictionaryAdd(g:Complete_dict, "diff_filler", 'function', "({lnum}) : Number	diff filler lines about {lnum}")
+   call DictionaryAdd(g:Complete_dict, "diff_hlID", 'function', "({lnum}, {col}) : Number	diff highlighting at {lnum}/{col}")
+   call DictionaryAdd(g:Complete_dict, "empty", 'function', "({expr}) : Number	|TRUE| if {expr} is empty")
+   call DictionaryAdd(g:Complete_dict, "environ", 'function', "() : Dict	return environment variables")
+   call DictionaryAdd(g:Complete_dict, "escape", 'function', "({string}, {chars}) : String	escape {chars} in {string} with '\'")
+   call DictionaryAdd(g:Complete_dict, "eval", 'function', "({string}) : any	evaluate {string} into its value")
+   call DictionaryAdd(g:Complete_dict, "eventhandler", 'function', "() : Number	|TRUE| if inside an event handler")
+   call DictionaryAdd(g:Complete_dict, "executable", 'function', "({expr}) : Number	1 if executable {expr} exists")
+   call DictionaryAdd(g:Complete_dict, "execute", 'function', "({command}) : String	execute {command} and get the output")
+   call DictionaryAdd(g:Complete_dict, "exepath", 'function', "({expr}) : String	full path of the command {expr}")
+   call DictionaryAdd(g:Complete_dict, "exists", 'function', "({expr}) : Number	|TRUE| if {expr} exists")
+   call DictionaryAdd(g:Complete_dict, "exp", 'function', "({expr}) : Float	exponential of {expr}")
+   call DictionaryAdd(g:Complete_dict, "expand", 'function', "({expr} [, {nosuf} [, {list}]]) : any	expand special keywords in {expr}")
+   call DictionaryAdd(g:Complete_dict, "expandcmd", 'function', "({expr}) : String	expand {expr} like with `:edit`")
+   call DictionaryAdd(g:Complete_dict, "extend", 'function', "({expr1}, {expr2} [, {expr3}]) : List/Dict insert items of {expr2} into {expr1}")
+   call DictionaryAdd(g:Complete_dict, "feedkeys", 'function', "({string} [, {mode}]) : Number	add key sequence to typeahead buffer")
+   call DictionaryAdd(g:Complete_dict, "filereadable", 'function', "({file}) : Number	|TRUE| if {file} is a readable file")
+   call DictionaryAdd(g:Complete_dict, "filewritable", 'function', "({file}) : Number	|TRUE| if {file} is a writable file")
+   call DictionaryAdd(g:Complete_dict, "filter", 'function', "({expr1}, {expr2}) : List/Dict  remove items from {expr1} where {expr2} is 0")
+   call DictionaryAdd(g:Complete_dict, "finddir", 'function', "({name} [, {path} [, {count}]]) : String	find directory {name} in {path}")
+   call DictionaryAdd(g:Complete_dict, "findfile", 'function', "({name} [, {path} [, {count}]]) : String	find file {name} in {path}")
+   call DictionaryAdd(g:Complete_dict, "float2nr", 'function', "({expr}) : Number	convert Float {expr} to a Number")
+   call DictionaryAdd(g:Complete_dict, "floor", 'function', "({expr}) : Float	round {expr} down")
+   call DictionaryAdd(g:Complete_dict, "fmod", 'function', "({expr1}, {expr2}) : Float	remainder of {expr1} / {expr2}")
+   call DictionaryAdd(g:Complete_dict, "fnameescape", 'function', "({fname}) : String	escape special characters in {fname}")
+   call DictionaryAdd(g:Complete_dict, "fnamemodify", 'function', "({fname}, {mods}) : String	modify file name")
+   call DictionaryAdd(g:Complete_dict, "foldclosed", 'function', "({lnum}) : Number	first line of fold at {lnum} if closed")
+   call DictionaryAdd(g:Complete_dict, "foldclosedend", 'function', "({lnum}) : Number	last line of fold at {lnum} if closed")
+   call DictionaryAdd(g:Complete_dict, "foldlevel", 'function', "({lnum}) : Number	fold level at {lnum}")
+   call DictionaryAdd(g:Complete_dict, "foldtext", 'function', "() : String	line displayed for closed fold")
+   call DictionaryAdd(g:Complete_dict, "foldtextresult", 'function', "({lnum}) : String	text for closed fold at {lnum}")
+   call DictionaryAdd(g:Complete_dict, "foreground", 'function', "() : Number	bring the Vim window to the foreground")
+   call DictionaryAdd(g:Complete_dict, "funcref", 'function', "({name} [, {arglist}] [, {dict}]) : Funcref	reference to function {name}")
+   call DictionaryAdd(g:Complete_dict, "function", 'function', "({name} [, {arglist}] [, {dict}]) : Funcref	named reference to function {name}")
+   call DictionaryAdd(g:Complete_dict, "garbagecollect", 'function', "([{atexit}]) : none	free memory, breaking cyclic references")
+   call DictionaryAdd(g:Complete_dict, "get", 'function', "({dict}, {key} [, {def}]) : any	get item {key} from {dict} or {def}")
+   call DictionaryAdd(g:Complete_dict, "get", 'function', "({func}, {what}) : any	get property of funcref/partial {func}")
+   call DictionaryAdd(g:Complete_dict, "get", 'function', "({list}, {idx} [, {def}]) : any	get item {idx} from {list} or {def}")
+   call DictionaryAdd(g:Complete_dict, "getbufinfo", 'function', "([{expr}]) : List	information about buffers")
+   call DictionaryAdd(g:Complete_dict, "getbufline", 'function', "({expr}, {lnum} [, {end}]) : List	lines {lnum} to {end} of buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "getbufvar", 'function', "({expr}, {varname} [, {def}]) : any	variable {varname} in buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "getchangelist", 'function', "([{expr}]) : List	list of change list items")
+   call DictionaryAdd(g:Complete_dict, "getchar", 'function', "([expr]) : Number	get one character from the user")
+   call DictionaryAdd(g:Complete_dict, "getcharmod", 'function', "() : Number	modifiers for the last typed character")
+   call DictionaryAdd(g:Complete_dict, "getcharsearch", 'function', "() : Dict	last character search")
+   call DictionaryAdd(g:Complete_dict, "getcmdline", 'function', "() : String	return the current command-line")
+   call DictionaryAdd(g:Complete_dict, "getcmdpos", 'function', "() : Number	return cursor position in command-line")
+   call DictionaryAdd(g:Complete_dict, "getcmdtype", 'function', "() : String	return current command-line type")
+   call DictionaryAdd(g:Complete_dict, "getcmdwintype", 'function', "() : String	return current command-line window type")
+   call DictionaryAdd(g:Complete_dict, "getcompletion", 'function', "({pat}, {type} [, {filtered}]) : List	list of cmdline completion matches")
+   call DictionaryAdd(g:Complete_dict, "getcurpos", 'function', "() : List	position of the cursor")
+   call DictionaryAdd(g:Complete_dict, "getcwd", 'function', "([{winnr} [, {tabnr}]]) : String	get the current working directory")
+   call DictionaryAdd(g:Complete_dict, "getenv", 'function', "({name}) : String	return environment variable")
+   call DictionaryAdd(g:Complete_dict, "getfontname", 'function', "([{name}]) : String	name of font being used")
+   call DictionaryAdd(g:Complete_dict, "getfperm", 'function', "({fname}) : String	file permissions of file {fname}")
+   call DictionaryAdd(g:Complete_dict, "getfsize", 'function', "({fname}) : Number	size in bytes of file {fname}")
+   call DictionaryAdd(g:Complete_dict, "getftime", 'function', "({fname}) : Number	last modification time of file")
+   call DictionaryAdd(g:Complete_dict, "getftype", 'function', "({fname}) : String	description of type of file {fname}")
+   call DictionaryAdd(g:Complete_dict, "getimstatus", 'function', "() : Number	|TRUE| if the IME status is active")
+   call DictionaryAdd(g:Complete_dict, "getjumplist", 'function', "([{winnr} [, {tabnr}]]) : List	list of jump list items")
+   call DictionaryAdd(g:Complete_dict, "getline", 'function', "({lnum}) : String	line {lnum} of current buffer")
+   call DictionaryAdd(g:Complete_dict, "getline", 'function', "({lnum}, {end}) : List	lines {lnum} to {end} of current buffer")
+   call DictionaryAdd(g:Complete_dict, "getloclist", 'function', "({nr} [, {what}]) : List	list of location list items")
+   call DictionaryAdd(g:Complete_dict, "getmatches", 'function', "([{win}]) : List	list of current matches")
+   call DictionaryAdd(g:Complete_dict, "getmousepos", 'function', "() : Dict	last known mouse position")
+   call DictionaryAdd(g:Complete_dict, "getpid", 'function', "() : Number	process ID of Vim")
+   call DictionaryAdd(g:Complete_dict, "getpos", 'function', "({expr}) : List	position of cursor, mark, etc.")
+   call DictionaryAdd(g:Complete_dict, "getqflist", 'function', "([{what}]) : List	list of quickfix items")
+   call DictionaryAdd(g:Complete_dict, "getreg", 'function', "([{regname} [, 1 [, {list}]]]) : String or List   contents of register")
+   call DictionaryAdd(g:Complete_dict, "getregtype", 'function', "([{regname}]) : String	type of register")
+   call DictionaryAdd(g:Complete_dict, "gettabinfo", 'function', "([{expr}]) : List	list of tab pages")
+   call DictionaryAdd(g:Complete_dict, "gettabvar", 'function', "({nr}, {varname} [, {def}]) : any	variable {varname} in tab {nr} or {def}")
+   call DictionaryAdd(g:Complete_dict, "gettabwinvar", 'function', "({tabnr}, {winnr}, {name} [, {def}]) : any	{name} in {winnr} in tab page {tabnr}")
+   call DictionaryAdd(g:Complete_dict, "gettagstack", 'function', "([{nr}]) : Dict	get the tag stack of window {nr}")
+   call DictionaryAdd(g:Complete_dict, "getwininfo", 'function', "([{winid}]) : List	list of info about each window")
+   call DictionaryAdd(g:Complete_dict, "getwinpos", 'function', "([{timeout}]) : List	X and Y coord in pixels of the Vim window")
+   call DictionaryAdd(g:Complete_dict, "getwinposx", 'function', "() : Number	X coord in pixels of the Vim window")
+   call DictionaryAdd(g:Complete_dict, "getwinposy", 'function', "() : Number	Y coord in pixels of the Vim window")
+   call DictionaryAdd(g:Complete_dict, "getwinvar", 'function', "({nr}, {varname} [, {def}]) : any	variable {varname} in window {nr}")
+   call DictionaryAdd(g:Complete_dict, "glob", 'function', "({expr} [, {nosuf} [, {list} [, {alllinks}]]]) : any	expand file wildcards in {expr}")
+   call DictionaryAdd(g:Complete_dict, "glob2regpat", 'function', "({expr}) : String	convert a glob pat into a search pat")
+   call DictionaryAdd(g:Complete_dict, "globpath", 'function', "({path}, {expr} [, {nosuf} [, {list} [, {alllinks}]]]) : String	do glob({expr}) for all dirs in {path}")
+   call DictionaryAdd(g:Complete_dict, "has", 'function', "({feature}) : Number	|TRUE| if feature {feature} supported")
+   call DictionaryAdd(g:Complete_dict, "has_key", 'function', "({dict}, {key}) : Number	|TRUE| if {dict} has entry {key}")
+   call DictionaryAdd(g:Complete_dict, "haslocaldir", 'function', "([{winnr} [, {tabnr}]]) : Number	|TRUE| if the window executed |:lcd| or |:tcd|")
+   call DictionaryAdd(g:Complete_dict, "hasmapto", 'function', "({what} [, {mode} [, {abbr}]]) : Number	|TRUE| if mapping to {what} exists")
+   call DictionaryAdd(g:Complete_dict, "histadd", 'function', "({history}, {item}) : String	add an item to a history")
+   call DictionaryAdd(g:Complete_dict, "histdel", 'function', "({history} [, {item}]) : String	remove an item from a history")
+   call DictionaryAdd(g:Complete_dict, "histget", 'function', "({history} [, {index}]) : String	get the item {index} from a history")
+   call DictionaryAdd(g:Complete_dict, "histnr", 'function', "({history}) : Number	highest index of a history")
+   call DictionaryAdd(g:Complete_dict, "hlID", 'function', "({name}) : Number	syntax ID of highlight group {name}")
+   call DictionaryAdd(g:Complete_dict, "hlexists", 'function', "({name}) : Number	|TRUE| if highlight group {name} exists")
+   call DictionaryAdd(g:Complete_dict, "hostname", 'function', "() : String	name of the machine Vim is running on")
+   call DictionaryAdd(g:Complete_dict, "iconv", 'function', "({expr}, {from}, {to}) : String	convert encoding of {expr}")
+   call DictionaryAdd(g:Complete_dict, "indent", 'function', "({lnum}) : Number	indent of line {lnum}")
+   call DictionaryAdd(g:Complete_dict, "index", 'function', "({object}, {expr} [, {start} [, {ic}]]) : Number	index in {object} where {expr} appears")
+   call DictionaryAdd(g:Complete_dict, "input", 'function', "({prompt} [, {text} [, {completion}]]) : String	get input from the user")
+   call DictionaryAdd(g:Complete_dict, "inputdialog", 'function', "({prompt} [, {text} [, {completion}]]) : String	like input() but in a GUI dialog")
+   call DictionaryAdd(g:Complete_dict, "inputlist", 'function', "({textlist}) : Number	let the user pick from a choice list")
+   call DictionaryAdd(g:Complete_dict, "inputrestore", 'function', "() : Number	restore typeahead")
+   call DictionaryAdd(g:Complete_dict, "inputsave", 'function', "() : Number	save and clear typeahead")
+   call DictionaryAdd(g:Complete_dict, "inputsecret", 'function', "({prompt} [, {text}]) : String	like input() but hiding the text")
+   call DictionaryAdd(g:Complete_dict, "insert", 'function', "({object}, {item} [, {idx}]) : List	insert {item} in {object} [before {idx}]")
+   call DictionaryAdd(g:Complete_dict, "interrupt", 'function', "() : none	interrupt script execution")
+   call DictionaryAdd(g:Complete_dict, "invert", 'function', "({expr}) : Number	bitwise invert")
+   call DictionaryAdd(g:Complete_dict, "isdirectory", 'function', "({directory}) : Number	|TRUE| if {directory} is a directory")
+   call DictionaryAdd(g:Complete_dict, "isinf", 'function', "({expr}) : Number	determine if {expr} is infinity value (positive or negative)")
+   call DictionaryAdd(g:Complete_dict, "islocked", 'function', "({expr}) : Number	|TRUE| if {expr} is locked")
+   call DictionaryAdd(g:Complete_dict, "isnan", 'function', "({expr}) : Number	|TRUE| if {expr} is NaN")
+   call DictionaryAdd(g:Complete_dict, "items", 'function', "({dict}) : List	key-value pairs in {dict}")
+   call DictionaryAdd(g:Complete_dict, "job_getchannel", 'function', "({job}) : Channel	get the channel handle for {job}")
+   call DictionaryAdd(g:Complete_dict, "job_info", 'function', "([{job}]) : Dict	get information about {job}")
+   call DictionaryAdd(g:Complete_dict, "job_setoptions", 'function', "({job}, {options}) : none	set options for {job}")
+   call DictionaryAdd(g:Complete_dict, "job_start", 'function', "({command} [, {options}]) : Job	start a job")
+   call DictionaryAdd(g:Complete_dict, "job_status", 'function', "({job}) : String	get the status of {job}")
+   call DictionaryAdd(g:Complete_dict, "job_stop", 'function', "({job} [, {how}]) : Number	stop {job}")
+   call DictionaryAdd(g:Complete_dict, "join", 'function', "({list} [, {sep}]) : String	join {list} items into one String")
+   call DictionaryAdd(g:Complete_dict, "js_decode", 'function', "({string}) : any	decode JS style JSON")
+   call DictionaryAdd(g:Complete_dict, "js_encode", 'function', "({expr}) : String	encode JS style JSON")
+   call DictionaryAdd(g:Complete_dict, "json_decode", 'function', "({string}) : any	decode JSON")
+   call DictionaryAdd(g:Complete_dict, "json_encode", 'function', "({expr}) : String	encode JSON")
+   call DictionaryAdd(g:Complete_dict, "keys", 'function', "({dict}) : List	keys in {dict}")
+   call DictionaryAdd(g:Complete_dict, "len", 'function', "({expr}) : Number	the length of {expr}")
+   call DictionaryAdd(g:Complete_dict, "libcall", 'function', "({lib}, {func}, {arg}) : String	call {func} in library {lib} with {arg}")
+   call DictionaryAdd(g:Complete_dict, "libcallnr", 'function', "({lib}, {func}, {arg}) : Number	idem, but return a Number")
+   call DictionaryAdd(g:Complete_dict, "line", 'function', "({expr} [, {winid}]) : Number	line nr of cursor, last line or mark")
+   call DictionaryAdd(g:Complete_dict, "line2byte", 'function', "({lnum}) : Number	byte count of line {lnum}")
+   call DictionaryAdd(g:Complete_dict, "lispindent", 'function', "({lnum}) : Number	Lisp indent for line {lnum}")
+   call DictionaryAdd(g:Complete_dict, "list2str", 'function', "({list} [, {utf8}]) : String	turn numbers in {list} into a String")
+   call DictionaryAdd(g:Complete_dict, "listener_add", 'function', "({callback} [, {buf}]) : Number	add a callback to listen to changes")
+   call DictionaryAdd(g:Complete_dict, "listener_flush", 'function', "([{buf}]) : none	invoke listener callbacks")
+   call DictionaryAdd(g:Complete_dict, "listener_remove", 'function', "({id}) : none	remove a listener callback")
+   call DictionaryAdd(g:Complete_dict, "localtime", 'function', "() : Number	current time")
+   call DictionaryAdd(g:Complete_dict, "log", 'function', "({expr}) : Float	natural logarithm (base e) of {expr}")
+   call DictionaryAdd(g:Complete_dict, "log10", 'function', "({expr}) : Float	logarithm of Float {expr} to base 10")
+   call DictionaryAdd(g:Complete_dict, "luaeval", 'function', "({expr} [, {expr}]) : any	evaluate |Lua| expression")
+   call DictionaryAdd(g:Complete_dict, "map", 'function', "({expr1}, {expr2}) : List/Dict  change each item in {expr1} to {expr}")
+   call DictionaryAdd(g:Complete_dict, "maparg", 'function', "({name} [, {mode} [, {abbr} [, {dict}]]]) : String or Dict rhs of mapping {name} in mode {mode}")
+   call DictionaryAdd(g:Complete_dict, "mapcheck", 'function', "({name} [, {mode} [, {abbr}]]) : String	check for mappings matching {name}")
+   call DictionaryAdd(g:Complete_dict, "match", 'function', "({expr}, {pat} [, {start} [, {count}]]) : Number	position where {pat} matches in {expr}")
+   call DictionaryAdd(g:Complete_dict, "matchadd", 'function', "({group}, {pattern} [, {priority} [, {id} [, {dict}]]]) : Number	highlight {pattern} with {group}")
+   call DictionaryAdd(g:Complete_dict, "matchaddpos", 'function', "({group}, {pos} [, {priority} [, {id} [, {dict}]]]) : Number	highlight positions with {group}")
+   call DictionaryAdd(g:Complete_dict, "matcharg", 'function', "({nr}) : List	arguments of |:match|")
+   call DictionaryAdd(g:Complete_dict, "matchdelete", 'function', "({id} [, {win}]) : Number	delete match identified by {id}")
+   call DictionaryAdd(g:Complete_dict, "matchend", 'function', "({expr}, {pat} [, {start} [, {count}]]) : Number	position where {pat} ends in {expr}")
+   call DictionaryAdd(g:Complete_dict, "matchlist", 'function', "({expr}, {pat} [, {start} [, {count}]]) : List	match and submatches of {pat} in {expr}")
+   call DictionaryAdd(g:Complete_dict, "matchstr", 'function', "({expr}, {pat} [, {start} [, {count}]]) : String	{count}'th match of {pat} in {expr}")
+   call DictionaryAdd(g:Complete_dict, "matchstrpos", 'function', "({expr}, {pat} [, {start} [, {count}]]) : List	{count}'th match of {pat} in {expr}")
+   call DictionaryAdd(g:Complete_dict, "max", 'function', "({expr}) : Number	maximum value of items in {expr}")
+   call DictionaryAdd(g:Complete_dict, "min", 'function', "({expr}) : Number	minimum value of items in {expr}")
+   call DictionaryAdd(g:Complete_dict, "mkdir", 'function', "({name} [, {path} [, {prot}]]) : Number	create directory {name}")
+   call DictionaryAdd(g:Complete_dict, "mode", 'function', "([expr]) : String	current editing mode")
+   call DictionaryAdd(g:Complete_dict, "mzeval", 'function', "({expr}) : any	evaluate |MzScheme| expression")
+   call DictionaryAdd(g:Complete_dict, "nextnonblank", 'function', "({lnum}) : Number	line nr of non-blank line >= {lnum}")
+   call DictionaryAdd(g:Complete_dict, "nr2char", 'function', "({expr} [, {utf8}]) : String	single char with ASCII/UTF8 value {expr}")
+   call DictionaryAdd(g:Complete_dict, "or", 'function', "({expr}, {expr}) : Number	bitwise OR")
+   call DictionaryAdd(g:Complete_dict, "pathshorten", 'function', "({expr}) : String	shorten directory names in a path")
+   call DictionaryAdd(g:Complete_dict, "perleval", 'function', "({expr}) : any	evaluate |Perl| expression")
+   call DictionaryAdd(g:Complete_dict, "popup_atcursor", 'function', "({what}, {options}) : Number create popup window near the cursor")
+   call DictionaryAdd(g:Complete_dict, "popup_beval", 'function', "({what}, {options}) : Number	create popup window for 'ballooneval'")
+   call DictionaryAdd(g:Complete_dict, "popup_clear", 'function', "() : none	close all popup windows")
+   call DictionaryAdd(g:Complete_dict, "popup_close", 'function', "({id} [, {result}]) : none	close popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_create", 'function', "({what}, {options}) : Number	create a popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_dialog", 'function', "({what}, {options}) : Number	create a popup window used as a dialog")
+   call DictionaryAdd(g:Complete_dict, "popup_filter_menu", 'function', "({id}, {key}) : Number	filter for a menu popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_filter_yesno", 'function', "({id}, {key}) : Number	filter for a dialog popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_findinfo", 'function', "() : Number	get window ID of info popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_findpreview", 'function', "() : Number	get window ID of preview popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_getoptions", 'function', "({id}) : Dict	get options of popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_getpos", 'function', "({id}) : Dict	get position of popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_hide", 'function', "({id}) : none	hide popup menu {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_menu", 'function', "({what}, {options}) : Number	create a popup window used as a menu")
+   call DictionaryAdd(g:Complete_dict, "popup_move", 'function', "({id}, {options}) : none	set position of popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_notification", 'function', "({what}, {options}) : Number	create a notification popup window")
+   call DictionaryAdd(g:Complete_dict, "popup_setoptions", 'function', "({id}, {options}) : none	set options for popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_settext", 'function', "({id}, {text}) : none	set the text of popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "popup_show", 'function', "({id}) : none	unhide popup window {id}")
+   call DictionaryAdd(g:Complete_dict, "pow", 'function', "({x}, {y}) : Float	{x} to the power of {y}")
+   call DictionaryAdd(g:Complete_dict, "prevnonblank", 'function', "({lnum}) : Number	line nr of non-blank line <= {lnum}")
+   call DictionaryAdd(g:Complete_dict, "printf", 'function', "({fmt}, {expr1}...) : String	format text")
+   call DictionaryAdd(g:Complete_dict, "prompt_setcallback", 'function', "({buf}, {expr}) : none	set prompt callback function")
+   call DictionaryAdd(g:Complete_dict, "prompt_setinterrupt", 'function', "({buf}, {text}) : none	set prompt interrupt function")
+   call DictionaryAdd(g:Complete_dict, "prompt_setprompt", 'function', "({buf}, {text}) : none	set prompt text")
+   call DictionaryAdd(g:Complete_dict, "prop_add", 'function', "({lnum}, {col}, {props}) : none	add a text property")
+   call DictionaryAdd(g:Complete_dict, "prop_clear", 'function', "({lnum} [, {lnum-end} [, {props}]]) : none	remove all text properties")
+   call DictionaryAdd(g:Complete_dict, "prop_find", 'function', "({props} [, {direction}]) : Dict	search for a text property")
+   call DictionaryAdd(g:Complete_dict, "prop_list", 'function', "({lnum} [, {props}) : List	text properties in {lnum}")
+   call DictionaryAdd(g:Complete_dict, "prop_remove", 'function', "({props} [, {lnum} [, {lnum-end}]]) : Number	remove a text property")
+   call DictionaryAdd(g:Complete_dict, "prop_type_add", 'function', "({name}, {props}) : none	define a new property type")
+   call DictionaryAdd(g:Complete_dict, "prop_type_change", 'function', "({name}, {props}) : none	change an existing property type")
+   call DictionaryAdd(g:Complete_dict, "prop_type_delete", 'function', "({name} [, {props}]) : none	delete a property type")
+   call DictionaryAdd(g:Complete_dict, "prop_type_get", 'function', "([{name} [, {props}]) : Dict	get property type values")
+   call DictionaryAdd(g:Complete_dict, "prop_type_list", 'function', "([{props}]) : List	get list of property types")
+   call DictionaryAdd(g:Complete_dict, "pum_getpos", 'function', "() : Dict	position and size of pum if visible")
+   call DictionaryAdd(g:Complete_dict, "pumvisible", 'function', "() : Number	whether popup menu is visible")
+   call DictionaryAdd(g:Complete_dict, "py3eval", 'function', "({expr}) : any	evaluate |python3| expression")
+   call DictionaryAdd(g:Complete_dict, "pyeval", 'function', "({expr}) : any	evaluate |Python| expression")
+   call DictionaryAdd(g:Complete_dict, "pyxeval", 'function', "({expr}) : any	evaluate |python_x| expression")
+   call DictionaryAdd(g:Complete_dict, "rand", 'function', "([{expr}]) : Number	get pseudo-random number")
+   call DictionaryAdd(g:Complete_dict, "range", 'function', "({expr} [, {max} [, {stride}]]) : List	items from {expr} to {max}")
+   call DictionaryAdd(g:Complete_dict, "readdir", 'function', "({dir} [, {expr}]) : List	file names in {dir} selected by {expr}")
+   call DictionaryAdd(g:Complete_dict, "readfile", 'function', "({fname} [, {type} [, {max}]]) : List	get list of lines from file {fname}")
+   call DictionaryAdd(g:Complete_dict, "reg_executing", 'function', "() : String	get the executing register name")
+   call DictionaryAdd(g:Complete_dict, "reg_recording", 'function', "() : String	get the recording register name")
+   call DictionaryAdd(g:Complete_dict, "reltime", 'function', "([{start} [, {end}]]) : List	get time value")
+   call DictionaryAdd(g:Complete_dict, "reltimefloat", 'function', "({time}) : Float	turn the time value into a Float")
+   call DictionaryAdd(g:Complete_dict, "reltimestr", 'function', "({time}) : String	turn time value into a String")
+   call DictionaryAdd(g:Complete_dict, "remote_expr", 'function', "({server}, {string} [, {idvar} [, {timeout}]]) : String	send expression")
+   call DictionaryAdd(g:Complete_dict, "remote_foreground", 'function', "({server}) : Number	bring Vim server to the foreground")
+   call DictionaryAdd(g:Complete_dict, "remote_peek", 'function', "({serverid} [, {retvar}]) : Number	check for reply string")
+   call DictionaryAdd(g:Complete_dict, "remote_read", 'function', "({serverid} [, {timeout}]) : String	read reply string")
+   call DictionaryAdd(g:Complete_dict, "remote_send", 'function', "({server}, {string} [, {idvar}]) : String	send key sequence")
+   call DictionaryAdd(g:Complete_dict, "remote_startserver", 'function', "({name}) : none	become server {name}")
+   call DictionaryAdd(g:Complete_dict, "remove", 'function', "({blob}, {idx} [, {end}]) : Number/Blob remove bytes {idx}-{end} from {blob}")
+   call DictionaryAdd(g:Complete_dict, "remove", 'function', "({dict}, {key}) : any	remove entry {key} from {dict}")
+   call DictionaryAdd(g:Complete_dict, "remove", 'function', "({list}, {idx} [, {end}]) : any/List remove items {idx}-{end} from {list}")
+   call DictionaryAdd(g:Complete_dict, "rename", 'function', "({from}, {to}) : Number	rename (move) file from {from} to {to}")
+   call DictionaryAdd(g:Complete_dict, "repeat", 'function', "({expr}, {count}) : String	repeat {expr} {count} times")
+   call DictionaryAdd(g:Complete_dict, "resolve", 'function', "({filename}) : String	get filename a shortcut points to")
+   call DictionaryAdd(g:Complete_dict, "reverse", 'function', "({list}) : List	reverse {list} in-place")
+   call DictionaryAdd(g:Complete_dict, "round", 'function', "({expr}) : Float	round off {expr}")
+   call DictionaryAdd(g:Complete_dict, "rubyeval", 'function', "({expr}) : any	evaluate |Ruby| expression")
+   call DictionaryAdd(g:Complete_dict, "screenattr", 'function', "({row}, {col}) : Number	attribute at screen position")
+   call DictionaryAdd(g:Complete_dict, "screenchar", 'function', "({row}, {col}) : Number	character at screen position")
+   call DictionaryAdd(g:Complete_dict, "screenchars", 'function', "({row}, {col}) : List	List of characters at screen position")
+   call DictionaryAdd(g:Complete_dict, "screencol", 'function', "() : Number	current cursor column")
+   call DictionaryAdd(g:Complete_dict, "screenpos", 'function', "({winid}, {lnum}, {col}) : Dict	screen row and col of a text character")
+   call DictionaryAdd(g:Complete_dict, "screenrow", 'function', "() : Number	current cursor row")
+   call DictionaryAdd(g:Complete_dict, "screenstring", 'function', "({row}, {col}) : String	characters at screen position")
+   call DictionaryAdd(g:Complete_dict, "search", 'function', "({pattern} [, {flags} [, {stopline} [, {timeout}]]]) : Number	search for {pattern}")
+   call DictionaryAdd(g:Complete_dict, "searchdecl", 'function', "({name} [, {global} [, {thisblock}]]) : Number	search for variable declaration")
+   call DictionaryAdd(g:Complete_dict, "searchpair", 'function', "({start}, {middle}, {end} [, {flags} [, {skip} [...]]]) : Number	search for other end of start/end pair")
+   call DictionaryAdd(g:Complete_dict, "searchpairpos", 'function', "({start}, {middle}, {end} [, {flags} [, {skip} [...]]]) : List	search for other end of start/end pair")
+   call DictionaryAdd(g:Complete_dict, "searchpos", 'function', "({pattern} [, {flags} [, {stopline} [, {timeout}]]]) : List	search for {pattern}")
+   call DictionaryAdd(g:Complete_dict, "server2client", 'function', "({clientid}, {string}) : Number	send reply string")
+   call DictionaryAdd(g:Complete_dict, "serverlist", 'function', "() : String	get a list of available servers")
+   call DictionaryAdd(g:Complete_dict, "setbufline", 'function', "({expr}, {lnum}, {text}) : Number	set line {lnum} to {text} in buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "setbufvar", 'function', "({expr}, {varname}, {val}) : none	set {varname} in buffer {expr} to {val}")
+   call DictionaryAdd(g:Complete_dict, "setcharsearch", 'function', "({dict}) : Dict	set character search from {dict}")
+   call DictionaryAdd(g:Complete_dict, "setcmdpos", 'function', "({pos}) : Number	set cursor position in command-line")
+   call DictionaryAdd(g:Complete_dict, "setenv", 'function', "({name}, {val}) : none	set environment variable")
+   call DictionaryAdd(g:Complete_dict, "setfperm", 'function', "({fname}, {mode}) : Number	set {fname} file permissions to {mode}")
+   call DictionaryAdd(g:Complete_dict, "setline", 'function', "({lnum}, {line}) : Number	set line {lnum} to {line}")
+   call DictionaryAdd(g:Complete_dict, "setloclist", 'function', "({nr}, {list} [, {action} [, {what}]]) : Number	modify location list using {list}")
+   call DictionaryAdd(g:Complete_dict, "setmatches", 'function', "({list} [, {win}]) : Number	restore a list of matches")
+   call DictionaryAdd(g:Complete_dict, "setpos", 'function', "({expr}, {list}) : Number	set the {expr} position to {list}")
+   call DictionaryAdd(g:Complete_dict, "setqflist", 'function', "({list} [, {action} [, {what}]]) : Number	modify quickfix list using {list}")
+   call DictionaryAdd(g:Complete_dict, "setreg", 'function', "({n}, {v} [, {opt}]) : Number	set register to value and type")
+   call DictionaryAdd(g:Complete_dict, "settabvar", 'function', "({nr}, {varname}, {val}) : none	set {varname} in tab page {nr} to {val}")
+   call DictionaryAdd(g:Complete_dict, "settabwinvar", 'function', "({tabnr}, {winnr}, {varname}, {val}) : none	set {varname} in window {winnr} in tab page {tabnr} to {val}")
+   call DictionaryAdd(g:Complete_dict, "settagstack", 'function', "({nr}, {dict} [, {action}]) : Number	modify tag stack using {dict}")
+   call DictionaryAdd(g:Complete_dict, "setwinvar", 'function', "({nr}, {varname}, {val}) : none	set {varname} in window {nr} to {val}")
+   call DictionaryAdd(g:Complete_dict, "sha256", 'function', "({string}) : String	SHA256 checksum of {string}")
+   call DictionaryAdd(g:Complete_dict, "shellescape", 'function', "({string} [, {special}]) : String	escape {string} for use as shell command argument")
+   call DictionaryAdd(g:Complete_dict, "shiftwidth", 'function', "([{col}]) : Number	effective value of 'shiftwidth'")
+   call DictionaryAdd(g:Complete_dict, "sign_define", 'function', "({list}) : List	define or update a list of signs")
+   call DictionaryAdd(g:Complete_dict, "sign_define", 'function', "({name} [, {dict}]) : Number	define or update a sign")
+   call DictionaryAdd(g:Complete_dict, "sign_getdefined", 'function', "([{name}]) : List	get a list of defined signs")
+   call DictionaryAdd(g:Complete_dict, "sign_getplaced", 'function', "([{expr} [, {dict}]]) : List	get a list of placed signs")
+   call DictionaryAdd(g:Complete_dict, "sign_jump", 'function', "({id}, {group}, {expr}) : Number	jump to a sign")
+   call DictionaryAdd(g:Complete_dict, "sign_place", 'function', "({id}, {group}, {name}, {expr} [, {dict}]) : Number	place a sign")
+   call DictionaryAdd(g:Complete_dict, "sign_placelist", 'function', "({list}) : List	place a list of signs")
+   call DictionaryAdd(g:Complete_dict, "sign_undefine", 'function', "([{name}]) : Number	undefine a sign")
+   call DictionaryAdd(g:Complete_dict, "sign_undefine", 'function', "({list}) : List	undefine a list of signs")
+   call DictionaryAdd(g:Complete_dict, "sign_unplace", 'function', "({group} [, {dict}]) : Number	unplace a sign")
+   call DictionaryAdd(g:Complete_dict, "sign_unplacelist", 'function', "({list}) : List	unplace a list of signs")
+   call DictionaryAdd(g:Complete_dict, "simplify", 'function', "({filename}) : String	simplify filename as much as possible")
+   call DictionaryAdd(g:Complete_dict, "sin", 'function', "({expr}) : Float	sine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "sinh", 'function', "({expr}) : Float	hyperbolic sine of {expr}")
+   call DictionaryAdd(g:Complete_dict, "sort", 'function', "({list} [, {func} [, {dict}]]) : List	sort {list}, using {func} to compare")
+   call DictionaryAdd(g:Complete_dict, "sound_clear", 'function', "() : none	stop playing all sounds")
+   call DictionaryAdd(g:Complete_dict, "sound_playevent", 'function', "({name} [, {callback}]) : Number	play an event sound")
+   call DictionaryAdd(g:Complete_dict, "sound_playfile", 'function', "({path} [, {callback}]) : Number	play sound file {path}")
+   call DictionaryAdd(g:Complete_dict, "sound_stop", 'function', "({id}) : none	stop playing sound {id}")
+   call DictionaryAdd(g:Complete_dict, "soundfold", 'function', "({word}) : String	sound-fold {word}")
+   call DictionaryAdd(g:Complete_dict, "spellbadword", 'function', "() : String	badly spelled word at cursor")
+   call DictionaryAdd(g:Complete_dict, "spellsuggest", 'function', "({word} [, {max} [, {capital}]]) : List	spelling suggestions")
+   call DictionaryAdd(g:Complete_dict, "split", 'function', "({expr} [, {pat} [, {keepempty}]]) : List	make |List| from {pat} separated {expr}")
+   call DictionaryAdd(g:Complete_dict, "sqrt", 'function', "({expr}) : Float	square root of {expr}")
+   call DictionaryAdd(g:Complete_dict, "srand", 'function', "([{expr}]) : List	get seed for |rand()|")
+   call DictionaryAdd(g:Complete_dict, "state", 'function', "([{what}]) : String	current state of Vim")
+   call DictionaryAdd(g:Complete_dict, "str2float", 'function', "({expr}) : Float	convert String to Float")
+   call DictionaryAdd(g:Complete_dict, "str2list", 'function', "({expr} [, {utf8}]) : List	convert each character of {expr} to ASCII/UTF8 value")
+   call DictionaryAdd(g:Complete_dict, "str2nr", 'function', "({expr} [, {base} [, {quoted}]]) : Number	convert String to Number")
+   call DictionaryAdd(g:Complete_dict, "strcharpart", 'function', "({str}, {start} [, {len}]) : String	{len} characters of {str} at {start}")
+   call DictionaryAdd(g:Complete_dict, "strchars", 'function', "({expr} [, {skipcc}]) : Number	character length of the String {expr}")
+   call DictionaryAdd(g:Complete_dict, "strdisplaywidth", 'function', "({expr} [, {col}]) : Number display length of the String {expr}")
+   call DictionaryAdd(g:Complete_dict, "strftime", 'function', "({format} [, {time}]) : String	format time with a specified format")
+   call DictionaryAdd(g:Complete_dict, "strgetchar", 'function', "({str}, {index}) : Number	get char {index} from {str}")
+   call DictionaryAdd(g:Complete_dict, "stridx", 'function', "({haystack}, {needle} [, {start}]) : Number	index of {needle} in {haystack}")
+   call DictionaryAdd(g:Complete_dict, "string", 'function', "({expr}) : String	String representation of {expr} value")
+   call DictionaryAdd(g:Complete_dict, "strlen", 'function', "({expr}) : Number	length of the String {expr}")
+   call DictionaryAdd(g:Complete_dict, "strpart", 'function', "({str}, {start} [, {len}]) : String	{len} characters of {str} at {start}")
+   call DictionaryAdd(g:Complete_dict, "strptime", 'function', "({format}, {timestring}) : Number	Convert {timestring} to unix timestamp")
+   call DictionaryAdd(g:Complete_dict, "strridx", 'function', "({haystack}, {needle} [, {start}]) : Number	last index of {needle} in {haystack}")
+   call DictionaryAdd(g:Complete_dict, "strtrans", 'function', "({expr}) : String	translate string to make it printable")
+   call DictionaryAdd(g:Complete_dict, "strwidth", 'function', "({expr}) : Number	display cell length of the String {expr}")
+   call DictionaryAdd(g:Complete_dict, "submatch", 'function', "({nr} [, {list}]) : String or List specific match in ':s' or substitute()")
+   call DictionaryAdd(g:Complete_dict, "substitute", 'function', "({expr}, {pat}, {sub}, {flags}) : String	all {pat} in {expr} replaced with {sub}")
+   call DictionaryAdd(g:Complete_dict, "swapinfo", 'function', "({fname}) : Dict	information about swap file {fname}")
+   call DictionaryAdd(g:Complete_dict, "swapname", 'function', "({expr}) : String	swap file of buffer {expr}")
+   call DictionaryAdd(g:Complete_dict, "synID", 'function', "({lnum}, {col}, {trans}) : Number	syntax ID at {lnum} and {col}")
+   call DictionaryAdd(g:Complete_dict, "synIDattr", 'function', "({synID}, {what} [, {mode}]) : String	attribute {what} of syntax ID {synID}")
+   call DictionaryAdd(g:Complete_dict, "synIDtrans", 'function', "({synID}) : Number	translated syntax ID of {synID}")
+   call DictionaryAdd(g:Complete_dict, "synconcealed", 'function', "({lnum}, {col}) : List	info about concealing")
+   call DictionaryAdd(g:Complete_dict, "synstack", 'function', "({lnum}, {col}) : List	stack of syntax IDs at {lnum} and {col}")
+   call DictionaryAdd(g:Complete_dict, "system", 'function', "({expr} [, {input}]) : String	output of shell command/filter {expr}")
+   call DictionaryAdd(g:Complete_dict, "systemlist", 'function', "({expr} [, {input}]) : List	output of shell command/filter {expr}")
+   call DictionaryAdd(g:Complete_dict, "tabpagebuflist", 'function', "([{arg}]) : List	list of buffer numbers in tab page")
+   call DictionaryAdd(g:Complete_dict, "tabpagenr", 'function', "([{arg}]) : Number	number of current or last tab page")
+   call DictionaryAdd(g:Complete_dict, "tabpagewinnr", 'function', "({tabarg} [, {arg}]) : Number	number of current window in tab page")
+   call DictionaryAdd(g:Complete_dict, "tagfiles", 'function', "() : List	tags files used")
+   call DictionaryAdd(g:Complete_dict, "taglist", 'function', "({expr} [, {filename}]) : List	list of tags matching {expr}")
+   call DictionaryAdd(g:Complete_dict, "tan", 'function', "({expr}) : Float	tangent of {expr}")
+   call DictionaryAdd(g:Complete_dict, "tanh", 'function', "({expr}) : Float	hyperbolic tangent of {expr}")
+   call DictionaryAdd(g:Complete_dict, "tempname", 'function', "() : String	name for a temporary file")
+   call DictionaryAdd(g:Complete_dict, "term_dumpdiff", 'function', "({filename}, {filename} [, {options}]) : Number  display difference between two dumps")
+   call DictionaryAdd(g:Complete_dict, "term_dumpload", 'function', "({filename} [, {options}]) : Number	displaying a screen dump")
+   call DictionaryAdd(g:Complete_dict, "term_dumpwrite", 'function', "({buf}, {filename} [, {options}]) : none	dump terminal window contents")
+   call DictionaryAdd(g:Complete_dict, "term_getaltscreen", 'function', "({buf}) : Number	get the alternate screen flag")
+   call DictionaryAdd(g:Complete_dict, "term_getansicolors", 'function', "({buf}) : List	get ANSI palette in GUI color mode")
+   call DictionaryAdd(g:Complete_dict, "term_getattr", 'function', "({attr}, {what}) : Number	get the value of attribute {what}")
+   call DictionaryAdd(g:Complete_dict, "term_getcursor", 'function', "({buf}) : List	get the cursor position of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_getjob", 'function', "({buf}) : Job	get the job associated with a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_getline", 'function', "({buf}, {row}) : String	get a line of text from a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_getscrolled", 'function', "({buf}) : Number	get the scroll count of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_getsize", 'function', "({buf}) : List	get the size of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_getstatus", 'function', "({buf}) : String	get the status of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_gettitle", 'function', "({buf}) : String	get the title of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_gettty", 'function', "({buf}, [{input}]) : String	get the tty name of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_list", 'function', "() : List	get the list of terminal buffers")
+   call DictionaryAdd(g:Complete_dict, "term_scrape", 'function', "({buf}, {row}) : List	get row of a terminal screen")
+   call DictionaryAdd(g:Complete_dict, "term_sendkeys", 'function', "({buf}, {keys}) : none	send keystrokes to a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_setansicolors", 'function', "({buf}, {colors}) : none	set ANSI palette in GUI color mode")
+   call DictionaryAdd(g:Complete_dict, "term_setapi", 'function', "({buf}, {expr}) : none	set |terminal-api| function name prefix")
+   call DictionaryAdd(g:Complete_dict, "term_setkill", 'function', "({buf}, {how}) : none	set signal to stop job in terminal")
+   call DictionaryAdd(g:Complete_dict, "term_setrestore", 'function', "({buf}, {command}) : none	set command to restore terminal")
+   call DictionaryAdd(g:Complete_dict, "term_setsize", 'function', "({buf}, {rows}, {cols}) : none	set the size of a terminal")
+   call DictionaryAdd(g:Complete_dict, "term_start", 'function', "({cmd} [, {options}]) : Number	open a terminal window and run a job")
+   call DictionaryAdd(g:Complete_dict, "term_wait", 'function', "({buf} [, {time}]) : Number  wait for screen to be updated")
+   call DictionaryAdd(g:Complete_dict, "test_alloc_fail", 'function', "({id}, {countdown}, {repeat}) : none	make memory allocation fail")
+   call DictionaryAdd(g:Complete_dict, "test_autochdir", 'function', "() : none	enable 'autochdir' during startup")
+   call DictionaryAdd(g:Complete_dict, "test_feedinput", 'function', "({string}) : none	add key sequence to input buffer")
+   call DictionaryAdd(g:Complete_dict, "test_garbagecollect_now", 'function', "() : none	free memory right now for testing")
+   call DictionaryAdd(g:Complete_dict, "test_garbagecollect_soon", 'function', "() : none	free memory soon for testing")
+   call DictionaryAdd(g:Complete_dict, "test_getvalue", 'function', "({string}) : any	get value of an internal variable")
+   call DictionaryAdd(g:Complete_dict, "test_ignore_error", 'function', "({expr}) : none	ignore a specific error")
+   call DictionaryAdd(g:Complete_dict, "test_null_blob", 'function', "() : Blob	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_channel", 'function', "() : Channel	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_dict", 'function', "() : Dict	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_job", 'function', "() : Job	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_list", 'function', "() : List	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_partial", 'function', "() : Funcref	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_null_string", 'function', "() : String	null value for testing")
+   call DictionaryAdd(g:Complete_dict, "test_option_not_set", 'function', "({name}) : none	reset flag indicating option was set")
+   call DictionaryAdd(g:Complete_dict, "test_override", 'function', "({expr}, {val}) : none	test with Vim internal overrides")
+   call DictionaryAdd(g:Complete_dict, "test_refcount", 'function', "({expr}) : Number	get the reference count of {expr}")
+   call DictionaryAdd(g:Complete_dict, "test_scrollbar", 'function', "({which}, {value}, {dragging}) : none	scroll in the GUI for testing")
+   call DictionaryAdd(g:Complete_dict, "test_setmouse", 'function', "({row}, {col}) : none	set the mouse position for testing")
+   call DictionaryAdd(g:Complete_dict, "test_settime", 'function', "({expr}) : none	set current time for testing")
+   call DictionaryAdd(g:Complete_dict, "timer_info", 'function', "([{id}]) : List	information about timers")
+   call DictionaryAdd(g:Complete_dict, "timer_pause", 'function', "({id}, {pause}) : none	pause or unpause a timer")
+   call DictionaryAdd(g:Complete_dict, "timer_start", 'function', "({time}, {callback} [, {options}]) : Number	create a timer")
+   call DictionaryAdd(g:Complete_dict, "timer_stop", 'function', "({timer}) : none	stop a timer")
+   call DictionaryAdd(g:Complete_dict, "timer_stopall", 'function', "() : none	stop all timers")
+   call DictionaryAdd(g:Complete_dict, "tolower", 'function', "({expr}) : String	the String {expr} switched to lowercase")
+   call DictionaryAdd(g:Complete_dict, "toupper", 'function', "({expr}) : String	the String {expr} switched to uppercase")
+   call DictionaryAdd(g:Complete_dict, "tr", 'function', "({src}, {fromstr}, {tostr}) : String	translate chars of {src} in {fromstr} to chars in {tostr}")
+   call DictionaryAdd(g:Complete_dict, "trim", 'function', "({text} [, {mask}]) : String	trim characters in {mask} from {text}")
+   call DictionaryAdd(g:Complete_dict, "trunc", 'function', "({expr}) : Float	truncate Float {expr}")
+   call DictionaryAdd(g:Complete_dict, "type", 'function', "({name}) : Number	type of variable {name}")
+   call DictionaryAdd(g:Complete_dict, "undofile", 'function', "({name}) : String	undo file name for {name}")
+   call DictionaryAdd(g:Complete_dict, "undotree", 'function', "() : List	undo file tree")
+   call DictionaryAdd(g:Complete_dict, "uniq", 'function', "({list} [, {func} [, {dict}]]) : List	remove adjacent duplicates from a list")
+   call DictionaryAdd(g:Complete_dict, "values", 'function', "({dict}) : List	values in {dict}")
+   call DictionaryAdd(g:Complete_dict, "virtcol", 'function', "({expr}) : Number	screen column of cursor or mark")
+   call DictionaryAdd(g:Complete_dict, "visualmode", 'function', "([expr]) : String	last visual mode used")
+   call DictionaryAdd(g:Complete_dict, "wildmenumode", 'function', "() : Number	whether 'wildmenu' mode is active")
+   call DictionaryAdd(g:Complete_dict, "win_execute", 'function', "({id}, {command} [, {silent}]) : String	execute {command} in window {id}")
+   call DictionaryAdd(g:Complete_dict, "win_findbuf", 'function', "({bufnr}) : List	find windows containing {bufnr}")
+   call DictionaryAdd(g:Complete_dict, "win_getid", 'function', "([{win} [, {tab}]]) : Number	get window ID for {win} in {tab}")
+   call DictionaryAdd(g:Complete_dict, "win_gotoid", 'function', "({expr}) : Number	go to window with ID {expr}")
+   call DictionaryAdd(g:Complete_dict, "win_id2tabwin", 'function', "({expr}) : List	get tab and window nr from window ID")
+   call DictionaryAdd(g:Complete_dict, "win_id2win", 'function', "({expr}) : Number	get window nr from window ID")
+   call DictionaryAdd(g:Complete_dict, "win_screenpos", 'function', "({nr}) : List	get screen position of window {nr}")
+   call DictionaryAdd(g:Complete_dict, "win_splitmove", 'function', "({nr}, {target} [, {options}]) : Number	move window {nr} to split of {target}")
+   call DictionaryAdd(g:Complete_dict, "winbufnr", 'function', "({nr}) : Number	buffer number of window {nr}")
+   call DictionaryAdd(g:Complete_dict, "wincol", 'function', "() : Number	window column of the cursor")
+   call DictionaryAdd(g:Complete_dict, "winheight", 'function', "({nr}) : Number	height of window {nr}")
+   call DictionaryAdd(g:Complete_dict, "winlayout", 'function', "([{tabnr}]) : List	layout of windows in tab {tabnr}")
+   call DictionaryAdd(g:Complete_dict, "winline", 'function', "() : Number	window line of the cursor")
+   call DictionaryAdd(g:Complete_dict, "winnr", 'function', "([{expr}]) : Number	number of current window")
+   call DictionaryAdd(g:Complete_dict, "winrestcmd", 'function', "() : String	returns command to restore window sizes")
+   call DictionaryAdd(g:Complete_dict, "winrestview", 'function', "({dict}) : none	restore view of current window")
+   call DictionaryAdd(g:Complete_dict, "winsaveview", 'function', "() : Dict	save view of current window")
+   call DictionaryAdd(g:Complete_dict, "winwidth", 'function', "({nr}) : Number	width of window {nr}")
+   call DictionaryAdd(g:Complete_dict, "wordcount", 'function', "() : Dict	get byte/char/word statistics")
+   call DictionaryAdd(g:Complete_dict, "writefile", 'function', "({object}, {fname} [, {flags}]) : Number	write |Blob| or |List| of lines to file")
+   call DictionaryAdd(g:Complete_dict, "xor", 'function', "({expr}, {expr}) : Number	bitwise XOR")
 endfunction
 
 
