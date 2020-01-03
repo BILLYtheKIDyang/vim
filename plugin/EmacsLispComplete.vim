@@ -41,7 +41,7 @@ fun! MyComplete(start, base)
    if a:start
       let line = getline('.')
       let start = col('.') - 1
-      while start > 0 && (line[start - 1] =~ '\k' || line[start - 1] =~ "[-:&]")
+      while start > 0 && (line[start - 1] =~ '\k' || line[start - 1] =~ "[-&]")
          let start -= 1
       endwhile
       return start

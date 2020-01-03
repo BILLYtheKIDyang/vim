@@ -132,6 +132,7 @@ let g:cmd=''
 let g:clear = ''
 func! MyF4()
    :silent :w
+   let g:Complete_dict = {}
    :cd %:p:h
    if g:cmd != ""
       execute g:cmd
@@ -216,7 +217,7 @@ let g:clojure_fuzzy_indent_patterns=['^.']
 if has('win32')
    set guifont=Consolas:h12:cANSI:qDRAFT
 else
-   set guifont=Droid\ Sans\ Mono\ 12
+   set guifont=Droid\ Sans\ Mono\ 11
 endif
 
 let g:ycm_language_server = []
@@ -228,3 +229,4 @@ let g:rubycomplete_rails = 1
 let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe', expand("~/.vim/bin/ss.cmd")]
 let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 "let g:REPL_configs['scheme']['repl'] = ['D:/Racket/Racket.exe']
+let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
