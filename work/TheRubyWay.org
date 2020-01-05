@@ -1,0 +1,93 @@
+Regex      | Explanation
+
+/Ruby/     | Match the single word Ruby
+/[Rr]uby/  | Match Ruby or ruby
+/^abc/     | Match an abc at beginning of line
+%r(xyz$)   | Match an xyz at end of line
+%|[0-9]*|  | Match any sequence of (zero or mote) digits
+
+
+
+Modifier  | Meaning
+
+i         | Ignore case in regex
+o         | Perform expression substitution only once
+m         | Multiline mode (dot matches newline)
+x         | Extended regex (allow whitespace, comments)
+
+
+Notation         | Meaning
+
+^                | Beginning of line or sting
+$                | End of line or string
+.                | Any character except newline (unless multiline)
+\w               | Word character (digit, letter, or underscore)
+\W               | Non-word character
+\s               | Whitespace character (space, tab, newline, and so on)
+\S               | Non-whitespace character
+\d               | Digit (same as [0-9])
+\D               | Non-digit
+\h               | Hexadecimal digit (same as [0-9a-f])
+\H               | Non-hexadecimal digit
+\A               | Beginning of a string
+\Z               | End of a string or before newline at the end
+\z               | End of a string
+\b               | Word boundary (outside [] only)
+\B               | Non-Word boundary
+\b               | Backspace (inside [] only)
+[]               | Any single character of set
+*                | Zero or more of previous subexpression
+*?               | Zero or more of previous subexpression (non-greedy)
++                | One or more of previous subexpression
++?               | One or more of previous subexpression (non-greedy)
+{m,n}            | m to n instance of previous subexpression
+{m,n}?           | m to n instance of previous subexpression (non-greedy)
+?                | Zero or one of previous regular expression
+|                | Alternatives
+(?= )            | Positive lookahead
+(?! )            | Negative lookahead
+()               | Grouping of subexpressions
+(?> )            | Embedded subexpression
+(?: )            | Noncapturing group
+(?imx-imx)       | Turn option on/off henceforth
+(?imx-imx:expr)  | Turn options on/off for this expression
+(?# )            | Comment
+
+|###
+
+reg1 = /[a-z&&[^aeiou]]/ # any letter but vowels a, e, i, o, and u
+reg2 = /[a-z&&[^m-p]]/ # the entire alphabet minus m through p
+pat1 = Regexp.compile("^foo.*")
+pat2 = Regexp.compile(/bar$/i)
+options = Regexp::MULTILINE || Regexp::IGNORECASE
+pat3 = Regexp.compile("^foo", options)
+pat4 = Regexp.compile(/bar/, Regexp::IGNORECASE)
+
+str1 = "[*?]"
+str2 = Regexp.escape(str1)
+string = "abcXdefXghi"
+/def/ =~ string
+/abc/ =~ string
+/ghi/ =~ string 
+/^def/ =~ string 
+/def$/ =~ string
+/^abc/ =~ string
+/ghi$/ =~ string
+
+string = "abc\ndef\nghi"
+/def/ =~ string
+/abc/ =~ string
+/ghi/ =~ string
+/^def/ =~ string
+/def$/ =~ string
+/^abc/ =~ string
+/ghi$/ =~ string
+
+string = "abc\ndef\nghi"
+/\Adef/ =~ string
+/def\Z/ =~ string
+/\Aabc/ =~ string
+/ghi\z/ =~ string
+
+string = "abc\ndef\nghi"
+str2 << "\n"
