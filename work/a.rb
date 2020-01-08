@@ -24,7 +24,7 @@ class Stack
     return @stack[@sp]
   end
   def inspect
-    [@stack,@sp]
+    [@stack, @sp]
   end
 end
 
@@ -32,7 +32,7 @@ stack = Stack.new
 stack.push(1)
 stack.push(2)
 stack.push(3)
-stack.pop()
+stack.pop
 stack.pop
 stack.pop
 stack.pop

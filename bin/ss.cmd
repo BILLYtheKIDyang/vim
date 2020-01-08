@@ -24,7 +24,7 @@
        (string=? pre (substring str 0 (string-length pre)))))
 (define (second x) (cadr x))
 (define (tags)
-  (let ((file (string-append ((lambda (x) x) (getenv "HOME")) "/.MyComplete")))
+  (let ((file (string-append (or (getenv "HOME") (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH"))) "/.MyComplete")))
     (system (string-append "rm -rf " file))
     (with-output-to-file 
       file
