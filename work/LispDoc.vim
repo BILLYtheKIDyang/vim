@@ -34,17 +34,13 @@ function! InsertClose(close)
       endif
    endif
 endfunction
-function! GetFunctionName()
-   
-endfunction
-function! GetNonLispDoc()
-endfunction
 function! GetLispDoc()
-   let  funname_ = split(trim(InsertClose(' ')), '[ \t\n]')
-   if len(funname_) == 0
+   let  funname = split(trim(InsertClose(' ')), '[ \t\n]')
+   if len(funname) == 0
       return ''
    endif
    let  funname = split(trim(InsertClose(' ')), '[ \t\n]')[0]
+   "echo funname
    if has_key(g:Complete_dict, funname)
       echo keys(g:Complete_dict[funname])[0]
    endif

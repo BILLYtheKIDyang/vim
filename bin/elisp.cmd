@@ -10,8 +10,8 @@
 (require 'cl)
 
 (defun gethome () 
-  (if (eql system-type  "windows-nt")
-      (concat (getenv "HOMEPATH")
+  (if (string= system-type  "windows-nt")
+      (concat (getenv "HOMEDRIVE")
 	      (getenv "HOMEPATH"))
       (getenv "HOME")))
 (defun getcomplete () 

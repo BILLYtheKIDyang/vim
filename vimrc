@@ -217,7 +217,7 @@ let g:clojure_fuzzy_indent_patterns=['^.']
 if has('win32')
    set guifont=Consolas:h12:cANSI:qDRAFT
 else
-   set guifont=Droid\ Sans\ Mono\ 11
+   set guifont=Droid\ Sans\ Mono\ 10
 endif
 
 let g:ycm_language_server = []
