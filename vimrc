@@ -226,10 +226,9 @@ colo Monokai
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
-let g:REPL_configs['scheme']['repl'] = ['c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe', expand("~/.vim/bin/ss.cmd")]
-let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
-"let g:REPL_configs['scheme']['repl'] = ['D:/Racket/Racket.exe']
 let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
 let g:REPL_configs['ruby'] = {}
 let g:REPL_configs['ruby']['repl'] = ['irb', '--simple-prompt']
+let g:REPL_configs['scheme'] = {}
+let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 set rtp+=~/tabular

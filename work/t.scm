@@ -4,3 +4,5 @@
     (unless (eof-object? (peek-char ou))
       (display (read-char ou))
       (loop))))
+
+(path-first "/home/a/")
