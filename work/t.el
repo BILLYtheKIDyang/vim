@@ -4,7 +4,7 @@
          ,@body)))
 
 (macroexpand-all '
- (when 1 2 3))
+  (when 1 2 3))
 
 (disassemble 'when)
 (defun fact (n)

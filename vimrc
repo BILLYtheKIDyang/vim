@@ -222,13 +222,30 @@ endif
 
 let g:ycm_language_server = []
 "let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
-colo Monokai
+colo ir_black
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
-let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
+let g:REPL_configs['lisp'] = {}
+let g:REPL_configs['lisp']['repl'] = ['emacs', '--script', expand('~/.vim/bin/elisp.cmd')]
 let g:REPL_configs['ruby'] = {}
 let g:REPL_configs['ruby']['repl'] = ['irb', '--simple-prompt']
 let g:REPL_configs['scheme'] = {}
 let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 set rtp+=~/tabular
+function! LispIndent()
+   set nolisp lispwords=
+   for n in range(line('.') - 1, line('.'))
+      let line = getline(n)
+      let words = split(line, "(\\+\\|\\[\\+\\|\\]\\+\\|)\\+\\| \\+\\|\\t\\+")
+      echo words
+      let words = map(words, 'trim(v:val, "()[]")')
+      for lp in words
+         if len(lp) > 1 && index(split(g:LispIndentKeep, ';'), lp) == -1 
+            execute ":set lispwords+=" . lp
+         endif
+      endfor
+   endfor
+   return lispindent(line('.'))
+endfunction
+let g:LispIndentKeep = 'if;and;or'

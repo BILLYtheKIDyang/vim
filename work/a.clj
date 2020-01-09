@@ -1,7 +1,7 @@
 (defn fact [n]
   (if (< n 2)
-    1N
-    (* n (fact (- n 1)))))
+      1N
+      (* n (fact (- n 1)))))
 
 (fact 33)
 (fact 123)

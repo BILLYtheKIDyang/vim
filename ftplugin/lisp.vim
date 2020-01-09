@@ -1,9 +1,5 @@
-set lispwords+=defcommand
-set lispwords-=if
-set lispwords+=set-dispatch-macro-character
-set lispwords+=get-dispatch-macro-character
-set lispwords+=defrule
 setlocal dictionary=~/.sbcl_completions
+setlocal indentexpr=LispIndent()
 setlocal complete+=k
 "setlocal equalprg=emacs\ --script\ ~/.vim/bin/emacsformat
 setlocal omnifunc=MyComplete

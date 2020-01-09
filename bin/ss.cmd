@@ -3,7 +3,7 @@
 ;;goto :eof
 ;; vim:ft=scheme
 (import (rnrs base)            ; define-syntax
-        (rnrs exceptions))     ; get `with-exception-handler`
+  (rnrs exceptions))     ; get `with-exception-handler`
 (define-syntax try
   (syntax-rules (catch)
     ((_ body (catch catcher))
@@ -38,7 +38,7 @@
                 (and (top-level-bound? x)
                      (let* ((val (top-level-value x))
                             (prc (procedure-source? val)))
-                       (or (and prc (second prc)) val)))
+                           (or (and prc (second prc)) val)))
                 (and (top-level-syntax? x) (top-level-syntax x))))
             (newline))
           (environment-symbols (interaction-environment)))))))

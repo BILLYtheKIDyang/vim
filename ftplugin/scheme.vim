@@ -1,14 +1,4 @@
-set lispwords+=define-command
-set lispwords-=if
-set lispwords+=syntax-case
-set lispwords+=syntax-rules
-set lispwords+=fluid-let
-set lispwords+=for
-set lispwords+=while
-set lispwords+=curry
-set lispwords+=defrule
-set lispwords+=defer
-setlocal dictionary=~/.vim/dict/scheme-mode
 setlocal complete+=k
+setlocal indentexpr=LispIndent()
 setlocal keywordprg=:help
 "setlocal equalprg=emacsformat

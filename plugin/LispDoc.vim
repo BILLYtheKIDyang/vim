@@ -1,3 +1,4 @@
+finish
 function! FindOpen(open, close, linnum, colnum)  "(
    let [open, close, linnum, colnum] = [a:open, a:close, a:linnum, a:colnum]
    if linnum < 0
