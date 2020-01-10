@@ -1,0 +1,25 @@
+(cd ".");# -*- emacs-lisp -*-
+(cd ".");# vim: ft=lisp
+(cd ".");emacs -batch -l %~f0 
+(cd ".");exit
+(require 'subr-x)
+(setf line "")
+(setf code nil)
+(setf inhibit-message t)
+(setf buf (create-file-buffer "*"))
+(defun Eval (x)
+  (eval (car (read-from-string x))))
+(while t
+  (condition-case e
+    (progn
+      (setf line (read-from-minibuffer ""))
+      (push line code))
+    (error
+      (with-temp-buffer
+        (insert (string-join (reverse code) "\n"))
+        (setf code nil)
+        (mapcar #'Eval command-line-args-left)
+        (indent-region (point-min) (point-max) nil)
+        (princ (buffer-string))
+        (kill-emacs)))))
+

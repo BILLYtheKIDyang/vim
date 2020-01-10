@@ -15,5 +15,5 @@
 (write-file (concat buffer ".html") nil)
 (shell-command
   (concat "wkhtmltoimage "
-          htmlfile " "  imgfile))
+    htmlfile " "  imgfile))
 (kill-emacs))

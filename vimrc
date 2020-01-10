@@ -235,10 +235,9 @@ let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 set rtp+=~/tabular
 function! LispIndent()
    set nolisp lispwords=
-   for n in range(line('.') - 1, line('.'))
+   for n in range(line('.') - 2, line('.')-1)
       let line = getline(n)
       let words = split(line, "(\\+\\|\\[\\+\\|\\]\\+\\|)\\+\\| \\+\\|\\t\\+")
-      echo words
       let words = map(words, 'trim(v:val, "()[]")')
       for lp in words
          if len(lp) > 1 && index(split(g:LispIndentKeep, ';'), lp) == -1 
