@@ -2,8 +2,9 @@
 ;;"c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe" --script %~f0 %~f1
 ;;goto :eof
 ;; vim:ft=scheme
-(import (rnrs base)            ; define-syntax
-        (rnrs exceptions))     ; get `with-exception-handler`
+(import 
+  (rnrs base)            ; define-syntax
+  (rnrs exceptions))     ; get `with-exception-handler`
 (define-syntax try
   (syntax-rules (catch)
     ((_ body (catch catcher))
