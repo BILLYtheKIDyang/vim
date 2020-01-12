@@ -2,8 +2,7 @@
 ;;"c:/Program Files/Chez Scheme 9.5.2/bin/a6nt/scheme.exe" --script %~f0 %~f1
 ;;goto :eof
 ;; vim:ft=scheme
-(import 
-  (rnrs base)            ; define-syntax
+(import (rnrs base)            ; define-syntax
   (rnrs exceptions))     ; get `with-exception-handler`
 (define-syntax try
   (syntax-rules (catch)
@@ -39,7 +38,7 @@
                 (and (top-level-bound? x)
                      (let* ((val (top-level-value x))
                             (prc (procedure-source? val)))
-                       (or (and prc (second prc)) val)))
+                           (or (and prc (second prc)) val)))
                 (and (top-level-syntax? x) (top-level-syntax x))))
             (newline))
           (environment-symbols (interaction-environment)))))))

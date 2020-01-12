@@ -1,4 +1,33 @@
-finish
+function! GetWords(line)
+   set lispwords=
+   let line = a:line
+   let words = []
+   let pattern = '(\+\([^( )]\+\) \(.*\)'
+   let m =  matchlist(line, pattern)
+   while m != []
+      call add(words, m[1])
+      let line = m[2]
+      let m = matchlist(line, pattern)
+   endwhile
+   return words
+endfunction
+function! GetLispIndent()
+   let idx = prevnonblank(line('.') - 1)
+   if idx == 0
+      return 0
+   else
+      let line = getline(idx)
+      let words =  GetWords(line)
+   endif
+   for fn in words
+      if len(fn) > 1 && index(split(g:LispIndentKeep, ';'), fn) == -1
+         execute ':set lispwords+=' .. fn
+      endif
+   endfor
+   return lispindent(line('.'))
+endfunction
+let g:LispIndentKeep = 'if;and;or'
+
 function! FindOpen(open, close, linnum, colnum)  "(
    let [open, close, linnum, colnum] = [a:open, a:close, a:linnum, a:colnum]
    if linnum < 0
@@ -35,11 +64,7 @@ function! InsertClose(close)
       endif
    endif
 endfunction
-function! GetFunctionName()
-   
-endfunction
-function! GetNonLispDoc()
-endfunction
+
 function! GetLispDoc()
    let  funname_ = split(trim(InsertClose(' ')), '[ \t\n]')
    if len(funname_) == 0
@@ -50,9 +75,14 @@ function! GetLispDoc()
       echo keys(g:Complete_dict[funname])[0]
    endif
 endfunction
-augroup lisp
-   autocmd!
-   autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ) <Esc>:call InsertClose(')') <CR>a
-   autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap ] <Esc>:call InsertClose(']') <CR>a
-   autocmd FileType clojure,lisp,scheme,racket,emacs-lisp inoremap   <Esc>:call GetLispDoc() <CR>a<Space>
-augroup END
+
+aug lisp
+   au!
+   au FileType clojure,lisp,scheme inoremap ) <Esc>:call InsertClose(')') <CR>a
+   au FileType clojure,lisp,scheme inoremap ] <Esc>:call InsertClose(']') <CR>a
+   au FileType clojure,lisp,scheme inoremap   <Esc>:call GetLispDoc() <CR>a<Space>
+   au FileType lisp,scheme,clojure setlocal nolisp indentexpr=GetLispIndent() equalprg=
+   au BufNewFile,BufRead 
+            \*.scm,*.el,.emacs,*.lisp,*.rkt,*.clj 
+            \setl nolisp indentexpr=GetLispIndent() equalprg=
+aug END

@@ -1,3 +1,0 @@
-#!/bin/sh
-":";exec clisp
-(print 33)

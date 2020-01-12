@@ -1,0 +1,3 @@
+#!emacs --script
+;; vim:ft=lisp
+(princ command-line-args-left)
