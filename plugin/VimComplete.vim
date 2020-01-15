@@ -11,8 +11,8 @@ function! VimScriptCompleteCache()
    let types += ['dir']
    let types += ['environment']
    let types += ['event']
-   let types += ['expression']
-   let types += ['file']
+   "let types += ['expression']
+   "let types += ['file']
    let types += ['file_in_path']
    let types += ['filetype']
    let types += ['function']
@@ -40,8 +40,8 @@ function! VimScriptCompleteCache()
          for name in getcompletion('', type)
             let name = split(name, '(')
             if len(name) > 0
-            call DictionaryAdd(g:Complete_dict, name[0], type, '')
-         endif
+               call DictionaryAdd(g:Complete_dict, name[0], type, '')
+            endif
          endfor
       catch /E433/
       endtry

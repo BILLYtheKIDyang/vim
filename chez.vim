@@ -1,4 +1,5 @@
-set lisp
+let old_lisp = &lisp
+let &lisp = 1
 let x = {}
 for line in readfile(expand("~/.vim/chez.scm"))
    let name = trim(matchstr(line, '^(\(\S\+\)'), '(')
@@ -19,3 +20,4 @@ for name in sort(keys(x))
 endfor
 call writefile(y, expand("~/.MyComplete"))
 call M()
+let &lisp = old_lisp

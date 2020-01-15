@@ -28,7 +28,7 @@ function! GetLispIndent()
 endfunction
 let g:LispIndentKeep = 'if;and;or'
 
-function! FindOpen(open, close, linnum, colnum)  "(
+function! FindOpen(open, close, linnum, colnum)  abort
    let [open, close, linnum, colnum] = [a:open, a:close, a:linnum, a:colnum]
    if linnum < 0
       return [0,0]
@@ -82,7 +82,5 @@ aug lisp
    au FileType clojure,lisp,scheme inoremap ] <Esc>:call InsertClose(']') <CR>a
    au FileType clojure,lisp,scheme inoremap   <Esc>:call GetLispDoc() <CR>a<Space>
    au FileType lisp,scheme,clojure setlocal nolisp indentexpr=GetLispIndent() equalprg=
-   au BufNewFile,BufRead 
-            \*.scm,*.el,.emacs,*.lisp,*.rkt,*.clj 
-            \setl nolisp indentexpr=GetLispIndent() equalprg=
+   au BufNewFile,BufRead *.scm,*.el,.emacs,*.lisp,*.rkt,*.clj setl nolisp indentexpr=GetLispIndent() equalprg=
 aug END

@@ -233,3 +233,4 @@ let g:REPL_configs['ruby']['repl'] = ['irb', '--simple-prompt']
 let g:REPL_configs['scheme'] = {}
 let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 set rtp+=~/tabular
+set rtp+=~/Desktop/lisper-vim
