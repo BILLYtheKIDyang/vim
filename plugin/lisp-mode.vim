@@ -1,5 +1,4 @@
 function! GetWords(line)
-   set lispwords=
    let line = a:line
    let words = []
    let pattern = '(\+\([^( )]\+\) \(.*\)'
@@ -11,21 +10,21 @@ function! GetWords(line)
    endwhile
    return words
 endfunction
+
 function! GetLispIndent()
-   let idx = prevnonblank(line('.') - 1)
-   if idx == 0
-      return 0
-   else
-      let line = getline(idx)
-      let words =  GetWords(line)
-   endif
-   for fn in words
-      if len(fn) > 1 && index(split(g:LispIndentKeep, ';'), fn) == -1
-         execute ':set lispwords+=' .. fn
-      endif
+   set lispwords=
+   for n in range(1, line('.') - 1)
+      let line = getline(n)
+      let words= GetWords(line)
+      for fn in words
+         if len(fn) > 1 && index(split(g:LispIndentKeep, ';'), fn) == -1
+            execute ':set lispwords+=' .. fn
+         endif
+      endfor
    endfor
    return lispindent(line('.'))
 endfunction
+
 let g:LispIndentKeep = 'if;and;or'
 
 function! FindOpen(open, close, linnum, colnum)  abort
@@ -78,9 +77,9 @@ endfunction
 
 aug lisp
    au!
-   au FileType clojure,lisp,scheme inoremap ) <Esc>:call InsertClose(')') <CR>a
-   au FileType clojure,lisp,scheme inoremap ] <Esc>:call InsertClose(']') <CR>a
-   au FileType clojure,lisp,scheme inoremap   <Esc>:call GetLispDoc() <CR>a<Space>
+   au FileType clojure,lisp,scheme inoremap <buffer> ) <Esc>:call InsertClose(')') <CR>a
+   au FileType clojure,lisp,scheme inoremap <buffer> ] <Esc>:call InsertClose(']') <CR>a
+   au FileType clojure,lisp,scheme inoremap <buffer>   <Esc>:call GetLispDoc() <CR>a<Space>
    au FileType lisp,scheme,clojure setlocal nolisp indentexpr=GetLispIndent() equalprg=
    au BufNewFile,BufRead *.scm,*.el,.emacs,*.lisp,*.rkt,*.clj setl nolisp indentexpr=GetLispIndent() equalprg=
 aug END

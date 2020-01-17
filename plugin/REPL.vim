@@ -1,39 +1,20 @@
 let g:REPL_configs = {}
 
-if has('win32')
-   let g:REPL_configs['lisp'] = {}
-   let g:REPL_configs['lisp']['repl'] = ['java', '-jar', expand("~/.vim/bin/abcl.jar")]
-   let g:REPL_configs['red'] = {}
-   let g:REPL_configs['red']['continuations'] = [] 
-   let g:REPL_configs['red']['repl'] = ['d:\\red\\red.bat', '--cli']
-   let g:REPL_configs['sml'] = {}
-   let g:REPL_configs['sml']['continuations'] = ['end', ';'] 
-   let g:REPL_configs['sml']['repl'] = ['sml.bat']
-   let g:REPL_configs['vb'] = {}
-   let g:REPL_configs['vb']['continuations'] = ['else', 'end'] 
-   let g:REPL_configs['vb']['repl'] = ['wscirpt', expand("~/.vim/work/vbsh.vbs")]
-else
-endif
-
-let g:REPL_configs['elisp'] = {}
-let g:REPL_configs['elisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
-let g:REPL_configs['lisp'] = {}
-let g:REPL_configs['lisp']['repl'] = ['emacs', '--script', expand("~/.vim/bin/elisp.cmd")]
 let g:REPL_configs['java'] = {}
 let g:REPL_configs['java']['continuations'] = ['else', 'catch']
 let g:REPL_configs['java']['repl'] = ['jshell']
 let g:REPL_configs['javascript'] = {}
 let g:REPL_configs['javascript']['continuations'] = ['else', 'except'] 
 let g:REPL_configs['javascript']['repl'] = ['node'] 
+let g:REPL_configs['lisp'] = {}
+let g:REPL_configs['lisp']['repl'] = ['sbcl', '--userinit', expand("~/.vim/sbclrc.lisp")]
 let g:REPL_configs['perl'] = {}
 let g:REPL_configs['perl']['continuations'] = ['else', 'except'] 
 let g:REPL_configs['perl']['repl'] = ['perl', expand("$HOME/.vim/bin/eval.pl")]
 let g:REPL_configs['python'] = {}
 let g:REPL_configs['python']['continuations'] = ['else', 'except'] 
-let g:REPL_configs['ruby'] = {}
-let g:REPL_configs['ruby']['repl'] = ['ruby', expand("$HOME/.vim/work/eval.rb")]
-let g:REPL_configs['ruby']['continuations'] = ['else', 'end', 'rescue', 'ensure']
-let g:REPL_configs['ruby']['repl'] = ['irb.cmd']
+let g:REPL_configs['scheme'] = {}
+let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 
 function! REPL_is_sub_expression(filetype, line)
    if a:line == '' |  return 1 | endif " 

@@ -57,11 +57,6 @@ let mapleader=','
 nmap <leader><space> :nohlsearch<cr>
 nmap <leader>rc :e ~/.vim/vimrc<cr>
 nmap <leader>w :w!<cr>
-nnoremap <leader>= :!emacsasformater %<CR>
-nnoremap <leader>Y :let g:ycm_auto_trigger=1<CR>
-nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>scm :tabnew ~/.vim/ftplugin/scheme.vim<CR>
-nnoremap <leader>y :let g:ycm_auto_trigger=0<CR>
 nnoremap <silent> <leader>, :call MyF4()<CR>
 nnoremap  [B :bfirst<cr>
 nnoremap  [b :bprevious<cr>
@@ -226,11 +221,5 @@ colo stereokai
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
-let g:REPL_configs['lisp'] = {}
-let g:REPL_configs['lisp']['repl'] = ['emacs', '--script', expand('~/.vim/bin/elisp.cmd')]
-let g:REPL_configs['ruby'] = {}
-let g:REPL_configs['ruby']['repl'] = ['irb', '--simple-prompt']
-let g:REPL_configs['scheme'] = {}
-let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 set rtp+=~/tabular
 set rtp+=~/Desktop/lisper-vim
