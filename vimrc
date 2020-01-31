@@ -25,8 +25,6 @@ au!
 autocmd BufRead,BufNewFile *.scala set filetype=scala
 autocmd BufRead,BufNewFile *.red set filetype=red
 autocmd BufWritePost $MYVIMRC source %
-autocmd BufWritePost *.vim source %
-autocmd BufWritePost ~/.vim/vimrc source %
 autocmd BufWritePre * let &bex=strftime("%y%m%d%H%M") . '.txt'
 autocmd BufRead,BufNewFile,BufEnter * set formatoptions=
 filetype indent plugin on 
@@ -49,7 +47,7 @@ let g:ycm_min_num_identifier_candidate_chars = 1
 let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
 let g:ycm_semantic_triggers['lisp'] = ['re!\w{1}']
 let g:ycm_semantic_triggers['elisp'] = ['re!\w{1}']
-let g:ycm_semantic_triggers['scheme'] = ['re!\w{1}']
+let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~-]{1}']
 let g:ycm_server_log_level = 'info'
 let g:ycm_show_diagnostics_ui = 1
 "let g:ycm_cache_omnifunc = 0
@@ -70,6 +68,7 @@ runtime plugin/visualguide.vim
 runtime plugin/yankmatches.vim
 runtime plugin/EmacsLispComplete.vim
 runtime plugin/REPL.vim
+packadd! matchit
 "set path+=**
 set rtp+=~/YouCompleteMe
 set ambiwidth=double
@@ -158,7 +157,6 @@ func! MyF4()
       call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
       call REPL_send_text("lisp", "(tags)")
    elseif &filetype=="scheme"
-      call REPL_send_text("scheme", "(tags)")
       call REPL_load('(load "' . WinPath("%:p") . '")')
    elseif &filetype=="vim"
       :so %
@@ -198,7 +196,8 @@ func! Fqb()
 endfunc
 call plug#begin('~/vim_plug')
 Plug 'mattn/emmet-vim'
-Plug 'vim-script/AutoComplPop'
+"Plug 'kovisoft/slimv'
+Plug 'l04m33/vlime', {'rtp': 'vim/'}
 call plug#end()
 if has('win32')
 else
@@ -216,10 +215,18 @@ endif
 
 let g:ycm_language_server = []
 "let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
-colo ir_black
-colo stereokai
+colorscheme zmrok
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
 set rtp+=~/tabular
-set rtp+=~/Desktop/lisper-vim
+"set rtp+=~/Desktop/lisper-vim
+"set rtp+=/home/a/Desktop/slimv
+"let g:slimv_swank_cmd = '! xterm -e sbcl --load /home/a/Desktop/slimv/slime/start-swank.lisp &'
+let g:slimv_swank_cmd = "call term_start(['sbcl', '--load', '/home/a/vim_plug/slimv/slime/start-swank.lisp'],{})"
+augroup VIM
+   au!
+   autocmd FileType vim setlocal omnifunc=MyVimScriptComplete
+   autocmd BufWritePost *.vim source %
+   autocmd BufWritePost ~/.vim/vimrc source %
+augroup END

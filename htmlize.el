@@ -92,248 +92,248 @@
 (defconst htmlize-version "1.56")
 
 (defgroup htmlize nil
-  "Convert buffer text and faces to HTML."
-  :group 'hypermedia)
+          "Convert buffer text and faces to HTML."
+          :group 'hypermedia)
 
 (defcustom htmlize-head-tags ""
-  "Additional tags to insert within HEAD of the generated document."
-  :type 'string
-  :group 'htmlize)
+           "Additional tags to insert within HEAD of the generated document."
+           :type 'string
+           :group 'htmlize)
 
 (defcustom htmlize-output-type 'css
-  "Output type of generated HTML, one of `css', `inline-css', or `font'.
-When set to `css' (the default), htmlize will generate a style sheet
-with description of faces, and use it in the HTML document, specifying
-the faces in the actual text with <span class=\"FACE\">.
+           "Output type of generated HTML, one of `css', `inline-css', or `font'.
+            When set to `css' (the default), htmlize will generate a style sheet
+            with description of faces, and use it in the HTML document, specifying
+            the faces in the actual text with <span class=\"FACE\">.
 
-When set to `inline-css', the style will be generated as above, but
-placed directly in the STYLE attribute of the span ELEMENT: <span
-style=\"STYLE\">.  This makes it easier to paste the resulting HTML to
-other documents.
+            When set to `inline-css', the style will be generated as above, but
+            placed directly in the STYLE attribute of the span ELEMENT: <span
+            style=\"STYLE\">.  This makes it easier to paste the resulting HTML to
+            other documents.
 
-When set to `font', the properties will be set using layout tags
-<font>, <b>, <i>, <u>, and <strike>.
+            When set to `font', the properties will be set using layout tags
+            <font>, <b>, <i>, <u>, and <strike>.
 
-`css' output is normally preferred, but `font' is still useful for
-supporting old, pre-CSS browsers, and both `inline-css' and `font' for
-easier embedding of colorized text in foreign HTML documents (no style
-sheet to carry around)."
-  :type '(choice (const css) (const inline-css) (const font))
-  :group 'htmlize)
+            `css' output is normally preferred, but `font' is still useful for
+            supporting old, pre-CSS browsers, and both `inline-css' and `font' for
+            easier embedding of colorized text in foreign HTML documents (no style
+                                                                             sheet to carry around)."
+           :type '(choice (const css) (const inline-css) (const font))
+           :group 'htmlize)
 
 (defcustom htmlize-use-images t
-  "Whether htmlize generates `img' for images attached to buffer contents."
-  :type 'boolean
-  :group 'htmlize)
+           "Whether htmlize generates `img' for images attached to buffer contents."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-force-inline-images nil
-  "Non-nil means generate all images inline using data URLs.
-Normally htmlize converts image descriptors with :file properties to
-relative URIs, and those with :data properties to data URIs.  With this
-flag set, the images specified as a file name are loaded into memory and
-embedded in the HTML as data URIs."
-  :type 'boolean
-  :group 'htmlize)
+           "Non-nil means generate all images inline using data URLs.
+            Normally htmlize converts image descriptors with :file properties to
+            relative URIs, and those with :data properties to data URIs.  With this
+            flag set, the images specified as a file name are loaded into memory and
+            embedded in the HTML as data URIs."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-max-alt-text 100
-  "Maximum size of text to use as ALT text in images.
+           "Maximum size of text to use as ALT text in images.
 
-Normally when htmlize encounters text covered by the `display' property
-that specifies an image, it generates an `alt' attribute containing the
-original text.  If the text is larger than `htmlize-max-alt-text' characters,
-this will not be done."
-  :type 'integer
-  :group 'htmlize)
+            Normally when htmlize encounters text covered by the `display' property
+            that specifies an image, it generates an `alt' attribute containing the
+            original text.  If the text is larger than `htmlize-max-alt-text' characters,
+            this will not be done."
+           :type 'integer
+           :group 'htmlize)
 
 (defcustom htmlize-transform-image 'htmlize-default-transform-image
-  "Function called to modify the image descriptor.
+           "Function called to modify the image descriptor.
 
-The function is called with the image descriptor found in the buffer and
-the text the image is supposed to replace.  It should return a (possibly
-different) image descriptor property list or a replacement string to use
-instead of of the original buffer text.
+            The function is called with the image descriptor found in the buffer and
+            the text the image is supposed to replace.  It should return a (possibly
+                                                                             different) image descriptor property list or a replacement string to use
+            instead of of the original buffer text.
 
-Returning nil is the same as returning the original text."
-  :type 'boolean
-  :group 'htmlize)
+            Returning nil is the same as returning the original text."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-generate-hyperlinks t
-  "Non-nil means auto-generate the links from URLs and mail addresses in buffer.
+           "Non-nil means auto-generate the links from URLs and mail addresses in buffer.
 
-This is on by default; set it to nil if you don't want htmlize to
-autogenerate such links.  Note that this option only turns off automatic
-search for contents that looks like URLs and converting them to links.
-It has no effect on whether htmlize respects the `htmlize-link' property."
-  :type 'boolean
-  :group 'htmlize)
+            This is on by default; set it to nil if you don't want htmlize to
+            autogenerate such links.  Note that this option only turns off automatic
+            search for contents that looks like URLs and converting them to links.
+            It has no effect on whether htmlize respects the `htmlize-link' property."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-hyperlink-style "
-      a {
-        color: inherit;
-        background-color: inherit;
-        font: inherit;
-        text-decoration: inherit;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-"
-  "The CSS style used for hyperlinks when in CSS mode."
-  :type 'string
-  :group 'htmlize)
+           a {
+           color: inherit;
+           background-color: inherit;
+           font: inherit;
+           text-decoration: inherit;
+           }
+           a:hover {
+           text-decoration: underline;
+           }
+           "
+           "The CSS style used for hyperlinks when in CSS mode."
+           :type 'string
+           :group 'htmlize)
 
 (defcustom htmlize-replace-form-feeds t
-  "Non-nil means replace form feeds in source code with HTML separators.
-Form feeds are the ^L characters at line beginnings that are sometimes
-used to separate sections of source code.  If this variable is set to
-`t', form feed characters are replaced with the <hr> separator.  If this
-is a string, it specifies the replacement to use.  Note that <pre> is
-temporarily closed before the separator is inserted, so the default
-replacement is effectively \"</pre><hr /><pre>\".  If you specify
-another replacement, don't forget to close and reopen the <pre> if you
-want the output to remain valid HTML.
+           "Non-nil means replace form feeds in source code with HTML separators.
+            Form feeds are the ^L characters at line beginnings that are sometimes
+            used to separate sections of source code.  If this variable is set to
+            `t', form feed characters are replaced with the <hr> separator.  If this
+            is a string, it specifies the replacement to use.  Note that <pre> is
+            temporarily closed before the separator is inserted, so the default
+            replacement is effectively \"</pre><hr /><pre>\".  If you specify
+            another replacement, don't forget to close and reopen the <pre> if you
+            want the output to remain valid HTML.
 
-If you need more elaborate processing, set this to nil and use
-htmlize-after-hook."
-  :type 'boolean
-  :group 'htmlize)
+            If you need more elaborate processing, set this to nil and use
+            htmlize-after-hook."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-html-charset nil
-  "The charset declared by the resulting HTML documents.
-When non-nil, causes htmlize to insert the following in the HEAD section
-of the generated HTML:
+           "The charset declared by the resulting HTML documents.
+            When non-nil, causes htmlize to insert the following in the HEAD section
+            of the generated HTML:
 
-  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=CHARSET\">
+            <meta http-equiv=\"Content-Type\" content=\"text/html; charset=CHARSET\">
 
-where CHARSET is the value you've set for htmlize-html-charset.  Valid
-charsets are defined by MIME and include strings like \"iso-8859-1\",
-\"iso-8859-15\", \"utf-8\", etc.
+            where CHARSET is the value you've set for htmlize-html-charset.  Valid
+            charsets are defined by MIME and include strings like \"iso-8859-1\",
+            \"iso-8859-15\", \"utf-8\", etc.
 
-If you are using non-Latin-1 charsets, you might need to set this for
-your documents to render correctly.  Also, the W3C validator requires
-submitted HTML documents to declare a charset.  So if you care about
-validation, you can use this to prevent the validator from bitching.
+            If you are using non-Latin-1 charsets, you might need to set this for
+            your documents to render correctly.  Also, the W3C validator requires
+            submitted HTML documents to declare a charset.  So if you care about
+            validation, you can use this to prevent the validator from bitching.
 
-Needless to say, if you set this, you should actually make sure that
-the buffer is in the encoding you're claiming it is in.  (This is
-normally achieved by using the correct file coding system for the
-buffer.)  If you don't understand what that means, you should probably
-leave this option in its default setting."
-  :type '(choice (const :tag "Unset" nil)
-		 string)
-  :group 'htmlize)
+            Needless to say, if you set this, you should actually make sure that
+            the buffer is in the encoding you're claiming it is in.  (This is
+                                                                           normally achieved by using the correct file coding system for the
+                                                                           buffer.)  If you don't understand what that means, you should probably
+            leave this option in its default setting."
+           :type '(choice (const :tag "Unset" nil)
+                          string)
+           :group 'htmlize)
 
 (defcustom htmlize-convert-nonascii-to-entities t
-  "Whether non-ASCII characters should be converted to HTML entities.
+           "Whether non-ASCII characters should be converted to HTML entities.
 
-When this is non-nil, characters with codes in the 128-255 range will be
-considered Latin 1 and rewritten as \"&#CODE;\".  Characters with codes
-above 255 will be converted to \"&#UCS;\", where UCS denotes the Unicode
-code point of the character.  If the code point cannot be determined,
-the character will be copied unchanged, as would be the case if the
-option were nil.
+            When this is non-nil, characters with codes in the 128-255 range will be
+            considered Latin 1 and rewritten as \"&#CODE;\".  Characters with codes
+            above 255 will be converted to \"&#UCS;\", where UCS denotes the Unicode
+            code point of the character.  If the code point cannot be determined,
+            the character will be copied unchanged, as would be the case if the
+            option were nil.
 
-When the option is nil, the non-ASCII characters are copied to HTML
-without modification.  In that case, the web server and/or the browser
-must be set to understand the encoding that was used when saving the
-buffer.  (You might also want to specify it by setting
-`htmlize-html-charset'.)
+            When the option is nil, the non-ASCII characters are copied to HTML
+            without modification.  In that case, the web server and/or the browser
+            must be set to understand the encoding that was used when saving the
+            buffer.  (You might also want to specify it by setting
+                          `htmlize-html-charset'.)
 
-Note that in an HTML entity \"&#CODE;\", CODE is always a UCS code point,
-which has nothing to do with the charset the page is in.  For example,
-\"&#169;\" *always* refers to the copyright symbol, regardless of charset
-specified by the META tag or the charset sent by the HTTP server.  In
-other words, \"&#169;\" is exactly equivalent to \"&copy;\".
+            Note that in an HTML entity \"&#CODE;\", CODE is always a UCS code point,
+            which has nothing to do with the charset the page is in.  For example,
+            \"&#169;\" *always* refers to the copyright symbol, regardless of charset
+            specified by the META tag or the charset sent by the HTTP server.  In
+            other words, \"&#169;\" is exactly equivalent to \"&copy;\".
 
-For most people htmlize will work fine with this option left at the
-default setting; don't change it unless you know what you're doing."
-  :type 'sexp
-  :group 'htmlize)
+            For most people htmlize will work fine with this option left at the
+            default setting; don't change it unless you know what you're doing."
+           :type 'sexp
+           :group 'htmlize)
 
 (defcustom htmlize-ignore-face-size 'absolute
-  "Whether face size should be ignored when generating HTML.
-If this is nil, face sizes are used.  If set to t, sizes are ignored
-If set to `absolute', only absolute size specifications are ignored.
-Please note that font sizes only work with CSS-based output types."
-  :type '(choice (const :tag "Don't ignore" nil)
-		 (const :tag "Ignore all" t)
-		 (const :tag "Ignore absolute" absolute))
-  :group 'htmlize)
+           "Whether face size should be ignored when generating HTML.
+            If this is nil, face sizes are used.  If set to t, sizes are ignored
+            If set to `absolute', only absolute size specifications are ignored.
+            Please note that font sizes only work with CSS-based output types."
+           :type '(choice (const :tag "Don't ignore" nil)
+                          (const :tag "Ignore all" t)
+                          (const :tag "Ignore absolute" absolute))
+           :group 'htmlize)
 
 (defcustom htmlize-css-name-prefix ""
-  "The prefix used for CSS names.
-The CSS names that htmlize generates from face names are often too
-generic for CSS files; for example, `font-lock-type-face' is transformed
-to `type'.  Use this variable to add a prefix to the generated names.
-The string \"htmlize-\" is an example of a reasonable prefix."
-  :type 'string
-  :group 'htmlize)
+           "The prefix used for CSS names.
+            The CSS names that htmlize generates from face names are often too
+            generic for CSS files; for example, `font-lock-type-face' is transformed
+            to `type'.  Use this variable to add a prefix to the generated names.
+            The string \"htmlize-\" is an example of a reasonable prefix."
+           :type 'string
+           :group 'htmlize)
 
 (defcustom htmlize-use-rgb-txt t
-  "Whether `rgb.txt' should be used to convert color names to RGB.
+           "Whether `rgb.txt' should be used to convert color names to RGB.
 
-This conversion means determining, for instance, that the color
-\"IndianRed\" corresponds to the (205, 92, 92) RGB triple.  `rgb.txt'
-is the X color database that maps hundreds of color names to such RGB
-triples.  When this variable is non-nil, `htmlize' uses `rgb.txt' to
-look up color names.
+            This conversion means determining, for instance, that the color
+            \"IndianRed\" corresponds to the (205, 92, 92) RGB triple.  `rgb.txt'
+            is the X color database that maps hundreds of color names to such RGB
+            triples.  When this variable is non-nil, `htmlize' uses `rgb.txt' to
+            look up color names.
 
-If this variable is nil, htmlize queries Emacs for RGB components of
-colors using `color-instance-rgb-components' and `color-values'.
-This can yield incorrect results on non-true-color displays.
+            If this variable is nil, htmlize queries Emacs for RGB components of
+            colors using `color-instance-rgb-components' and `color-values'.
+            This can yield incorrect results on non-true-color displays.
 
-If the `rgb.txt' file is not found (which will be the case if you're
-running Emacs on non-X11 systems), this option is ignored."
-  :type 'boolean
-  :group 'htmlize)
+            If the `rgb.txt' file is not found (which will be the case if you're
+                                                      running Emacs on non-X11 systems), this option is ignored."
+           :type 'boolean
+           :group 'htmlize)
 
 (defvar htmlize-face-overrides nil
   "Overrides for face definitions.
 
-Normally face definitions are taken from Emacs settings for fonts
-in the current frame.  For faces present in this plist, the
-definitions will be used instead.  Keys in the plist are symbols
-naming the face and values are the overriding definitions.  For
-example:
+   Normally face definitions are taken from Emacs settings for fonts
+   in the current frame.  For faces present in this plist, the
+   definitions will be used instead.  Keys in the plist are symbols
+   naming the face and values are the overriding definitions.  For
+   example:
 
-  (setq htmlize-face-overrides
-        '(font-lock-warning-face \"black\"
-          font-lock-function-name-face \"red\"
-          font-lock-comment-face \"blue\"
-          default (:foreground \"dark-green\" :background \"yellow\")))
+   (setq htmlize-face-overrides
+         '(font-lock-warning-face \"black\"
+                                  font-lock-function-name-face \"red\"
+                                  font-lock-comment-face \"blue\"
+                                  default (:foreground \"dark-green\" :background \"yellow\")))
 
-This variable can be also be `let' bound when running `htmlize-buffer'.")
+   This variable can be also be `let' bound when running `htmlize-buffer'.")
 
 (defcustom htmlize-untabify t
-  "Non-nil means untabify buffer contents during htmlization."
-  :type 'boolean
-  :group 'htmlize)
+           "Non-nil means untabify buffer contents during htmlization."
+           :type 'boolean
+           :group 'htmlize)
 
 (defcustom htmlize-html-major-mode nil
-  "The mode the newly created HTML buffer will be put in.
-Set this to nil if you prefer the default (fundamental) mode."
-  :type '(radio (const :tag "No mode (fundamental)" nil)
-		 (function-item html-mode)
-		 (function :tag "User-defined major mode"))
-  :group 'htmlize)
+           "The mode the newly created HTML buffer will be put in.
+            Set this to nil if you prefer the default (fundamental) mode."
+           :type '(radio (const :tag "No mode (fundamental)" nil)
+                         (function-item html-mode)
+                         (function :tag "User-defined major mode"))
+           :group 'htmlize)
 
 (defcustom htmlize-pre-style nil
-  "When non-nil, `<pre>' tags will be decorated with style
-information in `font' and `inline-css' modes. This allows a
-consistent background for captures of regions."
-  :type 'boolean
-  :group 'htmlize)
+           "When non-nil, `<pre>' tags will be decorated with style
+            information in `font' and `inline-css' modes. This allows a
+            consistent background for captures of regions."
+           :type 'boolean
+           :group 'htmlize)
 
 (defvar htmlize-before-hook nil
   "Hook run before htmlizing a buffer.
-The hook functions are run in the source buffer (not the resulting HTML
-buffer).")
+   The hook functions are run in the source buffer (not the resulting HTML
+                                                        buffer).")
 
 (defvar htmlize-after-hook nil
   "Hook run after htmlizing a buffer.
-Unlike `htmlize-before-hook', these functions are run in the generated
-HTML buffer.  You may use them to modify the outlook of the final HTML
-output.")
+   Unlike `htmlize-before-hook', these functions are run in the generated
+   HTML buffer.  You may use them to modify the outlook of the final HTML
+   output.")
 
 (defvar htmlize-file-hook nil
   "Hook run by `htmlize-file' after htmlizing a file, but before saving it.")
@@ -348,7 +348,7 @@ output.")
 (defun htmlize-next-change (pos prop &optional limit)
   (if prop
       (next-single-char-property-change pos prop nil limit)
-    (next-char-property-change pos limit)))
+      (next-char-property-change pos limit)))
 
 (defun htmlize-overlay-faces-at (pos)
   (delq nil (mapcar (lambda (o) (overlay-get o 'face)) (overlays-at pos))))
@@ -378,8 +378,8 @@ output.")
   (if (and (boundp 'lexical-binding)
            lexical-binding)
       `(let ,@letforms)
-    ;; cl extensions have a macro implementing lexical let
-    `(lexical-let ,@letforms)))
+      ;; cl extensions have a macro implementing lexical let
+      `(lexical-let ,@letforms)))
 
 
 ;;; Transformation of buffer text: HTML escapes, untabification, etc.
@@ -392,23 +392,23 @@ output.")
     ;; &#CODE entities;
     (dotimes (i 128)
       (setf (aref table i) (if (and (>= i 32) (<= i 126))
-			       (char-to-string i)
-			     (format "&#%d;" i))))
+                               (char-to-string i)
+                               (format "&#%d;" i))))
     ;; Set exceptions manually.
     (setf
-     ;; Don't escape newline, carriage return, and TAB.
-     (aref table ?\n) "\n"
-     (aref table ?\r) "\r"
-     (aref table ?\t) "\t"
-     ;; Escape &, <, and >.
-     (aref table ?&) "&amp;"
-     (aref table ?<) "&lt;"
-     (aref table ?>) "&gt;"
-     ;; Not escaping '"' buys us a measurable speedup.  It's only
-     ;; necessary to quote it for strings used in attribute values,
-     ;; which htmlize doesn't typically do.
-     ;(aref table ?\") "&quot;"
-     )
+      ;; Don't escape newline, carriage return, and TAB.
+      (aref table ?\n) "\n"
+      (aref table ?\r) "\r"
+      (aref table ?\t) "\t"
+      ;; Escape &, <, and >.
+      (aref table ?&) "&amp;"
+      (aref table ?<) "&lt;"
+      (aref table ?>) "&gt;"
+      ;; Not escaping '"' buys us a measurable speedup.  It's only
+      ;; necessary to quote it for strings used in attribute values,
+      ;; which htmlize doesn't typically do.
+      ;(aref table ?\") "&quot;"
+      )
     table))
 
 ;; A cache of HTML representation of non-ASCII characters.  Depending
@@ -427,35 +427,35 @@ output.")
   ;; chars removes a lot of unnecessary funcalls and consing.
   (if (not (string-match "[^\r\n\t -%'-;=?-~]" string))
       string
-    (mapconcat (lambda (char)
-		 (cond
-		  ((< char 128)
-		   ;; ASCII: use htmlize-basic-character-table.
-		   (aref htmlize-basic-character-table char))
-		  ((gethash char htmlize-extended-character-cache)
-		   ;; We've already seen this char; return the cached
-		   ;; string.
-		   )
-		  ((not htmlize-convert-nonascii-to-entities)
-		   ;; If conversion to entities is not desired, always
-		   ;; copy the char literally.
-		   (setf (gethash char htmlize-extended-character-cache)
-			 (char-to-string char)))
-		  ((< char 256)
-		   ;; Latin 1: no need to call encode-char.
-		   (setf (gethash char htmlize-extended-character-cache)
-			 (format "&#%d;" char)))
-		  ((encode-char char 'ucs)
-                   ;; Must check if encode-char works for CHAR;
-                   ;; it fails for Arabic and possibly elsewhere.
-		   (setf (gethash char htmlize-extended-character-cache)
-			 (format "&#%d;" (encode-char char 'ucs))))
-		  (t
-		   ;; encode-char doesn't work for this char.  Copy it
-		   ;; unchanged and hope for the best.
-		   (setf (gethash char htmlize-extended-character-cache)
-			 (char-to-string char)))))
-	       string "")))
+      (mapconcat (lambda (char)
+                   (cond
+                     ((< char 128)
+                      ;; ASCII: use htmlize-basic-character-table.
+                      (aref htmlize-basic-character-table char))
+                     ((gethash char htmlize-extended-character-cache)
+                      ;; We've already seen this char; return the cached
+                      ;; string.
+                      )
+                     ((not htmlize-convert-nonascii-to-entities)
+                      ;; If conversion to entities is not desired, always
+                      ;; copy the char literally.
+                      (setf (gethash char htmlize-extended-character-cache)
+                            (char-to-string char)))
+                     ((< char 256)
+                      ;; Latin 1: no need to call encode-char.
+                      (setf (gethash char htmlize-extended-character-cache)
+                            (format "&#%d;" char)))
+                     ((encode-char char 'ucs)
+                      ;; Must check if encode-char works for CHAR;
+                      ;; it fails for Arabic and possibly elsewhere.
+                      (setf (gethash char htmlize-extended-character-cache)
+                            (format "&#%d;" (encode-char char 'ucs))))
+                     (t
+                      ;; encode-char doesn't work for this char.  Copy it
+                      ;; unchanged and hope for the best.
+                      (setf (gethash char htmlize-extended-character-cache)
+                            (char-to-string char)))))
+                 string "")))
 
 (defun htmlize-attr-escape (string)
   ;; Like htmlize-protect-string, but also escapes double-quoted
@@ -463,46 +463,46 @@ output.")
   (setq string (htmlize-protect-string string))
   (if (not (string-match "\"" string))
       string
-    (mapconcat (lambda (char)
-                 (if (eql char ?\")
+      (mapconcat (lambda (char)
+                   (if (eql char ?\")
                      "&quot;"
-                   (char-to-string char)))
-               string "")))
+    (char-to-string char)))
+                 string "")))
 
 (defsubst htmlize-concat (list)
-  (if (and (consp list) (null (cdr list)))
-      ;; Don't create a new string in the common case where the list only
-      ;; consists of one element.
-      (car list)
-    (apply #'concat list)))
+          (if (and (consp list) (null (cdr list)))
+              ;; Don't create a new string in the common case where the list only
+              ;; consists of one element.
+              (car list)
+              (apply #'concat list)))
 
 (defun htmlize-format-link (linkprops text)
   (let ((uri (if (stringp linkprops)
                  linkprops
-               (plist-get linkprops :uri)))
+                 (plist-get linkprops :uri)))
         (escaped-text (htmlize-protect-string text)))
     (if uri
         (format "<a href=\"%s\">%s</a>" (htmlize-attr-escape uri) escaped-text)
-      escaped-text)))
+        escaped-text)))
 
 (defun htmlize-escape-or-link (string)
   ;; Escape STRING and/or add hyperlinks.  STRING comes from a
   ;; `display' property.
   (let ((pos 0) (end (length string)) outlist)
     (while (< pos end)
-      (let* ((link (get-char-property pos 'htmlize-link string))
-             (next-link-change (next-single-property-change
-                                pos 'htmlize-link string end))
-             (chunk (substring string pos next-link-change)))
-        (push
-         (cond (link
-                (htmlize-format-link link chunk))
-               ((get-char-property 0 'htmlize-literal chunk)
-                chunk)
-               (t
-                (htmlize-protect-string chunk)))
-         outlist)
-        (setq pos next-link-change)))
+           (let* ((link (get-char-property pos 'htmlize-link string))
+                  (next-link-change (next-single-property-change
+                                      pos 'htmlize-link string end))
+                  (chunk (substring string pos next-link-change)))
+             (push
+               (cond (link
+                       (htmlize-format-link link chunk))
+                     ((get-char-property 0 'htmlize-literal chunk)
+                      chunk)
+                     (t
+                      (htmlize-protect-string chunk)))
+               outlist)
+             (setq pos next-link-change)))
     (htmlize-concat (nreverse outlist))))
 
 (defun htmlize-display-prop-to-html (display text)
@@ -527,26 +527,26 @@ output.")
   ;; `htmlize-protect-string'.
   (let ((pos 0) (end (length string)) outlist)
     (while (< pos end)
-      (let* ((display (get-char-property pos 'display string))
-             (next-display-change (next-single-property-change
-                                   pos 'display string end))
-             (chunk (substring string pos next-display-change)))
-        (push
-         (if display
-             (htmlize-display-prop-to-html display chunk)
-           (htmlize-escape-or-link chunk))
-         outlist)
-        (setq pos next-display-change)))
+           (let* ((display (get-char-property pos 'display string))
+                  (next-display-change (next-single-property-change
+                                         pos 'display string end))
+                  (chunk (substring string pos next-display-change)))
+             (push
+               (if display
+                   (htmlize-display-prop-to-html display chunk)
+                   (htmlize-escape-or-link chunk))
+               outlist)
+             (setq pos next-display-change)))
     (htmlize-concat (nreverse outlist))))
 
 (defun htmlize-default-transform-image (imgprops _text)
   "Default transformation of image descriptor to something usable in HTML.
 
-If `htmlize-use-images' is nil, the function always returns nil, meaning
-use original text.  Otherwise, it tries to find the image for images that
-specify a file name.  If `htmlize-force-inline-images' is non-nil, it also
-converts the :file attribute to :data and returns the modified property
-list."
+   If `htmlize-use-images' is nil, the function always returns nil, meaning
+   use original text.  Otherwise, it tries to find the image for images that
+   specify a file name.  If `htmlize-force-inline-images' is non-nil, it also
+   converts the :file attribute to :data and returns the modified property
+   list."
   (when htmlize-use-images
     (when (plist-get imgprops :file)
       (let ((location (plist-get (cdr (find-image (list imgprops))) :file)))
@@ -558,16 +558,16 @@ list."
           (when location
             (with-temp-buffer
               (condition-case nil
-                  (progn
-                    (insert-file-contents-literally location)
-                    (setq data (buffer-string)))
-                (error nil))))
+                              (progn
+                                (insert-file-contents-literally location)
+                                (setq data (buffer-string)))
+                              (error nil))))
           ;; if successful, return the new plist, otherwise return
           ;; nil, which will use the original text
           (and data
                (plist-put (plist-put imgprops :file nil)
                           :data data)))
-      imgprops)))
+        imgprops)))
 
 (defun htmlize-alt-text (_imgprops origtext)
   (and (/= (length origtext) 0)
@@ -579,7 +579,7 @@ list."
   (let* ((alt-text (htmlize-alt-text imgprops origtext))
          (alt-attr (if alt-text
                        (format " alt=\"%s\"" (htmlize-attr-escape alt-text))
-                     "")))
+                       "")))
     (cond ((plist-get imgprops :file)
            ;; Try to find the image in image-load-path
            (let* ((found-props (cdr (find-image (list imgprops))))

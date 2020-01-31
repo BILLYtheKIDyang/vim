@@ -34,10 +34,10 @@ function! FindOpen(open, close, linnum, colnum)  abort
    endif "
    let line = getline(linnum)
    for i in range(colnum, 0, -1)
-      if line[i] == close
+      if line[i] == close && (line[i-1] != '\')
          let [l, c] =  FindOpen(open, close, linnum, i-1)
          return FindOpen(open, close, l, c-1)
-      elseif line[i] == open
+      elseif line[i] == open && (line[i-1] != '\')
          return [linnum, i]
       endif
    endfor
@@ -63,6 +63,16 @@ function! InsertClose(close)
       endif
    endif
 endfunction
+fun! M()
+   let g:Complete_dict = {}
+   for line in readfile(expand("~/.MyComplete"))
+      let t = split(line, ';')
+      if len(t) > 1
+         let [name;doc] = split(line, ';')
+         call DictionaryAdd(g:Complete_dict, name, join(doc, ';'), '')
+      endif
+   endfor
+endfun
 
 function! GetLispDoc()
    let  funname_ = split(trim(InsertClose(' ')), '[ \t\n]')
@@ -82,4 +92,5 @@ aug lisp
    au FileType clojure,lisp,scheme inoremap <buffer>   <Esc>:call GetLispDoc() <CR>a<Space>
    au FileType lisp,scheme,clojure setlocal nolisp indentexpr=GetLispIndent() equalprg=
    au BufNewFile,BufRead *.scm,*.el,.emacs,*.lisp,*.rkt,*.clj setl nolisp indentexpr=GetLispIndent() equalprg=
+   au BufNewFile,BufRead *.scm,*.ss setl omnifunc=SchemeComplete
 aug END

@@ -1,5 +1,4 @@
-(defun load-file (file)
-  (load file))
+(defun load-file (file) (load file))
 
 (defun tags ()
   (run-program "/usr/bin/rm" '("-rf" "~/.MyComplete"))
@@ -12,7 +11,7 @@
     (do-all-symbols (sym)
       (let ((package (symbol-package sym)))
         (cond
-          ((not (fboundp sym)) (format output "~a;variable~%" (string-downcase (symbol-name sym))))
+          ((not (fboundp sym))); (format output "~a;variable~%" (string-downcase (symbol-name sym))))
           (t
             (format output "~a;~a~%" 
               (string-downcase (symbol-name sym))

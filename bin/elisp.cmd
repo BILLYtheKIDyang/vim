@@ -1,5 +1,4 @@
 ;;@echo off
-;;rem -*- emacs-lisp -*-
 ;;rem vim: ft=lisp
 ;;d:/emacs/bin/emacs --script %~f0
 ;;goto :eof
