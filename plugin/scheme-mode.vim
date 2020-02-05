@@ -1,16 +1,5 @@
-let g:ExpressionCount = {}
 let g:SchemeList = []
-function! CountExpression()
-   let lines = getbufline('%', 1, "$")
-   let ec = 0
-   for line in lines
-      if len(line) > 0 && line[0] != ' '
-         let ec += 1
-      endif
-   endfor
-   return ec
-endfunction
-function! SchemeComplete(start, base)
+function! SchemeComplete(start, base) abort
    if a:start
       let line = getline('.')
       let start = col('.') - 1
@@ -19,26 +8,31 @@ function! SchemeComplete(start, base)
       endwhile
       return start
    else
-      let base = a:base
+      let base = escape(a:base, '~*\^$.')
       let res = []
 
-      let needComplete = !has_key(g:ExpressionCount, bufname())
-      "echom 'has_key' needComplete
-      let needComplete = needComplete || CountExpression() != g:ExpressionCount[bufname()] 
-      "echom 'count==' needComplete
+      let needComplete = getline('.')[0] != ' ' && stridx(getline('.'), ' ', 1) == -1
       let needComplete = needComplete || len(g:SchemeList) == 0
-      "echom 'g:SchemeList == []' needComplete
       if needComplete
-         let g:ExpressionCount[bufname()] = CountExpression()
-         
-         let g:splitstring = system('echo "(display split-string)" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
-         let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
-         "let g:splitstring = ';'
-         "let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | racket')
+         echom "Systemlist...."
+         if &ft == 'lisp'
+            let g:splitstring = system('echo "(princ split-string)" | sbcl --noinform --noprint --load ' .. expand("~/.vim/sbclrc.lisp"))
+            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | sbcl --noinform --noprint --disable-debugger --load ' .. expand('~/.vim/sbclrc.lisp'))
+         elseif &ft == 'scheme'
+            let g:splitstring = system('echo "(display split-string)" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
+            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
+         elseif &ft == 'racket'
+            let g:splitstring = ';'
+            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | racket')
+         endif
       endif
       for nametype in g:SchemeList
-         let [name; type] = split(nametype, g:splitstring)
-         if name =~ '^.*' .. escape(base, '*\^$.')
+         let nametype = split(nametype, g:splitstring)
+         if len(nametype) < 1
+            continue
+         endif
+         let [name; type] = nametype
+         if name =~ '^.*' .. base
             let menu = join(type, '')
             if menu[0] == '('
                let g:SchemeDoc[name] = menu
@@ -46,28 +40,7 @@ function! SchemeComplete(start, base)
             call add(res, { 'icase': 1, 'word': name, 'menu': join(type, '')} )
          endif
       endfor
-      for x in getcompletion(base .. '*', 'file')
-         call add(res, { 'icase': 1, 'word': x, 'menu': 'file'})
-      endfor
-      for x in getcompletion(base .. '.*', 'file')
-         call add(res, { 'icase': 1, 'word': x, 'menu': 'file'})
-      endfor
-      for x in getcompletion(base, 'shellcmd')
-         call add(res, { 'icase': 1, 'word': x, 'menu': 'shellcmd'})
-      endfor
       return res
-   endif
-endfunction
-function! MMC(i1, i2)
-   let s1 = a:i1['word']
-   let s2 = a:i2['word']
-   if s1 == s2
-      return 0
-   endif
-   if s1 > s2
-      return 1
-   else
-      return -1
    endif
 endfunction
 function! IsSchemeWordChar(char)
@@ -122,6 +95,6 @@ function! GetSchemeDoc()
    endif
 endfunction
 aug scheme
-   au BufNewFile,BufRead *.scm,*.ss,*rkt setl omnifunc=SchemeComplete
-   au FileType scheme inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
+   au BufNewFile,BufRead *.scm,*.ss,*rkt,*.lisp setl omnifunc=SchemeComplete
+   au FileType scheme,lisp inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
 aug END

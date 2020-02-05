@@ -1,21 +1,18 @@
-(defun load-file (file) (load file))
-
-(defun tags ()
-  (run-program "/usr/bin/rm" '("-rf" "~/.MyComplete"))
-  (with-open-file 
-    (output 
-      #.(concatenate 'string (posix-getenv "HOME") "/.MyComplete")
-      :direction :output 
-      :if-exists :overwrite
-      :if-does-not-exist :create)
-    (do-all-symbols (sym)
-      (let ((package (symbol-package sym)))
-        (cond
-          ((not (fboundp sym))); (format output "~a;variable~%" (string-downcase (symbol-name sym))))
-          (t
-            (format output "~a;~a~%" 
-              (string-downcase (symbol-name sym))
-              (or (and (macro-function sym)
-                       (sb-impl::%fun-lambda-list (macro-function sym)))
-                  (and (symbol-function sym)
-                       (sb-impl::%fun-lambda-list (symbol-function sym)))))))))))
+(defvar split-string ";")
+(setf *print-pretty* nil)
+(setf *print-case* :downcase)
+(defun tags (file)
+  (ignore-errors (load file))
+  (do-all-symbols (sym)
+    (cond
+      ((and (not (fboundp sym)) (boundp sym)) 
+       (format t "~a~a~a~%" (string-downcase (symbol-name sym)) split-string 'var))
+      ((not (fboundp sym)) )
+      (t
+        (format t "~a~a~s~%" (string-downcase (symbol-name sym))
+          split-string
+          (cons sym
+            (or (and (macro-function sym)
+                     (sb-impl::%fun-lambda-list (macro-function sym)))
+                (and (symbol-function sym)
+                     (sb-impl::%fun-lambda-list (symbol-function sym))))))))))

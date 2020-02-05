@@ -1,5 +1,0 @@
-(parameterize ([compile-profile 'source])
-   (load "fib.ss"))
-(fatfib 20)
-(profile-dump-html)
-(profile-dump-list)

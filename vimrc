@@ -45,9 +45,8 @@ let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
 let g:ycm_key_invoke_completion = '<c-n>'
 let g:ycm_min_num_identifier_candidate_chars = 1
 let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
-let g:ycm_semantic_triggers['lisp'] = ['re!\w{1}']
-let g:ycm_semantic_triggers['elisp'] = ['re!\w{1}']
-let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~-]{1}']
+let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
+let g:ycm_semantic_triggers['lisp'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
 let g:ycm_server_log_level = 'info'
 let g:ycm_show_diagnostics_ui = 1
 "let g:ycm_cache_omnifunc = 0
@@ -222,8 +221,6 @@ let g:rubycomplete_rails = 1
 set rtp+=~/tabular
 "set rtp+=~/Desktop/lisper-vim
 "set rtp+=/home/a/Desktop/slimv
-"let g:slimv_swank_cmd = '! xterm -e sbcl --load /home/a/Desktop/slimv/slime/start-swank.lisp &'
-let g:slimv_swank_cmd = "call term_start(['sbcl', '--load', '/home/a/vim_plug/slimv/slime/start-swank.lisp'],{})"
 augroup VIM
    au!
    autocmd FileType vim setlocal omnifunc=MyVimScriptComplete

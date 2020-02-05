@@ -42,6 +42,7 @@
           (lambda (x) (if (error? x) (k #f) (k x)))
           thunk))))
   (ignore-errors (lambda () (load file)))
+  (newline)
   (for-each
     (lambda (x)
       (display x)
@@ -116,4 +117,31 @@
             (- i j)
             #f))))
 
-(define (substring? str pre) (kmp str pre))
+(define (substring? str sub) (kmp str sub))
+(define (string-find str1 str2) (kmp str2 str1))
+(define string-join
+  (case-lambda 
+    ((los) (string-join "" los))
+    ((str los)
+     (if (null? los)
+         ""
+         (apply string-append (car los)
+           (map (lambda (x) (string-append str x))
+             (cdr los)))))))
+
+(define string-split 
+  (case-lambda
+    ((str) (string-split str " "))
+    ((str sep)
+     (if (string=? sep "")
+         (map string (string->list str))
+         (let loop ((str str) (los '()))
+           (let ((find? (string-find sep str)))
+             (if find?
+                 (let ((t (substring str 0 find?)))
+                   (loop (substring str 
+                           (+ find? (string-length sep))
+                           (string-length str)) 
+                     (cons t los)))
+                 (reverse (cons str los)))))))))
+
