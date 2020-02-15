@@ -153,8 +153,7 @@ func! MyF4()
       call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
       call REPL_send_text("elisp", "(tags)")
    elseif &filetype=="lisp"
-      call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
-      call REPL_send_text("lisp", "(tags)")
+      call REPL_load("(load \"" . WinPath("%:p") . "\")")
    elseif &filetype=="scheme"
       call REPL_load('(load "' . WinPath("%:p") . '")')
    elseif &filetype=="vim"
@@ -172,7 +171,7 @@ func! MyF4()
    elseif &filetype=="haskell" || &filetype=="scala"
       call REPL_load(":load " . WinPath("%:p"))
    elseif &filetype=="java"
-      execute "!" . g:clear . ";javac % && java %<"
+      call REPL_load("/open " . WinPath("%:p"))
    elseif &filetype == "dosbatch"
       call REPL_load(WinPath("%:p"))
    elseif &filetype == "sh"

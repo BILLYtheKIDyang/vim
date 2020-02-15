@@ -16,6 +16,8 @@ let g:REPL_configs['python']['continuations'] = ['else', 'except']
 let g:REPL_configs['scheme'] = {}
 let g:REPL_configs['scheme']['repl'] = ['scheme', expand("~/.vim/bin/ss.cmd")]
 let g:REPL_configs['scala'] = {'repl': ['scala'] }
+let g:REPL_configs['java'] = {'repl': ['jshell'] }
+let g:REPL_configs['haskell'] = {'repl': ['ghci'] }
 
 function! REPL_is_sub_expression(filetype, line)
    if a:line == '' |  return 1 | endif " 

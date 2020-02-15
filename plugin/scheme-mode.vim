@@ -21,6 +21,8 @@ function! SchemeComplete(start, base) abort
          elseif &ft == 'scheme'
             let g:splitstring = system('echo "(display split-string)" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
             let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
+            "let g:splitstring = system('echo "(display split-string)" | kawa -- ' .. expand('~/.vim/bin/ss.cmd'))
+            "let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | kawa -- ' .. expand('~/.vim/bin/ss.cmd'))
          elseif &ft == 'racket'
             let g:splitstring = ';'
             let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | racket')

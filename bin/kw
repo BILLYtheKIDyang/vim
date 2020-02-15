@@ -1,0 +1,1 @@
+kawa console:prompt1="%{%}#|Kawa:%N|# %{%}" console:prompt2="%{%}#|%P.%N|# %{%}" "$@"
