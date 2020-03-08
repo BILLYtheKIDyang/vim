@@ -8,40 +8,65 @@ function! SchemeComplete(start, base) abort
       endwhile
       return start
    else
-      let base = escape(a:base, '~*\^$.')
       let res = []
+      let base = a:base
+      let base_len = len(base) - 1
 
       let needComplete = getline('.')[0] != ' ' && stridx(getline('.'), ' ', 1) == -1
       let needComplete = needComplete || len(g:SchemeList) == 0
       if needComplete
-         echom "Systemlist...."
-         if &ft == 'lisp'
-            let g:splitstring = system('echo "(princ split-string)" | sbcl --noinform --noprint --load ' .. expand("~/.vim/sbclrc.lisp"))
-            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | sbcl --noinform --noprint --disable-debugger --load ' .. expand('~/.vim/sbclrc.lisp'))
-         elseif &ft == 'scheme'
-            let g:splitstring = system('echo "(display split-string)" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
-            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | scheme -q ' .. expand('~/.vim/bin/ss.cmd'))
-            "let g:splitstring = system('echo "(display split-string)" | kawa -- ' .. expand('~/.vim/bin/ss.cmd'))
-            "let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | kawa -- ' .. expand('~/.vim/bin/ss.cmd'))
-         elseif &ft == 'racket'
-            let g:splitstring = ';'
-            let g:SchemeList = systemlist('echo "(tags \"' .. SchemeFile() .. '\")" | racket')
-         endif
+            let g:SchemeList = SchemeSymbols(SchemeFile())
+            let g:SchemeListLength = len(g:SchemeList)
       endif
-      for nametype in g:SchemeList
-         let nametype = split(nametype, g:splitstring)
-         if len(nametype) < 1
-            continue
-         endif
-         let [name; type] = nametype
-         if name =~ '^.*' .. base
-            let menu = join(type, '')
-            if menu[0] == '('
-               let g:SchemeDoc[name] = menu
+
+      if &ft == 'scheme'
+         let i = g:SchemeListLength - 1
+         while i >= 0
+            let name = g:SchemeList[i-1]
+            let menu = g:SchemeList[i]
+            if stridx(name,base) != -1
+               if !has_key(g:SchemeDoc, name)
+                  let g:SchemeDoc[name] = menu
+               endif
+               call add(res, { 'icase': 1, 'word': name, 'menu': menu})
             endif
-            call add(res, { 'icase': 1, 'word': name, 'menu': join(type, '')} )
-         endif
-      endfor
+            let i -= 2
+         endwhile
+         return res
+      endif
+      let line = getline('.')
+      let start1 = strridx(line, ' ') + 1
+      let start2 = col('.') - 2
+      let prefix = line[start1:start2]
+      if prefix == ''
+         let i = 0
+         while i < g:SchemeListLength
+            if g:SchemeList[i]  ==  "FUNCTIONS BEGIN"
+               return res
+            endif
+            let name = g:SchemeList[i]
+            if stridx(name,base) != -1
+               call add(res, {'icase': 1, 'word': name, 'menu': 'var'})
+            endif
+            let i += 1
+         endwhile
+      else
+         let i = g:SchemeListLength - 1
+         while i >= 0
+            if g:SchemeList[i] == "FUNCTIONS BEGIN"
+               return res
+            endif
+            let name = g:SchemeList[i-1]
+            let menu = g:SchemeList[i]
+            if stridx(name,base) != -1
+               if !has_key(g:SchemeDoc, name)
+                  let g:SchemeDoc[name] = menu
+               endif
+               call add(res, { 'icase': 1, 'word': name, 'menu': menu})
+            endif
+            let i -= 2
+         endwhile
+      endif
       return res
    endif
 endfunction
@@ -80,6 +105,23 @@ function! IsSchemeWordChar(char)
    return 1
 endfunction
 
+function! SchemeSymbols(file)
+   let file = a:file
+   let scriptfile = tempname()
+   let code = []
+   if &ft == "lisp"
+      let code = code + ['(load "/home/a/.sbclrc")']
+   elseif &ft == "scheme"
+      let code =  code + ['(load "/home/a/.vim/bin/ss.cmd")']
+   endif
+   let code = code + ['(tags "'. file . '")'] 
+   call writefile(code, scriptfile)
+   if &ft == "lisp"
+      return systemlist('sbcl --script ' . scriptfile)
+   elseif &ft == "scheme"
+      return systemlist('scheme --script ' . scriptfile)
+   endif
+endfunction
 function! SchemeFile()
    let schemefile = tempname()
    let lines = getbufline("%", 1, "$")

@@ -46,7 +46,7 @@
   (for-each
     (lambda (x)
       (display x)
-      (display split-string)
+      (newline)
       (display 
         (or
           (and (top-level-bound? x)

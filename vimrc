@@ -2,6 +2,7 @@ set rtp+=d:/YouCompleteMe
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 language messages zh_CN.utf-8
+language messages en_US.utf-8
 set fileencodings=utf-8,ucs-bom,cp936,big5,gbk
 set fileencoding=utf-8
 let g:vimtweak_dll_path = expand("~/.vim/vimtweak/vimtweak64.dll")
@@ -177,6 +178,8 @@ func! MyF4()
    elseif &filetype == "sh"
       call term_sendkeys(term_list()[0], "zsh " . WinPath("%:p") . "\<CR>")
       call GetTerminalReplPrint('', '> ')
+   elseif &filetype == "sml"
+      call REPL_load('use "' . WinPath("%:p") . '";')
    else
       silent !start "%"
    endif
@@ -226,3 +229,25 @@ augroup VIM
    autocmd BufWritePost *.vim source %
    autocmd BufWritePost ~/.vim/vimrc source %
 augroup END
+function! ScrollOtherSide(k)
+   let t = []
+   for w in getwininfo()
+      let t += [{'number':  w['winnr'], 'size': w['width'] * w['height'] }]
+   endfor
+   let t = filter(t, 'v:val["number"] != winnr()')
+   let t = sort(t, {i1, i2 -> i1['size'] == i2['size'] ? 0 : i1['size'] <  i2['size']   ? 1 :  -1})
+   if len(t) < 1
+      return
+   else
+      exec t[0]['number'] . "wincmd w"
+      if a:k == 'j'
+         exec "normal \<c-e>"
+      elseif a:k == 'k'
+         exec "normal \<c-y>"
+      endif
+      "exec "normal " . a:k
+      exec "wincmd p"
+   endif
+endfunction
+nnoremap <silent> <c-j> :call ScrollOtherSide('j') <CR>
+nnoremap <silent> <c-k> :call ScrollOtherSide('k') <CR>
