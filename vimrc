@@ -217,6 +217,7 @@ endif
 let g:ycm_language_server = []
 "let g:ycm_language_server += [{ 'name': 'vim',      'filetypes': [ 'vim' ],      'cmdline': [ "vim-language-server", '--stdio' ]   }]
 colorscheme zmrok
+colorscheme molokai_dark
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
