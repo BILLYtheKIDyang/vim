@@ -23,6 +23,7 @@ function! SchemeComplete(start, base) abort
          let i = g:SchemeListLength - 1
          while i >= 0
             let name = g:SchemeList[i-1]
+            "let name = substitute(name, '-', '', 'g')
             let menu = g:SchemeList[i]
             if stridx(name,base) != -1
                if !has_key(g:SchemeDoc, name)

@@ -22066,7 +22066,7 @@ loops a counter “for free,” without sacrificing the simplicity of
 automatic iteration: >
 
  >>> S = 'spam'
- >>> for (offset, item) in enumerate(S): >
+ >>> for (offset, item) in enumerate(S):
  ...     print(item, 'appears at offset', offset)
  ...
  s appears at offset 0
@@ -22099,7 +22099,7 @@ iteration protocol automatically: >
  >>> [c * i for (i, c) in enumerate(S)]
  ['', 'p', 'aa', 'mmm']
 
- >>> for (i, l) in enumerate(open('test.txt')): >
+ >>> for (i, l) in enumerate(open('test.txt')):
  ...     print('%s) %s' % (i, l.rstrip()))
  ...
  0) aaaaaa
@@ -22219,7 +22219,7 @@ this works in 2.X, but uses urllib instead of urlib.request, and returns
 text strings): >
 
  >>> from urllib.request import urlopen
- >>> for line in urlopen('http://home.rmi.net/~lutz'): >
+ >>> for line in urlopen('http://home.rmi.net/~lutz'): 
  ...     print(line)
  ...
  b'<HTML>\n'
@@ -22227,6 +22227,8 @@ text strings): >
  b'<HEAD>\n'
  b"<TITLE>Mark Lutz's Book Support Site</TITLE>\n"
  ...etc...
+
+<
 
                              Chapter Summary
 
@@ -31442,6 +31444,7 @@ on this ahead): >
  True
  >>> next(y)                     # Can run next()immediately
  0
+<
 
   Why generator functions?
 
@@ -31631,7 +31634,7 @@ Again, we don't typically see the next iterator machinery under the hood
 of a generator expression like this because for loops trigger it for us
 automatically: >
 
- >>> for num in (x ** 2 for x in range(4)):          # Calls next() automatically
+ >>> for num in (x ** 2 for x in range(4)):  # Calls next() automatically
       print('%s, %s' % (num, num / 2.0))
 
  0, 0.0

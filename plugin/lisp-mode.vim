@@ -17,7 +17,7 @@ function! GetLispIndent()
       let line = getline(n)
       let words= GetWords(line)
       for fn in words
-         if len(fn) > 1 && index(split(g:LispIndentKeep, ';'), fn) == -1 && fn[len(fn)-1] !~ "[-+*/]"
+         if len(fn) > 2 && index(split(g:LispIndentKeep, ';'), fn) == -1 "&& fn[len(fn)-1] !~ "[-+*/]"
             execute ':set lispwords+=' .. fn
          endif
       endfor
