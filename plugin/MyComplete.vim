@@ -58,4 +58,4 @@ fun! MyComplete(start, base)
    endif
 endfunction
 
-set omnifunc=MyComplete
+"set omnifunc=MyComplete

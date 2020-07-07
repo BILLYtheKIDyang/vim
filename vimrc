@@ -1,4 +1,5 @@
 set rtp+=d:/YouCompleteMe
+
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 language messages zh_CN.utf-8
@@ -45,7 +46,7 @@ let g:ycm_filetype_specific_completion_to_disable = { 'cs': 1 }
 let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
 let g:ycm_key_invoke_completion = '<c-n>'
 let g:ycm_min_num_identifier_candidate_chars = 1
-let g:ycm_semantic_triggers =  {  'c,cpp,python,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
+let g:ycm_semantic_triggers =  {  'c,cpp,python,ruby,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
 let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
 let g:ycm_semantic_triggers['lisp'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
 let g:ycm_server_log_level = 'info'
@@ -163,12 +164,6 @@ func! MyF4()
       exe "!" . g:clear . ";fsharpc /nologo % && mono %<.exe"
    elseif &filetype=="python"
       call REPL_load("exec(open(\"" . WinPath("%:p") . "\", encoding='utf-8').read())")
-   elseif &filetype=="clojure"
-      call term_sendkeys(term_list()[0], "(load-file \"" . WinPath("~/.vim/.cljrc") . "\")\<CR>")
-      call term_sendkeys(term_list()[0], "(tags)\<CR>")
-      call term_sendkeys(term_list()[0], "(load-file \"" . WinPath("%:p") . "\")\<CR>")
-      let bttm = TermGetButtom()
-      call GetTerminalReplPrint(bttm)
    elseif &filetype=="haskell" || &filetype=="scala"
       call REPL_load(":load " . WinPath("%:p"))
    elseif &filetype=="java"
@@ -176,8 +171,7 @@ func! MyF4()
    elseif &filetype == "dosbatch"
       call REPL_load(WinPath("%:p"))
    elseif &filetype == "sh"
-      call term_sendkeys(term_list()[0], "zsh " . WinPath("%:p") . "\<CR>")
-      call GetTerminalReplPrint('', '> ')
+      call REPL_load("". WinPath("%:p"))
    elseif &filetype == "sml"
       call REPL_load('use "' . WinPath("%:p") . '";')
    else
@@ -252,3 +246,61 @@ function! ScrollOtherSide(k)
 endfunction
 nnoremap <silent> <c-j> :call ScrollOtherSide('j') <CR>
 nnoremap <silent> <c-k> :call ScrollOtherSide('k') <CR>
+function! ColorMe()
+   let colors =reverse( getcompletion('', 'color'))
+   let k = len(colors)
+   let i = 0
+   function! ColorHandler(timer) closure
+      if i == k
+         let i = 0
+      else
+         let i = i + 1
+      endif
+      try 
+         call popup_create(colors[i], #{
+                  \ line: 1,
+                  \ col: "cursor+" . (getwininfo()['variables']['width'] - getcurpos()[2]  - 30)
+                  \ ,minwidth: 20,
+                  \ time: 3000,
+                  \ tabpage: -1,
+                  \ zindex: 300,
+                  \ drag: 1,
+                  \ highlight: 'WarningMsg',
+                  \ border: [],
+                  \ close: 'click',
+                  \ padding: [0,1,0,1],
+                  \ })
+         exec 'colorscheme ' . colors[i]
+      catch
+      endtry
+   endfunction
+   let timer = timer_start(30000, 'ColorHandler',  { 'repeat':  -1 })
+endfunction
+call ColorMe()
+let g:REPL_configs = {}
+let g:REPL_configs['java']                        = {}
+let g:REPL_configs['java']['continuations']       = ['else', 'catch']
+let g:REPL_configs['java']['repl']                = ['jshell']
+let g:REPL_configs['javascript']                  = {}
+let g:REPL_configs['javascript']['continuations'] = ['else', 'except']
+let g:REPL_configs['javascript']['repl']          = ['node']
+let g:REPL_configs['lisp']                        = {}
+let g:REPL_configs['lisp']['repl']                = ['sbcl', '--userinit', expand("~/.vim/sbclrc.lisp")]
+let g:REPL_configs['perl']                        = {}
+let g:REPL_configs['perl']['continuations']       = ['else', 'except']
+let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
+let g:REPL_configs['lisp']['repl']                = [expand("$HOME/.vim/bin/elisp.cmd")]
+let g:REPL_configs['python']                      = {}
+let g:REPL_configs['python']['continuations']     = ['else', 'except']
+let g:REPL_configs['scheme']                      = {}
+let g:REPL_configs['scheme']['repl']              = ['scheme', expand("~/.vim/bin/ss.cmd")]
+let g:REPL_configs['scala']                       = {'repl': ['scala'] }
+let g:REPL_configs['java']                        = {'repl': ['jshell'] }
+let g:REPL_configs['haskell']                     = {'repl': ['ghci'] }
+let g:REPL_configs['sml']                         = {'repl': ['smlnj']}
+let g:REPL_configs['sh']                 = {'repl': ['bash'], 'continuations': ['done', 'esac', 'fi']}
+let g:REPL_configs['ruby']               = {'repl': ['irb.cmd'], 'continuations': ['end']}
+
+
+let s:lsp = '~/lsp-examples'
+let g:ycm_language_server = [ { 'name': 'ruby', 'cmdline': [ expand( s:lsp . '/ruby/bin/solargraph.bat' ), 'stdio' ], 'filetypes': [ 'ruby' ], }, ]
