@@ -15,8 +15,8 @@ function! SchemeComplete(start, base) abort
       let needComplete = getline('.')[0] != ' ' && stridx(getline('.'), ' ', 1) == -1
       let needComplete = needComplete || len(g:SchemeList) == 0
       if needComplete
-            let g:SchemeList = SchemeSymbols(SchemeFile())
-            let g:SchemeListLength = len(g:SchemeList)
+         let g:SchemeList = SchemeSymbols(SchemeFile())
+         let g:SchemeListLength = len(g:SchemeList)
       endif
 
       if &ft == 'scheme'
@@ -111,9 +111,9 @@ function! SchemeSymbols(file)
    let scriptfile = tempname()
    let code = []
    if &ft == "lisp"
-      let code = code + ['(load "/home/a/.sbclrc")']
+      let code = code + ['(load "' . escape(expand("~/.sbclrc"), '\ ') . '")']
    elseif &ft == "scheme"
-      let code =  code + ['(load "/home/a/.vim/bin/ss.cmd")']
+      let code =  code + ['(load "' . escape(expand("~/.vim/bin/ss.cmd"), '\\ ') .'")']
    endif
    let code = code + ['(tags "'. file . '")'] 
    call writefile(code, scriptfile)
@@ -127,7 +127,7 @@ function! SchemeFile()
    let schemefile = tempname()
    let lines = getbufline("%", 1, "$")
    call writefile(lines, schemefile)
-   return schemefile
+   return escape(schemefile, '\\ ')
 endfunction
 function! GetSchemeDoc()
    let  funname_ = split(trim(InsertClose(' ')), '[ \t\n]')

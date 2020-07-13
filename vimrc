@@ -276,7 +276,7 @@ function! ColorMe()
    endfunction
    let timer = timer_start(30000, 'ColorHandler',  { 'repeat':  -1 })
 endfunction
-call ColorMe()
+"call ColorMe()
 let g:REPL_configs = {}
 let g:REPL_configs['java']                        = {}
 let g:REPL_configs['java']['continuations']       = ['else', 'catch']
@@ -290,6 +290,7 @@ let g:REPL_configs['perl']                        = {}
 let g:REPL_configs['perl']['continuations']       = ['else', 'except']
 let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
 let g:REPL_configs['lisp']['repl']                = [expand("$HOME/.vim/bin/elisp.cmd")]
+let g:REPL_configs['lisp']['repl']                = ['d:/sbcl/sbcl.exe', '--core', 'd:/sbcl/sbcl.core']
 let g:REPL_configs['python']                      = {}
 let g:REPL_configs['python']['continuations']     = ['else', 'except']
 let g:REPL_configs['scheme']                      = {}

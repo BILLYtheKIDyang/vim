@@ -1,4 +1,25 @@
 # Udemy - Linux Bash Shell Scripting Complete Guide (incl. AWK & SED)
+# 1. Basic
+# Match calculation - let
+NUMBER=7
+let RESULT=NUMBER+5 # no space nor dollar sign
+echo $RESULT
+echo $NUMBER
+let NUMBER++
+let NUMBER-=10
+echo $NUMBER
+# Math calculation - (())
+echo $((5 + 5))
+# Math calculation - []
+echo $[NUMBER + 5]
+# Math calculation - expr
+echo $(expr $NUMBER + 5) # need space around math operator
+echo `expr $NUMBER + 5`
+# Math calculation - bc
+# Operate with floating points
+echo $(echo "3.14 * 3.0 + 3.00 / 10" | bc)
+
+date
 # 3. For Loop
 for PLANET in Mercury Venus Earth; do
    echo $PLANET
@@ -27,6 +48,17 @@ for FILE in *.txt; do
    echo $(date) >> $FILE
    ps -ef | head -5 >> $FILE
    echo ====================== >> $FILE
+done
+#!/bin/bash
+# args.sh one two three hello someting
+# go through all arugments and print them all
+
+COUNT=1
+
+for ARG in "$@"; do
+   #          "$*" 不行
+   echo "$COUNT. arugment: $ARG"
+   let COUNT++
 done
 # 4. While Loop
 while [ "$NAME" != "stop" ]; do
@@ -82,3 +114,27 @@ echo a$'\n'b
 echo a'\n'b
 echo a"\n"b
 echo a$"\n"b
+
+
+for i in {1..9}; do
+   for ((j = 1; j <= $i; j++)); do
+      echo -ne "$i x $j = $[$i * $j]\t"
+   done
+   echo
+done
+
+echo {1..9}
+
+begin_at=$(date "+%s")
+
+while TRUE; do
+   end_at=$(date '+%s')
+   ((interval=${end_at}-${begin_at}))
+   ((hours=${interval}/3600))
+   ((minutes=(${interval} % 3600) / 60))
+   ((seconds=(${interval} % 3600) % 60))
+   tput cr
+   tput el
+   printf "%02d:%02d:%02d" ${hours} ${minutes} ${seconds}
+   sleep 0.5
+done

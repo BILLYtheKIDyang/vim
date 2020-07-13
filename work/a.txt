@@ -5,3 +5,9 @@ Administ    1595       1 cons0    14:16:08 /usr/bin/bash
 Administ    1610    1595 cons0    14:16:09 /usr/bin/bash
 Administ    1609    1595 cons0    14:16:09 /usr/bin/ps
 ======================
+2020Äê07ÔÂ 8ÈÕ 12:17:22
+     UID     PID    PPID  TTY        STIME COMMAND
+Administ     251     237 cons0    12:17:22 /usr/bin/ps
+Administ     237       1 cons0    12:17:20 /usr/bin/bash
+Administ     252     237 cons0    12:17:22 /usr/bin/head
+======================
