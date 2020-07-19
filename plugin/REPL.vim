@@ -1,34 +1,10 @@
-let g:REPL_configs = {}
-
-let g:REPL_configs['java']                        = {}
-let g:REPL_configs['java']['continuations']       = ['else', 'catch']
-let g:REPL_configs['java']['repl']                = ['jshell']
-let g:REPL_configs['javascript']                  = {}
-let g:REPL_configs['javascript']['continuations'] = ['else', 'except']
-let g:REPL_configs['javascript']['repl']          = ['node']
-let g:REPL_configs['lisp']                        = {}
-let g:REPL_configs['lisp']['repl']                = ['sbcl', '--userinit', expand("~/.vim/sbclrc.lisp")]
-let g:REPL_configs['lisp']['repl']                = ['emacs',  '--script', expand("~/.vim/bin/elisp.cmd")]
-let g:REPL_configs['perl']                        = {}
-let g:REPL_configs['perl']['continuations']       = ['else', 'except']
-let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
-let g:REPL_configs['python']                      = {}
-let g:REPL_configs['python']['continuations']     = ['else', 'except']
-let g:REPL_configs['scheme']                      = {}
-let g:REPL_configs['scheme']['repl']              = ['scheme', expand("~/.vim/bin/ss.cmd")]
-let g:REPL_configs['scala']                       = {'repl': ['scala'] }
-let g:REPL_configs['java']                        = {'repl': ['jshell'] }
-let g:REPL_configs['haskell']                     = {'repl': ['ghci'] }
-let g:REPL_configs['sml']                         = {'repl': ['smlnj']}
-let g:REPL_configs['sh']                          = {'repl': ['bash'], 'continuations':  ['fi', 'done', 'esac']}
-
 function! REPL_is_sub_expression(filetype, line)
    if a:line == '' |  return 1 | endif " 
    if a:line[0] == ' ' || a:line[0] ==  "\t" | return 1 | endif "
    if a:line[0] == '}' || a:line[0] == ')' || a:line[0] == ']' | return 1 | endif "
    if has_key(g:REPL_configs, a:filetype) && has_key(g:REPL_configs[a:filetype], 'continuations')
       for e in g:REPL_configs[a:filetype]['continuations']
-         if a:line =~ "^" . e
+         if a:line =~ "^" . e . '\>'
             return 1
          endif
       endfor

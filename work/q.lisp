@@ -1,0 +1,5 @@
+(directory "../*.*")
+(directory "*.*")
+(lambda (n) (* n n))
+(defun fact (n) (* n n))
+(directory "../*.*") 
