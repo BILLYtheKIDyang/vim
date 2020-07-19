@@ -8,6 +8,7 @@ let g:REPL_configs['javascript']['continuations'] = ['else', 'except']
 let g:REPL_configs['javascript']['repl']          = ['node']
 let g:REPL_configs['lisp']                        = {}
 let g:REPL_configs['lisp']['repl']                = ['sbcl', '--userinit', expand("~/.vim/sbclrc.lisp")]
+let g:REPL_configs['lisp']['repl']                = ['emacs',  '--script', expand("~/.vim/bin/elisp.cmd")]
 let g:REPL_configs['perl']                        = {}
 let g:REPL_configs['perl']['continuations']       = ['else', 'except']
 let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
@@ -19,6 +20,7 @@ let g:REPL_configs['scala']                       = {'repl': ['scala'] }
 let g:REPL_configs['java']                        = {'repl': ['jshell'] }
 let g:REPL_configs['haskell']                     = {'repl': ['ghci'] }
 let g:REPL_configs['sml']                         = {'repl': ['smlnj']}
+let g:REPL_configs['sh']                          = {'repl': ['bash'], 'continuations':  ['fi', 'done', 'esac']}
 
 function! REPL_is_sub_expression(filetype, line)
    if a:line == '' |  return 1 | endif " 
@@ -79,7 +81,7 @@ function! REPL_send_expression()
    endif
    let lines = REPL_get_expression()
    if &filetype == 'perl' ||  (&filetype == 'python' && len(lines) > 1)
-      call add(lines, "")
+      call add(lines, "\r")
    endif
 
    for line in lines
@@ -150,7 +152,11 @@ function! REPL_start_watch(filetype)
    let timer = timer_start(500, 'REPL_handler', {'repeat': -1})
 endfunction
 function! REPL_send_text(filetype, text)
-   call term_sendkeys(REPL_start_REPL(a:filetype), a:text . "\<CR>")
+   if a:text  == "\r"
+      call term_sendkeys(REPL_start_REPL(a:filetype), a:text)
+   else
+      call term_sendkeys(REPL_start_REPL(a:filetype), a:text . "\<CR>")
+   endif
 endfunction
 
 function! REPL_get_buttom(filetype)  abort

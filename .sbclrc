@@ -1,0 +1,90 @@
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                        (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+(setf *debugger-hook* 
+  (lambda (c h)
+    (declare (ignore h))
+    (princ c)
+    (abort)))
+
+(declaim (sb-ext:muffle-conditions warning style-warning))
+
+(defmacro define (first second &rest rest)
+  (if (consp first)
+      `(progn
+         (defparameter ,(first first)
+           (lambda ,(cdr first) ,second ,@rest))
+         (defun ,(first first) ,(cdr first)
+           ,second ,@rest))
+      (if (and (consp second) (eq 'lambda (car second)))
+          `(progn
+             (defparameter ,first ,second)
+             (defun ,first ,(second second) ,@(cddr second)))
+          `(progn
+             (defparameter ,first ,second)
+             (defun ,first (&rest more) (declare (ignore more)) (error "Not a function: ~s~%" ',first))))))
+
+(ignore-errors (require 'sb-aclrepl))
+(when (find-package 'sb-aclrepl)
+  (push :aclrepl cl:*features*))
+#+aclrepl
+(progn
+  (setq sb-aclrepl:*max-history* 100)
+  (setf (sb-aclrepl:alias "asdc")
+    #'(lambda (sys) (asdf:operate 'asdf:compile-op sys)))
+  (sb-aclrepl:alias "l" (sys) (asdf:operate 'asdf:load-op sys))
+  (sb-aclrepl:alias "t" (sys) (asdf:operate 'asdf:test-op sys))
+  ;; The 1 below means that two characaters ("up") are required
+  (sb-aclrepl:alias ("up" 1 "Use package") (package) (use-package package))
+  ;; The 0 below means only the first letter ("r") is required,
+  ;; such as ":r base64"
+  (sb-aclrepl:alias ("require" 0 "Require module") (sys) (require sys))
+  (setq cl:*features* (delete :aclrepl cl:*features*)))
+
+;;(setf *print-pretty* nil)
+(setf *print-case* :downcase)
+
+(defun tags (file)
+  (ignore-errors (load file))
+  (let ((*print-pretty* nil)
+        (functions '())
+        (keywords  '())
+        (variables '())
+        )
+    (do-all-symbols (sym)
+      (let* ((pkg (symbol-package sym))
+             (name    (concatenate 'string 
+                        (cond 
+                          ((eql #.(find-package :cl)      pkg) "")
+                          ((eql #.(find-package :cl-user) pkg) "")
+                          ((eql #.(find-package :keyword) pkg) ":") (pkg (concatenate 'string (string-downcase (package-name pkg)) ":")))
+                        (string-downcase (symbol-name sym)))))
+            (cond
+              ((and (not (fboundp sym)) (boundp sym))
+               (if (char= #\: (elt name 0))
+                   (push name keywords)
+                   (push name variables)))
+              ((not (fboundp sym)) 
+               (push name variables))
+              (t
+                (push (cons sym name) functions)))))
+    (loop for x in variables do (format t "~a~%" x))
+    (loop for x in keywords  do (format t "~a~%" x))
+    (format t "FUNCTIONS BEGIN~%")
+    (loop for x in functions 
+      do (format t "~a~%~a~%" 
+           (cdr x)
+           (let ((sym (car x)))
+             (concatenate 'string
+               (remove #\newline
+                 (concatenate 'list
+                   (format nil "~s"
+                     (cons sym
+                       (or (and (macro-function sym)
+                                (sb-impl::%fun-lambda-list (macro-function sym)))
+                           (and (symbol-function sym)
+                                (sb-impl::%fun-lambda-list (symbol-function sym))))))))))))))
