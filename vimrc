@@ -193,6 +193,7 @@ call plug#begin('~/vim_plug')
 Plug 'mattn/emmet-vim'
 "Plug 'kovisoft/slimv'
 Plug 'l04m33/vlime', {'rtp': 'vim/'}
+Plug 'godlygeek/tabular'
 call plug#end()
 if has('win32')
 else
@@ -300,7 +301,7 @@ let g:REPL_configs['java']                        = {'repl': ['jshell'] }
 let g:REPL_configs['haskell']                     = {'repl': ['ghci'] }
 let g:REPL_configs['sml']                         = {'repl': ['smlnj']}
 let g:REPL_configs['sh']                 = {'repl': ['bash'], 'continuations': ['done', 'esac', 'fi']}
-let g:REPL_configs['ruby']               = {'repl': ['irb.cmd'], 'continuations': ['end']}
+let g:REPL_configs['ruby']               = {'repl': ['irb.cmd'], 'continuations': ['rescue', 'end']}
 
 
 let s:lsp = '~/lsp-examples'

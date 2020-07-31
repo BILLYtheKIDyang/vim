@@ -14,6 +14,3 @@
   (define vj (vector-ref v j))
   (vector-set! v i vj)
   (vector-set! v j vi))
-
-(define (vector-part! v i j)
-  (
