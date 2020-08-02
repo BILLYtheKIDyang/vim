@@ -47,9 +47,9 @@ let g:ycm_global_ycm_extra_conf='~/.ycm.conf.py'
 let g:ycm_key_invoke_completion = '<c-n>'
 let g:ycm_min_num_identifier_candidate_chars = 1
 let g:ycm_semantic_triggers =  {  'c,cpp,python,ruby,java,go,erlang,perl': ['re!\w{1}'],  'vim,cs,lua,javascript': ['re!\w{1}'],  }
-let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
-let g:ycm_semantic_triggers['lisp'] = ['re![a-zA-Z0-9+*/&:%^$#@!~=-]{1}']
-let g:ycm_server_log_level = 'info'
+let g:ycm_semantic_triggers['scheme'] = ['re![a-zA-Z0-9+*/&:%^$#@!~ = -]{1}']
+let g:ycm_semantic_triggers['lisp']   = ['re![a-zA-Z0-9+*/&:%^$#@!~ = -]{1}']
+let g:ycm_server_log_level            = 'info'
 let g:ycm_show_diagnostics_ui = 1
 "let g:ycm_cache_omnifunc = 0
 let mapleader=','
@@ -172,6 +172,8 @@ func! MyF4()
       call REPL_load(WinPath("%:p"))
    elseif &filetype == "sh"
       call REPL_load("". WinPath("%:p"))
+   elseif &filetype == "tex"
+     silent !xelatex "%"
    elseif &filetype == "sml"
       call REPL_load('use "' . WinPath("%:p") . '";')
    else
@@ -291,6 +293,7 @@ let g:REPL_configs['perl']['continuations']       = ['else', 'except']
 let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
 let g:REPL_configs['lisp']['repl']                = [expand("$HOME/.vim/bin/elisp.cmd")]
 let g:REPL_configs['lisp']['repl']                = ['d:/sbcl/sbcl.exe', '--core', 'd:/sbcl/sbcl.core']
+let g:REPL_configs['lisp']['repl']                = ['sbcl']
 let g:REPL_configs['python']                      = {}
 let g:REPL_configs['python']['continuations']     = ['else', 'except']
 let g:REPL_configs['scheme']                      = {}

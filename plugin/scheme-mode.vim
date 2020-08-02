@@ -110,18 +110,10 @@ function! SchemeSymbols(file)
    let file = a:file
    let scriptfile = tempname()
    let code = []
-   if &ft == "lisp"
-      let code = code + ['(load "' . escape(expand("~/.sbclrc"), '\ ') . '")']
-   elseif &ft == "scheme"
-      let code =  code + ['(load "' . escape(expand("~/.vim/bin/ss.cmd"), '\\ ') .'")']
-   endif
+   let code = code + ['(load "' . escape(expand("~/.vim/bin/ss.cmd"), '\\ ') .'")']
    let code = code + ['(tags "'. file . '")'] 
    call writefile(code, scriptfile)
-   if &ft == "lisp"
-      return systemlist('sbcl --script ' . scriptfile)
-   elseif &ft == "scheme"
-      return systemlist('scheme --script ' . scriptfile)
-   endif
+   return systemlist('scheme --script ' . scriptfile)
 endfunction
 function! SchemeFile()
    let schemefile = tempname()
@@ -140,6 +132,6 @@ function! GetSchemeDoc()
    endif
 endfunction
 aug scheme
-   au BufNewFile,BufRead *.scm,*.ss,*rkt,*.lisp setl omnifunc=SchemeComplete
-   au FileType scheme,lisp inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
+   au BufNewFile,BufRead *.scm,*.ss,*rkt setl omnifunc=SchemeComplete
+   au FileType scheme inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
 aug END

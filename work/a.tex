@@ -1,0 +1,37 @@
+\documentclass[UTF8,a4paper,12pt]{ctexart}
+\thispagestyle{empty} % no page number
+\begin{document}
+\title{我的文档}
+\author{杨双成}
+\date{六盘水, \today}
+\maketitle
+\begin{abstract}
+   此乃一非常短之文档也。
+\end{abstract}
+\tableofcontents
+\listoftables
+\listoffigures
+不知中文可用否 ？
+\section{第一节}
+\label{sec:start}
+此乃此节之文本也。参\cite{Gonzato}见详细也。
+\begin{itemize}
+   \item[*] with a asterisk;
+   \item[-] with a dash;
+   \item[-] 不知中文可用否 ？
+   \item[.] with a dot.
+\end{itemize}
+%\begin{dinglist}[43]
+%   \item  one
+%      \item  two
+%         \item  three
+%\end{dinglist}
+\section{结束}
+\label{sec:end}
+此乃此文档之结束也。请于
+\ref{sec:start}再读。
+\begin{thebibliography}{99}
+   \bibitem{Gonzato} Gonzato G. \textit{\LaTeX{} for  Word Processor
+      Users}. CTAN, 2001--2015.
+\end{thebibliography}
+\end{document}

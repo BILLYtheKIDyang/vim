@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+use strict;
+
+while(($name, $aliases, $addrtype, $length, $addrs) = gethostent) {
+   ($a, $b, $c, $d) = unpack('C4', $addrs[0]);
+   print "The name of the host is $name.\n";
+   print "Local host address (unpacked)  $a.$b.$c.$d\n";
+}

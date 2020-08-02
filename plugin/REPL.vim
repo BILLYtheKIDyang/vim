@@ -57,7 +57,7 @@ function! REPL_send_expression()
    endif
    let lines = REPL_get_expression()
    if &filetype == 'perl' ||  (&filetype == 'python' && len(lines) > 1)
-      call add(lines, "\r")
+      call add(lines, "\<CR>")
    endif
 
    for line in lines
@@ -128,11 +128,7 @@ function! REPL_start_watch(filetype)
    let timer = timer_start(500, 'REPL_handler', {'repeat': -1})
 endfunction
 function! REPL_send_text(filetype, text)
-   if a:text  == "\r"
-      call term_sendkeys(REPL_start_REPL(a:filetype), a:text)
-   else
-      call term_sendkeys(REPL_start_REPL(a:filetype), a:text . "\<CR>")
-   endif
+   call term_sendkeys(REPL_start_REPL(a:filetype), a:text . "\<CR>")
 endfunction
 
 function! REPL_get_buttom(filetype)  abort

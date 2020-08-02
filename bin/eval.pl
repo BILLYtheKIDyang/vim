@@ -5,17 +5,17 @@ $Data::Dumper::Indent=0;
 $Data::Dumper::Pair=': ';
 $Data::Dumper::Bless='';
 print 'perl> ';
+$code='';
 while (defined($s=<>)) {
    if (length($s) > 1) {
-      $code = $code . $s;
-      print '..... ';
-   } else {
       $code =~ s/^my //;
-      if (length($code) > 1) {
-         print Dumper( eval $code),"\n";
-      }
-      if ($@) { print "WRONG: $@\n";}
-      $code = '';
-      print 'perl> ';
+      $code = $code . $s;
+      print "..... ";
+      next;
    }
+   chomp($code);
+   if (length($code) > 0) { print  Dumper(eval $code ), "\n"; }
+   if ($@) { print"$@\n"; $@='';}
+   $code='';
+   print 'perl> ';
 }
