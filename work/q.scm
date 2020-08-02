@@ -14,4 +14,7 @@
   (define vj (vector-ref v j))
   (vector-set! v i vj)
   (vector-set! v j vi))
+<<<<<<< HEAD
 
+=======
+>>>>>>> bf978ad286be18b64eae8aa7e71f4264329ab0cf

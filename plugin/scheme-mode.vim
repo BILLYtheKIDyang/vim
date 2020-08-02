@@ -133,5 +133,6 @@ function! GetSchemeDoc()
 endfunction
 aug scheme
    au BufNewFile,BufRead *.scm,*.ss,*rkt setl omnifunc=SchemeComplete
-   au FileType scheme inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
+   au BufNewFile,BufRead *.lisp setl omnifunc=lispcomplete#Complete
+   au FileType scheme,lisp inoremap <buffer>   <Esc>:call GetSchemeDoc() <CR>a<Space>
 aug END
