@@ -14,7 +14,7 @@ while (defined($s=<>)) {
       next;
    }
    chomp($code);
-   if (length($code) > 0) { print  Dumper(eval $code ), "\n"; }
+   if (length($code) > 0) { print  "\n", Dumper(eval $code ), "\n"; }
    if ($@) { print"$@\n"; $@='';}
    $code='';
    print 'perl> ';

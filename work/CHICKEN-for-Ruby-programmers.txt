@@ -1,0 +1,927 @@
+CHICKEN for Ruby programmers
+
+    1. CHICKEN for Ruby programmers
+
+         1. Paradigm independence
+         2. Origins
+
+    2. Syntax
+
+         1. The basics
+         2. Variables
+         3. Procedures
+
+              1. Recursion and tail-call optimization
+
+         4. Blocks
+
+    3. Data types
+
+         1. Arrays
+
+              1. List procedures
+
+         2. Symbols
+         3. Strings
+
+              1. String procedures
+
+         4. Regular expressions
+         5. Hashes
+
+              1. Association Lists
+              2. Hash tables
+
+         6. Booleans
+
+    4. Examples
+    5. CHICKEN and the Real World
+
+         1. Eggs
+
+    6. Meta programming
+
+         1. Data is code and code is data
+         2. Macros
+
+   If you don't know much about CHICKEN yet, please take a moment to read the
+   introductory part of The User's Manual. You're back? Good!
+
+  Paradigm independence
+
+   The most important design feature of Ruby is that it is purely
+   object-oriented; everything is an object. Scheme is not an object-oriented
+   language. In fact, it does not commit to any particular programming
+   paradigm -- it offers complete and total freedom to the programmer. If you
+   decide (a part of) a program is best implemented in an object-oriented
+   fashion, you can choose to use one of the many object systems. Have a
+   quick glance at the OOP category of the egg index to get an impression of
+   the diversity of styles of object oriented programming you can use with
+   CHICKEN. By the way, the list on that page shows all the available eggs
+   for CHICKEN. We'll explain all about these later.
+
+   Besides object-oriented programming, you can also program in a procedural
+   fashion (like you would in Pascal, for example) or in a functional style
+   (a bit like Haskell or ML) and you can even experiment with
+   message-passing like in Erlang, logic programming like you would with
+   Prolog, or stack languages like Forth and Factor.
+
+  Origins
+
+   Ruby's origins are firmly rooted in Lisp. It takes many things and ideas
+   from Lisp (symbols, lambdas, eval, metaprogramming, DSLs etc). What it
+   doesn't take from Lisp it takes from Smalltalk, which was itself inspired
+   by Lisp's clean syntax. All this means that once you're over the initial
+   hump of grokking the syntax, you'll find yourself in pretty familiar
+   territory.
+
+   Originally Ruby began as an implementation-defined language. That is,
+   there was only one implementation (Matz's) and whatever that
+   implementation did was the language spec. Nowadays, Ruby has rubyspec, an
+   attempt to standardize the Ruby language.
+
+   Likewise, Scheme is a specification-defined language. There is one
+   official language specification which says what Scheme is and how it
+   works. CHICKEN is simply an implementation of that specification. There is
+   one thing that is important to know right now: The Scheme specification is
+   extremely minimal in design. It tries to define as few language constructs
+   as possible, but these few should be so powerful that you will not need
+   any more to make programs. This results in an extremely small spec and a
+   very elegant and clean language with very few rules to remember, which
+   makes it easy to learn.
+
+   However, in the real world you will need much more than just programming
+   constructs, you need things to interact with the operating system,
+   networking libraries, etc. That's where the difference between Scheme and
+   other languages comes in: Every implementation of Scheme defines the
+   things it thinks are necessary to build real programs with. Unfortunately,
+   this means most Scheme programs are inherently not portable from one
+   implementation to another, but it also means that Scheme implementations
+   are free to experiment how they want and explore new language territory.
+   This gives each Scheme implementation its uniqueness.
+
+   Fortunately, most Scheme implementations including CHICKEN are fairly
+   portable to modern hardware architectures and operating systems. You may
+   or may not be able to port a CHICKEN program to another Scheme, but you
+   can port it from Windows to Mac OS X or Linux, or from the 32-bit Intel
+   386 to the 64-bit SPARC architecture, because CHICKEN runs in all those
+   environments. Usually "porting" just means "running it on that system",
+   because just like Ruby CHICKEN has procedures that are
+   platform-independent, with multiple implementations where the platform
+   itself differs.
+
+   CHICKEN's power is in how it extends the Scheme standard. It has a very
+   comfortable interface to C that does not require you to touch a single
+   line of C code in order to create bindings to existing C libraries, but it
+   also gives you the freedom to embed CHICKEN in C code or C in CHICKEN code
+   as you want. It offers a TCP/IP networking layer, it has great POSIX
+   interoperability so you can interact with the OS. And most importantly: It
+   can compile Scheme code to very efficient C code which can itself be
+   compiled to machine code, giving you the best of both worlds: a dynamic
+   language which allows you to program in the flexible way you are used to
+   with Ruby, but this can be compiled for maximum efficiency.
+
+Syntax
+
+  The basics
+
+   The one thing that is most strikingly different between Ruby and Scheme is
+   of course the syntax. Ruby has an extremely baroque syntax that allows you
+   many freedoms in how you would like to write down things. Scheme, on the
+   other hand, has only one way in which to write a given expression. Let's
+   start by looking at an example. First we start by firing up an irb session
+   and typing a little program:
+
+  irb(main):001:0> # My first program
+  irb(main):002:0* [1, 2, 3, 4].map{|x| x + 1}
+  => [2, 3, 4, 5]
+  irb(main):003:0>
+
+   Now, we fire up a csi (chicken scheme interpreter) session:
+
+  #;1> ; My first program
+  (map add1 (list 1 2 3 4))
+  (2 3 4 5)
+  #;2>
+
+
+   In Scheme, lists are delimited with parentheses with its elements
+   separated by spaces. As we can see, everything in Scheme is a list, even
+   the expressions that you use to tell it what to do! An expression in
+   Scheme is always a list with the operator on its first position and the
+   operands following it. Procedures that accept no arguments are simply a
+   list with only the procedure in it, for example (newline), which simply
+   displays a newline character.
+
+   This simple rule also means that every parenthesis has a meaning. You
+   can't add more parentheses or leave off parentheses like you can in most
+   Ruby expressions. Adding extra parentheses simply applies the resulting
+   expression as if it were a procedure:
+
+  #;2> ((newline))
+
+  Error: call of non-procedure: #<unspecified>
+
+          Call history:
+
+          <syntax>                ((newline))
+          <syntax>                (newline)
+          <eval>          ((newline))
+          <eval>          (newline)       <--
+
+   If (newline) returned a procedure, it would be called. But as it happens,
+   newline simply returns an unspecified value which is not a procedure and
+   thus can't be applied. We can also use the result of calling a procedure
+   in the call to another procedure:
+
+  #;3> (add1 2)
+  3
+  #;4> (- 10 (add1 2) 1)
+  6
+
+   We see that arithmetic is a little different from Ruby, as a result of the
+   simple rules Scheme has for its syntax. This may be a little awkward,
+   especially with complex calculations:
+
+  #;5> (* (+ 1 (- 6 2) 2) (- 10 5))
+  35
+
+   In Ruby (and other languages with algebraic syntax) this would have been
+
+  irb(main):002:0> (1 + (6 - 2) + 2) * (10 - 5)
+  => 35
+  irb(main):003:0> # Alternatively:
+  irb(main):004:0* (1 + 6 - 2 + 2) * (10 - 5)
+  irb(main):005:0> # or even:
+  irb(main):006:0* (((1) + ((((6 - 2)))) + 2) * (((10) - ((5)))))
+  => 35
+
+   Both types of syntax have their advantages and disadvantages: The
+   Ruby-like syntax is more natural, but you have to think about operator
+   precedence rules. CHICKEN does not need operator precedence rules because
+   the precedence can be determined from the way it's nested, but it's less
+   natural for most people (though you get used to it very quickly).
+
+   Actually, right now you know almost all there is to know about Scheme's
+   syntax! CHICKEN has a couple of extensions to the basic Scheme syntax, but
+   we won't go into detail here. Later you'll see a couple of handy
+   shortcuts, but this is basically it.
+
+  Variables
+
+   Variables are names for things. CHICKEN has vary lax rules for naming
+   variables. Actually, any string is a valid identifier as long as you quote
+   it correctly.
+
+   Ruby:
+
+  #;1> x = 10
+  => 10
+  #;2> x
+  => 10
+  #;3> x-y-z = 10
+  NameError: undefined local variable or method `x' for main:Object
+        from (irb):2
+
+
+   Scheme:
+
+  #;1> (define x 10)
+  #;2> x
+  10
+  #;3> (define x-y-z 10)
+  #;4> x-y-z
+  10
+  #;5> (define %x% 1)
+  #;6> %x%
+  1
+  #;7> (define |a b c| 5)
+  #;8> |a b c|
+  5
+
+   As you can see, because of Scheme's operator rules, symbols that would
+   normally be separate tokens designating operators have no special meaning
+   so we can use it in the middle of a name. The convention in Scheme is to
+   use the minus sign as word separator (in Ruby, you would use an underscore
+   for separating words). The final example shows how any string is allowed
+   as a variable name: if the string contains syntax that would mean
+   something else to Scheme you can enclose the variable name in pipe
+   symbols. The pipe symbol itself can be escaped with a backslash, if you
+   need it to be part of a variable.
+
+   To assign to a pre-existing variable we can also use set!:
+
+  #;1> (define x 10)
+  #;2> x
+  10
+  #;3> (set! x 20)
+  #;4> x
+  20
+
+   Top-level variables can also be overwritten by simply redefining them, but
+   in some cases you need set!. However, set! is a typical artifact of an
+   imperative programming style and in clean code you want to avoid using it.
+
+   Scheme also allows the binding of local variables. Bound variables behave
+   like the defined variables above, however, they are only valid within a
+   local scope. The top-level variables we've seen are the equivalent of a
+   global in Ruby.
+
+   The most common binding constructs are let and let*. let allows for any
+   number of bindings, none of which are related.
+
+ (let ((a 5)
+       (b 10))
+   (+ a b))
+
+   let* is like let, except that the bindings are evaluated in order, so
+   subsequent bindings can reference earlier bindings.
+
+ (let* ((a 5)
+        (b (* 2 a)))
+   (+ a b))
+
+   There are other binding forms, such as letrec and the so-called named let.
+   More information about these forms can be found in the Scheme
+   specification.
+
+  Procedures
+
+   Of course using simple expressions like this is not enough. You'll need
+   procedures too. In Ruby, named procedures are actually methods on objects,
+   but we can forget about that little detail for now:
+
+   Ruby:
+
+ def pythagoras(a, b)
+   Math.sqrt(a**2 + b**2)
+ end
+
+   CHICKEN:
+
+ (define pythagoras
+   (lambda (a b)
+     (sqrt (+ (* a a) (* b b)))))
+
+   Now that's interesting! Procedures are just regular variables in Scheme (a
+   bit like functions in Javascript). We assign a lambda to it. We can do
+   that in Ruby too, but it's not pretty:
+
+   Ruby:
+
+  some_class.send(:define_method, :pythagoras) {|a, b| Math.sqrt(a**2 + b**2) }
+
+   Just like in Ruby the def foo is shorter than the above, in Scheme we have
+   a convenient shorthand for defining procedures too:
+
+   (define (pythagoras a b)
+     (sqrt (+ (* a a) (* b b))))
+
+    Recursion and tail-call optimization
+
+   In Scheme, recursion is a very important tool. In fact, it is so important
+   that the Scheme standard demands tail call optimization (TCO), which
+   basically means that you can have infinite recursion as long as the
+   recursive procedure does not need to do anything after it returns. That
+   sounds a bit strange, so here's an example:
+
+   Ruby:
+
+  irb(main):010:0> def add_up_to(num)
+  irb(main):011:1>   if num.zero?
+  irb(main):012:2>     0
+  irb(main):013:2>   else
+  irb(main):014:2*     add_up_to(num - 1) + num
+  irb(main):015:2>   end
+  irb(main):016:1> end
+  => nil
+  irb(main):017:0> add_up_to(4)
+  => 10
+  irb(main):018:0> add_up_to(9999)
+  SystemStackError: stack level too deep
+
+   CHICKEN:
+
+  #;2> (define (add-up-to x)
+         (if (zero? x)
+             0
+             (+ (add-up-to (sub1 x)) x)))
+  #;3> (add-up-to 4)
+  10
+  #;4> (add-up-to 9999)
+  49995000
+
+   Note the + in front of the (add-up-to (sub1 ...)). That is a cue that this
+   is not tail-recursive code: each level of recursion must eventually come
+   back 'up a level' in order to complete the addition, and so the program
+   must keep a live reference to every level of recursion until the final
+   result is computed.
+
+   In most other Schemes, however, this will break just like in Ruby, because
+   when the (+ (add-up-to (sub1 x)) x) expression is evaluated, the recursive
+   call to add-up-to creates a new stack frame so that when it returns the x
+   can be added to the result.
+
+   [This code will 'break' in CHICKEN too, but only for much larger numbers.
+   Although CHICKEN doesn't have an arbitrary stack depth, if you try
+   (add-up-to) on a large enough number, you'll use up all your system memory
+   before getting an answer. Read on for a better way to write it.]
+
+   All Schemes know that when there is nothing that needs to be done after a
+   procedure returns, there is no point in returning to the procedure that
+   called it at all: instead it can just return directly to the procedure
+   that called the current procedure. So the call can be optimized to become
+   a goto, replacing the current stack frame.
+
+   Here is a tail-recursive version. Ruby still can't handle it:
+
+  irb(main):027:0> def add_up_to(x)
+  irb(main):028:1>   def inner(x, y)
+  irb(main):029:2>     if x.zero?
+  irb(main):030:3>       y
+  irb(main):031:3>     else
+  irb(main):032:3*       inner(x-1, x+y)
+  irb(main):033:3>     end
+  irb(main):034:2>   end
+  irb(main):035:1>   inner(x, 0)
+  irb(main):036:1> end
+  => nil
+  irb(main):037:0> add_up_to(9999)
+  SystemStackError: stack level too deep
+
+   But Scheme can (this works in all Schemes):
+
+  #;2> (define (add-up-to x)
+         (define (inner x y)
+           (if (zero? x)
+               y
+               (inner (sub1 x) (+ y x))))
+         (inner x 0))
+  #;3> (add-up-to 4)
+  10
+  #;4> (add-up-to 9999)
+  49995000
+
+   Note that the recursive call to inner isn't nested inside another function
+   call, such as the (+ (add-up-to ...)) in the first version. This is the
+   hallmark of a tail-recursive program. (The astute reader might note that
+   it actually *is* nested inside an (if ...) procedure, but conditional
+   forms like if are handled intelligently in tail-recursion. The if
+   statement itself is not nested inside a procedure call, so all is well.)
+
+   As you'll notice, this version is a lot faster in CHICKEN too because it
+   does not have to travel back through all those empty "stack frames". In
+   the first example, CHICKEN's memory usage increases upon every recursion:
+   for large numbers, it will break because it can't allocate any more. But
+   in the second example, memory usage will stay constant and simply loop
+   forever.
+
+  Blocks
+
+   Ruby programmers will be familiar with blocks. Classic example in Ruby is
+   the map method used to iterate over a collection, executing a block of
+   code for each item in the collection.
+
+   Ruby:
+
+  >> [1, 2, 3, 4, 5].map { |x| x * x }
+  => [1, 4, 9, 16, 25]
+
+   Scheme also contains blocks, though we call them anonymous procedures
+   usually. Procedures are created using the (lambda args body...) body form.
+   This syntax is a little more verbose than Ruby's, but the trade off is
+   that more than one procedure can be passed as an argument, whereas Ruby
+   generally only allows one.
+
+   Scheme:
+
+  #;1> (map (lambda (x) (* x x)) '(1 2 3 4 5))
+  (1 4 9 16 25)
+
+   A more complicated example involves opening and closing files. Say we
+   wanted to create a utility like wc -l that counts the number of lines in a
+   file. In Ruby, it might look something like:
+
+ puts IO.foreach("myfile").to_a.length
+
+   Similarly, Scheme uses anonymous procedures to create the same behavior:
+
+ (with-input-from-file "myfile"
+   (lambda () (port-fold (lambda (line lines-so-far) (add1 lines-so-far)) 0 read-line)))
+
+   This Scheme code also showcases some typical functional style, using a
+   fold operation instead of incrementing the value of a variable.
+
+Data types
+
+   Now we have a basic grasp of Scheme's syntax, we can have a look at the
+   different data types CHICKEN has to offer. We will do this from a Ruby
+   perspective.
+
+  Arrays
+
+   In Ruby we use arrays for storing lists of things. The obvious Scheme
+   equivalent type is the list, you'd think. This is sort of true:
+
+   Ruby:
+
+ x = [1, 2, 3, 4]
+ x.map{|y| y + 10 }
+ x.each{|y| puts y }
+
+   Scheme:
+
+ (define x '(1 2 3))
+ (map (lambda (x) (+ x 10)) x)
+ (for-each print x)
+
+   Note that Scheme does not have the block scoping bug. Another thing that
+   we should note is the first line. We create a list by quoting it. This
+   allows us to enter the list in such a way that CHICKEN knows the list is
+   just that; a list, and not a procedure application of the procedure called
+   1 on the arguments 2 and 3. The apostrophe takes care of that.
+
+   However, we must always remember that the Scheme list is more like a
+   linked list. This means that it is very flexible in how we can add things
+   to it and alter it, but it also means that traversing it takes more time
+   as more items are added to it. Accessing an element is an O(n) operation,
+   where n is the position of the element.
+
+   If we want O(1) operations on our lists, we can use a vector:
+
+  #;1> (define x (vector 1 2 3 4))
+  #;2> (vector-ref x 2)
+  3
+  #;3> (define y (list 1 2 3 4))
+  #;4> (list-ref y 2)
+  3
+
+   Adding new elements to a vector requires resizing or even copying the
+   vector, just like it would in Ruby. So whenever you're contemplating using
+   a list type, think about the properties you want the list type to have.
+   This may sound odd, but in fact this gives you much more flexibility than
+   Ruby, where you have the choice of using an Array, or... using an Array.
+   However, as Knuth famously said: "Premature optimization is the root of
+   all evil", and you should probably take the list solution until it's
+   proven that you need vectors. Also, because Lisp was built on lists, it is
+   very good at manipulating them, so they're most likely the most convenient
+   datatype.
+
+   CHICKEN also offers you several other types of array-like types, each with
+   their own unique time and space properties. Which you'll use depends on
+   the task at hand and the situations your system will be used under.
+
+    List procedures
+
+   Lists are, as mentioned before, linked lists. This means they always
+   consist of two parts: a head and a tail. We've seen the list procedure
+   which creates lists, but this works on lower primitives:
+
+  #;1> (list 1)
+  (1)
+  #;2> (cons 1 '())
+  (1)
+
+   The () is the empty list. It is itself a list, but it is also a single
+   symbol. It serves as the end of list marker. That's why the list
+   construction procedure, cons, can create longer lists too:
+
+  #;1> (list 1 2 3 4)
+  (1 2 3 4)
+  #;2> (cons 1 (cons 2 (cons 3 (cons 4 '()))))
+  (1 2 3 4)
+
+   To take the head/tail of these lists we have two procedures:
+
+  #;1> (car '(1 2 3 4))
+  1
+  #;2> (cdr '(1 2 3 4))
+  (2 3 4)
+  #;3> (cdr (cdr '(1 2 3 4)))
+  (3 4)
+  #;4> (car (cdr (cdr '(1 2 3 4))))
+  3
+  #;5> (caddr '(1 2 3 4)) ; combination of car cdr cdr
+  3
+  #;6> (car (car '(1 2 3 4)))
+  Error: (car) bad argument type: 1
+  #;7> (cdr (cdr '(1)))
+  Error: (cdr) bad argument type: ()
+
+   Actually, cons just sticks two things together, so we could also stick
+   together two numbers:
+
+  #;1> (cons 1 2)
+  (1 . 2)
+  #;2> (car (cons 1 2))
+  1
+  #;3> (cdr (cons 1 2))
+  2
+
+   Two things stuck together are called a pair. By sticking together more
+   things without an end of list marker, we can create an improper list:
+
+  #;1> (cons 1 (cons 2 (cons 3 4)))
+  (1 2 3 . 4)
+
+   You should not use lists like these unless you know what you're doing,
+   because all list library procedures expect proper lists: lists with end
+   markers. CHICKEN supports the full SRFI-1 out of the box. Have a look at
+   that document and compare it to the Ruby standard Enumerator and Array
+   methods. Most of the procedures in srfi-1 will look very familiar to you.
+   Here are some examples:
+
+  $ chicken-install srfi-1
+  $ csi
+  #;1> (import srfi-1)  ;; Not needed in Ruby
+  ; loading library srfi-1 ...
+  #;2> ;; [1, 2, 3] + [4, 5, 6] / [1, 2, 3].concat([4, 5, 6])
+  (append '(1 2 3) '(4 5 6))
+  (1 2 3 4 5 6)
+  #;3> (map add1 '(1 2 3 4)) ;; [1, 2, 3, 4].map{|x| x + 1}
+  (2 3 4 5)
+  #;4> ;; No equivalent because map works on one object:
+  (map + '(1 2 3 4) '(5 6 7 8))
+  (6 8 10 12)
+  #;5> ;; [1, 2, 3, 4].each{|x| puts x}
+  (for-each (lambda (x) (printf "~A\n" x)) '(1 2 3 4))
+  1
+  2
+  3
+  4
+  #;6> ;; [1, 2, 3, 4, 5, 6].select{|x| x.even? }
+  (filter even? '(1 2 3 4 5 6))
+  (2 4 6)
+  #;7> (import (chicken string)) ;; To get the conc procedure
+  #;8> ;; [1, 2, 3, 4].inject(""){|str, x| str + x.to_s}
+  (fold (lambda (x str) (conc str x)) "" '(1 2 3 4))
+  "1234"
+
+  Symbols
+
+   Luckily, you are a Ruby programmer, so we will not have to go through the
+   whole "explaining what symbols exactly are" again :) Actually, Ruby
+   borrowed symbols from Lisp.
+
+   Ruby:
+
+ :foo
+ "blah".to_sym
+ :blah.to_s
+
+   Scheme:
+
+ 'foo
+ (string->symbol "foo")
+ (symbol->string 'foo)
+
+   As we can see, a symbol is only a quoted variable name! This is the origin
+   of symbols and also the reason you can send symbols representing method
+   names to objects in Ruby. Symbols have all the same semantics as Ruby's
+   symbols: they can be compared in constant time and they take up very
+   little memory space.
+
+  Strings
+
+   Strings are simple. Just like in Ruby, we have strings enclosed by double
+   quotes: "foo" works the same in Ruby as it does in CHICKEN. CHICKEN's
+   double quoted strings work more like Ruby's single-quoted strings, though.
+   There is no string interpolation and other things; a string is just a
+   string.
+
+   Ruby:
+
+ x = 10
+ y = "x contains #{x}"
+ z = "x contains " + x.to_s
+
+   Scheme:
+
+   (import (chicken string)) ;; To get the conc procedure
+   (import (chicken format)) ;; To get the sprintf procedure
+   (define x 10)
+   (define y (sprintf "x contains ~A" x))
+   (define z (conc "x contains " x))
+   ; Conc automatically converts its arguments to strings. We also could do:
+   (define z (string-append "x contains " (->string x)))
+
+   Note that ->string is simply the name of a procedure, including the arrow.
+
+   It may be important to know that Scheme also has a character data type,
+   just like Ruby:
+
+   Ruby:
+
+  irb(main):001:0> "foo"[0]
+  => "f"
+
+  #;1> (string-ref "foo" 0)
+  #\f
+  #;2> (char->integer #\f)
+  102
+
+   You will probably not need this data type for your first few Scheme
+   programs so we won't go into it deeper here.
+
+    String procedures
+
+   CHICKEN comes shipped with SRFI-13, which is a library of string
+   procedures which is intended to be a lot like SRFI-1, which we already
+   looked at a few sections ago:
+
+  $ chicken-install srfi-13
+  $ csi
+  #;1> (import srfi-13) ;; Not needed in Ruby
+  ; loading library srfi-13 ...
+  #;2> ;; "abc" + "def"
+  (string-append "abc" "def")
+  "abcdef"
+  #;3> ;; "abcdef"[-3..-1]
+  (string-take-right "abcdef" 2)
+  "ef"
+  #;4> ;; "abcdef".rjust(10)
+  (string-pad "abcdef" 10)
+  "    abcdef"
+  #;5> ;; ["this", "is", "very", "cool"].join(" ")
+  (string-join '("this" "is" "very" "cool"))
+  "this is very cool"
+  #;6> ;; "this is very cool".split(" ")
+  ;; NOT from srfi-13 but chicken's own (chicken string) module:
+  (string-split "this is very cool" " ")
+  ("this" "is" "very" "cool")
+
+  Regular expressions
+
+   Just like in Ruby, there's a Regex data type, but in CHICKEN there is no
+   special syntax for it:
+
+   Ruby:
+
+  irb(main):001:0> /(.)(.)(\d+)(\d)/.match("THX1138.").to_a
+  => ["HX1138", "H", "X", "113", "8"]
+
+   CHICKEN:
+
+  #;1> (import (chicken irregex))
+  ; loading library chicken.irregex ...
+  #;2> (irregex-search "(.)(.)(\\d+)(\\d)" "THX1138.")
+  #<regexp-match>
+  #;3> (irregex-submatch #2 0)
+  "HX1138"
+  #;4> (irregex-submatch #2 1)
+  "H"
+
+   The irregex-search procedure automatically transforms the first string to
+   a regexp object. You can also do that yourself:
+
+  #;3> (irregex-search (irregex "(.)(.)(\\d+)(\\d)") "THX1138.")
+
+   The advantage of doing this is that when you need to match several strings
+   you can use the same regexp so it doesn't have to precompile the regexp
+   every time you call irregex-search.
+
+  Hashes
+
+   The final datatype we use a lot in Ruby is the Hash. In CHICKEN there are
+   two datatypes you could use instead of the Ruby Hash; association lists
+   (or alists for short) or hash tables.
+
+    Association Lists
+
+   Association lists are the simpler Hash like structure in chicken.
+   Effectively, alists are standard lists of pairs, where the first item in
+   the pair is the key and the second item is the value. Consequently, alists
+   have a nice literal form:
+
+ '((foo  1) (bar 42) (baz 101))
+
+   To lookup a value in the alist, use assoc. For example to check if the
+   pair (bar 42) is in the alist:
+
+  #;1> (assoc 'bar '((foo  1) (bar 42) (baz 101)))
+  (bar 42)
+
+   If the pair is not in the list, you would get the boolean false (#f). If
+   you need more stringent checks, you can also use assq or assv, learning
+   more about these procedures is an exercise for the reader.
+
+   Alists may simplistic, and inquisitive readers may notice that lookup is
+   O(n) time. However, they are convenient and adding new items is a constant
+   time operation. You may find they work in may places that you might use a
+   small Hash in Ruby.
+
+    Hash tables
+
+   For more complex hashing operations, CHICKEN supplies true hash tables.
+
+  $ chicken-install srfi-69
+  $ csi
+  #;1> (import srfi-69)
+  #;2> (define h (make-hash-table))
+  #;3> h
+  #<hash-table>
+  #;4> (hash-table-set! h 'foo 12)
+  12
+  #;5> (hash-table-set! h 'bar 101)
+  101
+  #;6> (hash-table-ref h 'bar)
+  101
+  #;7> (hash-table-delete! h 'bar)
+  #t
+  #;8> (hash-table-ref h 'bar)
+  Error: (hash-table-ref) hash-table does not contain key
+  bar
+
+   Hash tables are more powerful overall, but do not offer convenient literal
+   notation. If you need to convert from a hash table an alist you can use
+   hash-table->alist. The alist->hash-table procedure converts in the
+   opposite direction. For a complete list of supported procedures, check the
+   hash table add-on library docs.
+
+  Booleans
+
+   Scheme has a boolean type where #f is false and #t is true. Its handling
+   of truthiness is a lot like Ruby's; anything that is not #f is treated as
+   being true:
+
+  #;1> (if #f
+           (print "WTF, it's true")
+           (print "It's not true"))
+  It's not true
+  #;2> (if #t
+           (print "Yes, it's really true")
+           (print "No, it's not true"))
+  Yes, it's really true
+  #;3> (if "Some random other value than #f"
+           (print "Yes, this is also true")
+           (print "No, it's not true"))
+  Yes, this is also true
+
+   Ruby's nil does not have a direct equivalent in Scheme. In the situations
+   where a not present value is supposed to be returned, usually #f is used:
+
+  #;1> (import srfi-1)
+  ; loading library srfi-1 ...
+  #;2> (find even? '(3 1 4 1 5 9))
+  4
+  #;3> (find even? '(1 3 7 9))
+  #f
+
+   In cases where a procedure really has no sensible thing to return, we use
+   the special void value, returned by the void procedure:
+
+  #;1> (define (say-hello)
+         (print "Hello")
+         (void))
+  #;2> (say-hello)
+  Hello
+  #;3>
+
+   As we see, the interpreter understands that there is no proper value to
+   return so it displays the prompt immediately without showing the result
+   value. The example is a little contrived, because in real code we wouldn't
+   explicitly call (void) because print already returns the void value.
+
+Examples
+
+   Now we have the tools to make programs, let's look at a few larger
+   programs to better appreciate how one would program in CHICKEN.
+
+  TODO
+
+CHICKEN and the Real World
+
+   Programming is about more than having a pretty language, so let's look at
+   what CHICKEN has to offer for real construction work.
+
+  Eggs
+
+   Eggs are to chicken what gems are to Ruby: installable extensions like
+   libraries and programs. The list of eggs is where you should look first
+   when you are going to implement something big. You can install an egg
+   almost like you install a gem, as follows:
+
+  $ chicken-install matchable
+
+   This downloads and installs the egg with the name "matchable". This egg
+   has no dependencies, but if it did it would have downloaded and installed
+   them as well.
+
+Meta programming
+
+   A hot topic in the Ruby community is meta programming and DSLs (Domain
+   specific languages). These ideas originated from Lisp, which means you can
+   just keep on trucking in CHICKEN!
+
+  Data is code and code is data
+
+   The most fundamental concept of Lisp is that code is data. As we've seen,
+   procedure calls look like lists. We've also seen that we can quote lists
+   to "block" Scheme from interpreting a list as a procedure call. We can
+   also turn this around on its head and force a list to be evaluated as
+   code:
+
+  #;1> (define calculate '(+ 1 2 3 4))
+  #;2> calculate
+  (+ 1 2 3 4)
+  #;3> (eval calculate)
+  10
+  #;4>
+
+   "Big deal", you might say, "Ruby also has eval". But the difference is
+   what matters: In Ruby you have to construct strings to be evaluated, which
+   means you need to be able to parse strings if you want to change a
+   Ruby-program-stored-as-string. In Scheme we can simply hack the list. The
+   program is stored in a parsed state, so to speak.
+
+   If we would want to change the operator from + to *, we can simply do
+   that:
+
+  #;1> (eval (cons '* (cdr calculate)))
+  24
+
+   This is much more robust than any regexp hacking or ad-hoc parsing on
+   strings you want to evaluate.
+
+  Macros
+
+   One of the coolest concepts, but also the one most easily abused is
+   macros. Because Scheme stores code as data, you can change the code
+   on-the-fly as described above. You can do that at run-time on random data
+   through eval, but you can also do it at compile-time on your program,
+   which is usually the best time to do it.
+
+   Scheme macros rewrite your code during compile time. They can range from
+   simple to complex, with some macros defining entire "sublanguages"
+   embedded in Scheme.
+
+   Some people call Rails' acts_as_foo methods "macros". This description is
+   not wrong, as these methods do rewrite your classes in a similar way to
+   Scheme macros, but they are not quite as powerful.
+
+   Here is a simple example of a task that is easy in Scheme, but much, much
+   harder using Ruby's eval. Say you were debugging a program and found
+   yourself printing out variables at certain points in the execution, along
+   with the name of the variable so you could tell what you were looking at.
+
+   (print "myvar: " myvar)
+
+   You decide that repeatedly typing the variable name twice (once to
+   indicate which variable, once to get the value) is a waste of time. Using
+   a macro, you can quickly and easily abstract away the common syntax into
+   one place.
+
+   (define-syntax ez-debug
+     (syntax-rules ()
+       ((_ var)
+        (print 'var ": " var))))
+
+   (define myvar '(this is a list))
+
+   (ez-debug myvar)
+
+   This simply wouldn't have been so easy with a regular procedure. By the
+   time a procedure is called, syntactic information like variables names has
+   been optimized away. If you are interested in a procedure like this in
+   Ruby go to
+   http://stackoverflow.com/questions/2603617/ruby-print-the-variable-name-and-then-its-value
