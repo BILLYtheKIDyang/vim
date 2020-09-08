@@ -77,6 +77,7 @@ set autochdir
 set autoindent
 set autoread 
 set backspace=eol,indent,start
+set mouse=a
 "set backup
 "set backupdir=~/vimbackup/
 set clipboard+=unnamed " 从寄存器 + 中粘贴与复制, "+p "+y
@@ -149,8 +150,6 @@ func! MyF4()
    elseif &filetype=="racket"
       :w
       exec "!" . g:clear . ";racket -I typed/racket %"
-   elseif &filetype=="perl"
-      exec "!" . g:clear . ";perl %"
    elseif &filetype=="elisp"
       call REPL_load("(load-file \"" . WinPath("%:p") . "\")")
       call REPL_send_text("elisp", "(tags)")
@@ -162,6 +161,8 @@ func! MyF4()
       :so %
    elseif &filetype=="fsharp"
       exe "!" . g:clear . ";fsharpc /nologo % && mono %<.exe"
+   elseif &filetype=="perl"
+      call REPL_load("use File::Slurper;eval File::Slurper::read_text('".WinPath("%:p")."');"."\<CR>")
    elseif &filetype=="python"
       call REPL_load("exec(open(\"" . WinPath("%:p") . "\", encoding='utf-8').read())")
    elseif &filetype=="haskell" || &filetype=="scala"
@@ -292,6 +293,7 @@ let g:REPL_configs['lisp']['repl']                = ['sbcl', '--userinit', expan
 let g:REPL_configs['perl']                        = {}
 let g:REPL_configs['perl']['continuations']       = ['else', 'except']
 let g:REPL_configs['perl']['repl']                = ['perl', expand("$HOME/.vim/bin/eval.pl")]
+"let g:REPL_configs['perl']['repl']                = ['perlsh']
 let g:REPL_configs['lisp']['repl']                = [expand("$HOME/.vim/bin/elisp.cmd")]
 let g:REPL_configs['lisp']['repl']                = ['d:/sbcl/sbcl.exe', '--core', 'd:/sbcl/sbcl.core']
 let g:REPL_configs['lisp']['repl']                = ['sbcl']
@@ -304,7 +306,7 @@ let g:REPL_configs['java']                        = {'repl': ['jshell'] }
 let g:REPL_configs['haskell']                     = {'repl': ['ghci'] }
 let g:REPL_configs['sml']                         = {'repl': ['smlnj']}
 let g:REPL_configs['sh']                 = {'repl': ['bash'], 'continuations': ['done', 'esac', 'fi']}
-let g:REPL_configs['ruby']               = {'repl': ['irb.cmd'], 'continuations': ['rescue', 'end']}
+let g:REPL_configs['ruby']               = {'repl': ['irb', '--noprompt'], 'continuations': ['rescue', 'end']}
 
 
 let s:lsp = '~/lsp-examples'

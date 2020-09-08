@@ -43,7 +43,7 @@ function! FindOpen(open, close, linnum, colnum)  abort
    endfor
    return FindOpen(open, close, linnum-1, len(getline(linnum-1)))
 endfunction
-function! InsertClose(close)
+function! InsertClose(close) abort
    if a:close == ')'
       let [l,c] = FindOpen('(', a:close, getpos('.')[1], getpos('.')[2])
       if l 
