@@ -45,6 +45,7 @@
   (sb-aclrepl:alias ("require" 0 "Require module") (sys) (require sys))
   (setq cl:*features* (delete :aclrepl cl:*features*)))
 
+;;(setf *print-pretty* nil)
 (setf *print-case* :downcase)
 
 (defun tags (file)
@@ -52,25 +53,25 @@
   (let ((*print-pretty* nil)
         (functions '())
         (keywords  '())
-        (variables '()))
+        (variables '())
+        )
     (do-all-symbols (sym)
       (let* ((pkg (symbol-package sym))
              (name    (concatenate 'string 
                         (cond 
                           ((eql #.(find-package :cl)      pkg) "")
                           ((eql #.(find-package :cl-user) pkg) "")
-                          ((eql #.(find-package :keyword) pkg) ":")
-                          (pkg (concatenate 'string (string-downcase (package-name pkg)) ":")))
+                          ((eql #.(find-package :keyword) pkg) ":") (pkg (concatenate 'string (string-downcase (package-name pkg)) ":")))
                         (string-downcase (symbol-name sym)))))
-        (cond
-          ((and (not (fboundp sym)) (boundp sym))
-           (if (char= #\: (elt name 0))
-               (push name keywords)
-               (push name variables)))
-          ((not (fboundp sym)) 
-           (push name variables))
-          (t
-            (push (cons sym name) functions)))))
+            (cond
+              ((and (not (fboundp sym)) (boundp sym))
+               (if (char= #\: (elt name 0))
+                   (push name keywords)
+                   (push name variables)))
+              ((not (fboundp sym)) 
+               (push name variables))
+              (t
+                (push (cons sym name) functions)))))
     (loop for x in variables do (format t "~a~%" x))
     (loop for x in keywords  do (format t "~a~%" x))
     (format t "FUNCTIONS BEGIN~%")
